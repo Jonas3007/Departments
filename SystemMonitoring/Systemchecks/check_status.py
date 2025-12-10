@@ -101,5 +101,5 @@ else:
 print(pluginOutput)
 sys.exit(pluginStatus)
 
-    
+print("Just for test porpposes")
     
