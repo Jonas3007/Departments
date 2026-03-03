@@ -13,7 +13,6 @@ public:
 
     void calculateOperation()
     {
-        double res;
         switch (Operator)
         {
         case '+':
@@ -72,7 +71,7 @@ bool IsOperator(string op)
     }
 }
 
-main()
+int main()
 {
     Calculator calculator;
     cout << "Number 1 " <<endl;
