@@ -1,0 +1,4 @@
+# Hashes of file build rules.
+e993730c0b442e7a936a10cf2c939d83 CMakeFiles/qtcalc_autogen
+e993730c0b442e7a936a10cf2c939d83 CMakeFiles/qtcalc_autogen_timestamp_deps
+a4fd6fb1c14ad9b3fa532c2cde7d6e7d qtcalc_autogen/timestamp

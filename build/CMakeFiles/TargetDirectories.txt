@@ -1,0 +1,5 @@
+/home/korman4/development/Departments/build/CMakeFiles/qtcalc.dir
+/home/korman4/development/Departments/build/CMakeFiles/edit_cache.dir
+/home/korman4/development/Departments/build/CMakeFiles/rebuild_cache.dir
+/home/korman4/development/Departments/build/CMakeFiles/qtcalc_autogen_timestamp_deps.dir
+/home/korman4/development/Departments/build/CMakeFiles/qtcalc_autogen.dir
