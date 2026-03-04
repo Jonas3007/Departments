@@ -56,5 +56,5 @@
   "C_Cpp_Runner.showCompilationTime": false,
   "C_Cpp_Runner.useLinkTimeOptimization": false,
   "C_Cpp_Runner.msvcSecureNoWarnings": false,
-  "cmake.sourceDirectory": "/home/korman4/development/Departments/01_SdCustomization/01_QTCalculator"
+  "cmake.sourceDirectory": "/home/korman4/development/Departments/01_SdCustomization/fltk-taschenrechner"
 }
