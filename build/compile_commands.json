@@ -1,8 +1,0 @@
-[
-{
-  "directory": "/home/korman4/development/Departments/build",
-  "command": "/usr/bin/g++  -I/usr/lib/fltk -g -std=gnu++17 -o CMakeFiles/calculator.dir/main.cpp.o -c /home/korman4/development/Departments/01_SdCustomization/fltk-taschenrechner/main.cpp",
-  "file": "/home/korman4/development/Departments/01_SdCustomization/fltk-taschenrechner/main.cpp",
-  "output": "CMakeFiles/calculator.dir/main.cpp.o"
-}
-]

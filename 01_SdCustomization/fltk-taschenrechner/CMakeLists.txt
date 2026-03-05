@@ -8,6 +8,8 @@ find_package(FLTK REQUIRED)
 
 add_executable(calculator
     main.cpp
+    calculator.cpp
+    calculator.h
 )
 
 target_include_directories(calculator PRIVATE ${FLTK_INCLUDE_DIR})

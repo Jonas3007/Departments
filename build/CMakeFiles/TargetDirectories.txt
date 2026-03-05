@@ -1,3 +1,0 @@
-/home/korman4/development/Departments/build/CMakeFiles/calculator.dir
-/home/korman4/development/Departments/build/CMakeFiles/edit_cache.dir
-/home/korman4/development/Departments/build/CMakeFiles/rebuild_cache.dir
