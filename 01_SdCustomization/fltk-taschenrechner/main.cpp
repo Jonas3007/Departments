@@ -7,11 +7,45 @@
 #include <Fl/Fl_Return_Button.H>
 #include <FL/Fl_Output.H>
 #include <iostream>
+#include "calculator.h"
+
+void opButton_cb(Fl_Widget *w, void *data)
+{
+	char op = w->label()[0];
+	Calculator calc;
+	if (op == '=')
+	{
+		try
+		{
+			double result = calc.chooseOperator();
+		}
+		catch (const std::exception &e)
+		{
+			std::cerr << "Fehler: " << e.what() << std::endl;
+		}
+		return;
+	}
+	calc.setOperator(op);
+}
 
 void button_cb(Fl_Widget *w, void *data)
-{
+{ 
+	Calculator calc;
+	Fl_Input *input = static_cast<Fl_Input *>(data);
+
+	if (!input)
+		return;
+	const char *label = w->label();
+	const char *current = input->value();
+
+	// asemble input string
+	std::string new_input = current;
+	new_input += label;
+
+	input->value(new_input.c_str());
+
 	// 'w' ist der Button, der gedrückt wurde
-	std::cout << "Button '" << w->label() << "' wurde gedrückt!" << std::endl;
+	// std::cout << "Button '" << w->label() << "' wurde gedrückt!" << std::endl;
 }
 
 int main(int argc, char **argv)
@@ -19,12 +53,14 @@ int main(int argc, char **argv)
 	// Main Window
 	Fl_Window *window = new Fl_Window(500, 500, "Taschenrechner");
 
-	// Input Field
+	// Input Fields
 	Fl_Input *input = new Fl_Input(160, 115, 180, 40);
 	input->box(FL_THIN_UP_BOX);
 
-	// Output
 	
+
+	// Output
+
 	Fl_Output *output = new Fl_Output(360, 115, 80, 40);
 	output->box(FL_THIN_UP_BOX);
 	output->color(FL_WHITE);
@@ -64,21 +100,21 @@ int main(int argc, char **argv)
 
 	nmpad_grp->begin();
 
-	b1->callback(button_cb);
-	b2->callback(button_cb);
-	b3->callback(button_cb);
-	b4->callback(button_cb);
-	b5->callback(button_cb);
-	b6->callback(button_cb);
-	b7->callback(button_cb);
-	b8->callback(button_cb);
-	b9->callback(button_cb);
-	b0->callback(button_cb);
-	bPlus->callback(button_cb);
-	bMinus->callback(button_cb);
-	bMult->callback(button_cb);
-	bDiv->callback(button_cb);
-	bEqual->callback(button_cb);
+	b1->callback(button_cb, input);
+	b2->callback(button_cb, input);
+	b3->callback(button_cb, input);
+	b4->callback(button_cb, input);
+	b5->callback(button_cb, input);
+	b6->callback(button_cb, input);
+	b7->callback(button_cb, input);
+	b8->callback(button_cb, input);
+	b9->callback(button_cb, input);
+	b0->callback(button_cb, input);
+	bPlus->callback(opButton_cb);
+	bMinus->callback(opButton_cb);
+	bMult->callback(opButton_cb);
+	bDiv->callback(opButton_cb);
+	bEqual->callback(opButton_cb);
 
 	nmpad_grp->end();
 
