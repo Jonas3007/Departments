@@ -8,48 +8,85 @@
 #include <FL/Fl_Output.H>
 #include <iostream>
 #include "calculator.h"
-
-void opButton_cb(Fl_Widget *w, void *data)
+struct Context
 {
-	char op = w->label()[0];
-	Calculator calc;
-	if (op == '=')
+	Calculator *calc;
+	Fl_Input *input;
+	Fl_Output *output;
+};
+
+// checks Input for things that are not allowed -> for example division through 0
+bool checkInput(std::string inputString)
+{
+	// checks for division through zero
+	char div = '/';
+	int divIndex = inputString.find(div);
+	double num2 = stod(inputString.substr(divIndex + 1, inputString.size()));
+	if (num2 == 0)
 	{
-		try
-		{
-			double result = calc.chooseOperator();
-		}
-		catch (const std::exception &e)
-		{
-			std::cerr << "Fehler: " << e.what() << std::endl;
-		}
-		return;
+		return false;
 	}
-	calc.setOperator(op);
+	// checks fpr multiple operators
+	int operatorCount = 0;
+	for (char c : inputString)
+	{
+		if (c == '+' || c == '-' || c == '*' || c == '/')
+		{
+			operatorCount++;
+		}
+	}
+	if (operatorCount > 1)
+	{
+		return false;
+	}
+	if(inputString.empty())
+	{
+		return false;
+	}
+	return true;
 }
 
 void button_cb(Fl_Widget *w, void *data)
-{ 
-	Calculator calc;
-	Fl_Input *input = static_cast<Fl_Input *>(data);
+{
+	Context *ctx = static_cast<Context *>(data);
 
-	if (!input)
+	if (!ctx->input)
 		return;
 	const char *label = w->label();
-	const char *current = input->value();
+	const char *current = ctx->input->value();
 
 	// asemble input string
 	std::string new_input = current;
 	new_input += label;
+	ctx->input->value(new_input.c_str());
+}
 
-	input->value(new_input.c_str());
+void calculateResult_cb(Fl_Widget *w, void *data)
+{
+	Context *ctx = static_cast<Context *>(data);
+	std::string inputString = ctx->input->value();
 
-	// 'w' ist der Button, der gedrückt wurde
-	// std::cout << "Button '" << w->label() << "' wurde gedrückt!" << std::endl;
+	if(checkInput(inputString) == false)
+	{
+		ctx->output->value("Invalid");
+		return;
+	}
+	if (inputString[0] == '+' || inputString[0] == '-' || inputString[0] == '*' || inputString[0] == '/')
+	{
+		ctx->calc->useResultForNextOperation(inputString);
+	}
+	else
+	{
+		ctx->calc->splitInput(inputString);
+		ctx->calc->chooseOperration();
+	}
+	std::string result = std::to_string(ctx->calc->Result);
+	ctx->output->value(result.c_str());
 }
 
 int main(int argc, char **argv)
 {
+	Calculator calc;
 	// Main Window
 	Fl_Window *window = new Fl_Window(500, 500, "Taschenrechner");
 
@@ -57,13 +94,17 @@ int main(int argc, char **argv)
 	Fl_Input *input = new Fl_Input(160, 115, 180, 40);
 	input->box(FL_THIN_UP_BOX);
 
-	
-
 	// Output
 
 	Fl_Output *output = new Fl_Output(360, 115, 80, 40);
 	output->box(FL_THIN_UP_BOX);
 	output->color(FL_WHITE);
+	output->value();
+
+	Context ctx;
+	ctx.calc = &calc;
+	ctx.input = input;
+	ctx.output = output;
 
 	// "=" Box
 	Fl_Box *equal_box = new Fl_Box(345, 115, 10, 40, "=");
@@ -100,21 +141,21 @@ int main(int argc, char **argv)
 
 	nmpad_grp->begin();
 
-	b1->callback(button_cb, input);
-	b2->callback(button_cb, input);
-	b3->callback(button_cb, input);
-	b4->callback(button_cb, input);
-	b5->callback(button_cb, input);
-	b6->callback(button_cb, input);
-	b7->callback(button_cb, input);
-	b8->callback(button_cb, input);
-	b9->callback(button_cb, input);
-	b0->callback(button_cb, input);
-	bPlus->callback(opButton_cb);
-	bMinus->callback(opButton_cb);
-	bMult->callback(opButton_cb);
-	bDiv->callback(opButton_cb);
-	bEqual->callback(opButton_cb);
+	b1->callback(button_cb, &ctx);
+	b2->callback(button_cb, &ctx);
+	b3->callback(button_cb, &ctx);
+	b4->callback(button_cb, &ctx);
+	b5->callback(button_cb, &ctx);
+	b6->callback(button_cb, &ctx);
+	b7->callback(button_cb, &ctx);
+	b8->callback(button_cb, &ctx);
+	b9->callback(button_cb, &ctx);
+	b0->callback(button_cb, &ctx);
+	bPlus->callback(button_cb, &ctx);
+	bMinus->callback(button_cb, &ctx);
+	bMult->callback(button_cb, &ctx);
+	bDiv->callback(button_cb, &ctx);
+	bEqual->callback(calculateResult_cb, &ctx);
 
 	nmpad_grp->end();
 

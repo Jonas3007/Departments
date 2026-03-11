@@ -1,10 +1,12 @@
-
+#include <sstream>
+#include <cmath>
 #include "calculator.h"
 #include <stdexcept>
+using namespace std;
 
 // --- Getter/Setter ---
-void Calculator::setNumber1(double value) { Number1 = value; }
-void Calculator::setNumber2(double value) { Number2 = value; }
+void Calculator::setNumber1(double value) { this->Number1 = value; }
+void Calculator::setNumber2(double value) { this->Number2 = value; }
 
 void Calculator::setOperator(char op)
 {
@@ -17,44 +19,77 @@ double Calculator::getNumber1() const { return Number1; }
 double Calculator::getNumber2() const { return Number2; }
 char Calculator::getOperator() const { return Operator; }
 
+void Calculator::useResultForNextOperation(std::string inputString)
+{
+
+	setNumber1(Result);
+	setOperator(inputString[0]);
+	string subStringNum2 = inputString.substr(1, inputString.size());
+	setNumber2(stod(subStringNum2));
+	chooseOperration();
+}
+
 // --- Rechenmethoden ---
-double Calculator::Add() const
+void Calculator::Add()
 {
-	return Number1 + Number2;
+	Result = Number1 + Number2;
 }
 
-double Calculator::Subtract() const
+void Calculator::Subtract()
 {
-	return Number1 - Number2;
+	Result = Number1 - Number2;
 }
 
-double Calculator::Multiply() const
+void Calculator::Multiply()
 {
-	return Number1 * Number2;
+	Result = Number1 * Number2;
 }
 
-double Calculator::Divide() const
+void Calculator::Divide()
 {
 	if (Number2 == 0.0)
 		throw std::invalid_argument("Division through 0 zero is not permitted.");
-	return Number1 / Number2;
+	Result = Number1 / Number2;
 }
 
 // --- chooseOperator ---
-double Calculator::chooseOperator() const
+void Calculator::chooseOperration()
 {
 	switch (Operator)
 	{
 	case '+':
-		return Add();
+		Add();
+		break;
 	case '-':
-		return Subtract();
+		Subtract();
+		break;
 	case '*':
-		return Multiply();
+		Multiply();
+		break;
 	case '/':
-		return Divide();
+		Divide();
+		break;
 	default:
 		// Diese Stelle sollte dank setOperator-Validierung kaum erreicht werden.
 		throw std::logic_error("Internal Error: invalid Operator.");
 	}
+}
+
+// --- splitInput ---
+void Calculator::splitInput(std::string inputString)
+{
+	int operatorIndex= 0;
+	int stringSize = inputString.size();
+	for (int i = 0; i <= stringSize; i++)
+	{
+		if (inputString[i] == '+' || inputString[i] == '-' || inputString[i] == '*' || inputString[i] == '/')
+		{
+			operatorIndex = i;
+		}
+	}
+	string subStringNum1 = inputString.substr(0, operatorIndex);
+	string subStringNum2 = inputString.substr(operatorIndex + 1, stringSize);
+	setNumber1(stod(subStringNum1));
+	setNumber2(stod(subStringNum2));
+	setOperator(inputString[operatorIndex]);
 }
