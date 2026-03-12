@@ -1,6 +1,9 @@
 // tests/test_calculator.cpp
 #include <catch2/catch_test_macros.hpp>
 #include "calculator.h"
+#include <cmath>
+#include <sstream>
+#include <string>
 
 TEST_CASE("Addition funktioniert", "[add]") {
 	Calculator calc;

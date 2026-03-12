@@ -9,6 +9,10 @@
 #include <FL/Fl_Round_Button.H>
 #include <iostream>
 #include "calculator.h"
+#include <cmath>
+
+
+
 struct Context
 {
 	Calculator *calc;
@@ -51,6 +55,14 @@ void calculateResult_cb(Fl_Widget *w, void *data)
 	{
 		ctx->calc->calculateTerm(inputString);
 	}
+	else if (inputString.find('^') != std::string::npos)
+	{
+		ctx->calc->calculateTerm(inputString);
+	}
+	else if (inputString.find('(') != std::string::npos || inputString.find(')') != std::string::npos)
+	{
+		ctx->calc->calculateTerm(inputString);
+	}
 	else
 	{
 		ctx->calc->splitInput(inputString);
@@ -63,8 +75,39 @@ void clear_cb(Fl_Widget *w, void *data)
 {
 	Context *ctx = static_cast<Context *>(data);
 	ctx->input->value("");
-	ctx->output->value("");
-	ctx->calc->Result = 0;
+}
+void bracket_cb(Fl_Widget *w, void *data)
+{
+	Context *ctx = static_cast<Context *>(data);
+	std::string inputString = ctx->input->value();
+	int openBracketPos = inputString.find_last_of('(');
+	int closeBracketPos = inputString.find_last_of(')');
+	if(closeBracketPos > openBracketPos && closeBracketPos != std::string::npos)
+	{
+		ctx->input->value((inputString + "(").c_str());
+	}
+	else if (openBracketPos > closeBracketPos && openBracketPos != std::string::npos)
+	{
+		ctx->input->value((inputString + ")").c_str());
+	}
+	else
+	{
+		ctx->input->value((inputString + "(").c_str());
+	}
+	
+}
+// --- useResultForNextOperation ---  war Copilot
+void At_cb(Fl_Widget *w, void *data)
+{
+	Context *ctx = static_cast<Context *>(data);
+	std::string inputString = ctx->input->value();
+	const char *label = w->label();
+	const char *current = ctx->input->value();
+
+	// asemble input string
+	std::string new_input = current;
+	new_input += label;
+	ctx->input->value(new_input.c_str());
 }
 
 int main(int argc, char **argv)
@@ -91,12 +134,19 @@ int main(int argc, char **argv)
 	
 	
 	//Clear Button
-	Fl_Button *bClear = new Fl_Button(360, 230, 80, 40, "C");
+	Fl_Button *bClear = new Fl_Button(360, 250, 80, 45, "C");
 	bClear -> box(FL_THIN_UP_BOX);
 	bClear ->labelfont(FL_BOLD);
 	bClear -> labelcolor(FL_RED);
 	
 	bClear ->callback(clear_cb, &ctx);
+	
+	// Equal Button
+	Fl_Button *bEqual = new Fl_Return_Button(360, 295, 80, 45, "=");
+	bEqual->box(FL_THIN_UP_BOX);
+	bEqual->labelfont(FL_BOLD);
+	bEqual->callback(calculateResult_cb, &ctx);
+
 
 
 	// "=" Box
@@ -119,21 +169,23 @@ int main(int argc, char **argv)
 	int ngx = nmpad_grp->x();
 	int ngy = nmpad_grp->y();
 	// Numpad Buttons
-	Fl_Button *b1 = new Fl_Button(ngx, ngy, 45, 45, "1");
-	Fl_Button *b2 = new Fl_Button(ngx + 45, ngy, 45, 45, "2");
-	Fl_Button *b3 = new Fl_Button(ngx + 90, ngy, 45, 45, "3");
+	Fl_Button *b1 = new Fl_Button(ngx, ngy, 45, 45, "7");
+	Fl_Button *b2 = new Fl_Button(ngx + 45, ngy, 45, 45, "8");
+	Fl_Button *b3 = new Fl_Button(ngx + 90, ngy, 45, 45, "9");
 	Fl_Button *b4 = new Fl_Button(ngx, ngy + 45, 45, 45, "4");
 	Fl_Button *b5 = new Fl_Button(ngx + 45, ngy + 45, 45, 45, "5");
 	Fl_Button *b6 = new Fl_Button(ngx + 90, ngy + 45, 45, 45, "6");
-	Fl_Button *b7 = new Fl_Button(ngx, ngy + 90, 45, 45, "7");
-	Fl_Button *b8 = new Fl_Button(ngx + 45, ngy + 90, 45, 45, "8");
-	Fl_Button *b9 = new Fl_Button(ngx + 90, ngy + 90, 45, 45, "9");
-	Fl_Button *b0 = new Fl_Button(ngx + 90, ngy + 135, 45, 45, "0");
+	Fl_Button *b7 = new Fl_Button(ngx, ngy + 90, 45, 45, "1");
+	Fl_Button *b8 = new Fl_Button(ngx + 45, ngy + 90, 45, 45, "2");
+	Fl_Button *b9 = new Fl_Button(ngx + 90, ngy + 90, 45, 45, "3");
+	Fl_Button *b0 = new Fl_Button(ngx + 45, ngy + 135, 45, 45, "0");
+	Fl_Button *bBracket = new Fl_Button(ngx, ngy + 135, 45, 45, "()");
+	Fl_Button *bAt = new Fl_Button(ngx + 90, ngy + 135, 45, 45, "^");
 	Fl_Button *bPlus = new Fl_Button(ngx + 135, ngy, 45, 45, "+");
 	Fl_Button *bMinus = new Fl_Button(ngx + 135, ngy + 45, 45, 45, "-");
 	Fl_Button *bMult = new Fl_Button(ngx + 135, ngy + 90, 45, 45, "*");
 	Fl_Button *bDiv = new Fl_Button(ngx + 135, ngy + 135, 45, 45, "/");
-	Fl_Button *bEqual = new Fl_Return_Button(ngx, ngy + 135, 90, 45, "=");
+	
 	
 	
 	
@@ -157,8 +209,9 @@ int main(int argc, char **argv)
 	bMinus->callback(button_cb, &ctx);
 	bMult->callback(button_cb, &ctx);
 	bDiv->callback(button_cb, &ctx);
-	bEqual->callback(calculateResult_cb, &ctx);
-
+	bBracket->callback(bracket_cb, &ctx);
+	bAt->callback(At_cb, &ctx);
+	
 	nmpad_grp->end();
 
 	window->end();

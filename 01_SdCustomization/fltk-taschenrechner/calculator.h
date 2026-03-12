@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 
 class Calculator
 {
@@ -31,17 +32,27 @@ public:
 	void Divide();
 	void chooseOperration();
 	
+	// Calculate Higher Precedence Operations
+	std::string calculateHigherPrecedence(std::string inputString);
+	// Calculate Lower Precedence Operations
+	std::string calculateLowerPrecedence(std::string inputString);
+	// calculte Bracketed Expressions
+	std::string calculateBracket(std::string inputString);
+	// calculate Exponentiation
+	std::string calculateExponentiation(std::string inputString);
+	
 	//Term calculation
 	void calculateTerm(std::string inputString);
-	//Precedence checks
-	bool HigherPrecedence(std::string inputString);
-	bool LowerPrecedence(std::string inputString);
+	void calculateSimpleTerm(std::string inputString);
+	
+	
 
+	
 	// Split input string
 	void splitInput(std::string inputString);
 
 private:
-
+	
 	// Attributes
 	double Number1;
 	double Number2;
