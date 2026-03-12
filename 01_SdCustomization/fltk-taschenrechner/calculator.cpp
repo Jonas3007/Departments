@@ -7,12 +7,6 @@ using namespace std;
 
 // Structs
 
-struct OperatorCount
-{
-	int count;
-	int index[20];
-};
-
 // --- Getter/Setter ---
 void Calculator::setNumber1(double value) { this->Number1 = value; }
 void Calculator::setNumber1(string value) { this->Number1 = stod(value); }
@@ -32,38 +26,98 @@ char Calculator::getOperator() const { return Operator; }
 
 // check functions
 // checks for invalid inputs
-bool Calculator::checkForInvalidInput(std::string inputString)
+bool Calculator::checkForInvalidInput(const std::string s)
 {
-
-	if (inputString.size() < 2)
-	{
+	if (s.empty())
 		return false;
-	}
-	// checks for division through zero
-	char div = '/';
-	int divIndex = inputString.find(div);
-	if (divIndex != string::npos)
+
+	auto isOp = [](char c)
 	{
-		double num2 = stod(inputString.substr(divIndex + 1, inputString.size()));
-		if (num2 == 0)
-		{
+		return c == '+' || c == '-' || c == '*' || c == '/' || c == '^';
+	};
+
+	int bracketDepth = 0;
+	bool lastWasOperator = false;
+	bool lastWasDecimal = false;
+
+	for (size_t i = 0; i < s.size(); ++i)
+	{
+		char c = s[i];
+
+		// --- Gültige Zeichen ---
+		if (!isdigit(c) && !isOp(c) && c != '(' && c != ')' && c != '.')
 			return false;
+
+		// --- Klammern prüfen ---
+		if (c == '(')
+			bracketDepth++;
+		if (c == ')')
+		{
+			bracketDepth--;
+			if (bracketDepth < 0)
+				return false;
+		}
+
+		// --- Zwei Operatoren hintereinander ---
+		if (isOp(c))
+		{
+			if (lastWasOperator && !(c == '-' && i == 0)) // einzelnes Minus am Anfang ok
+				return false;
+			lastWasOperator = true;
+			lastWasDecimal = false;
+			continue;
+		}
+
+		// --- Dezimalpunkt prüfen ---
+		if (c == '.')
+		{
+			if (lastWasDecimal)
+				return false;
+			lastWasDecimal = true;
+			lastWasOperator = false;
+			continue;
+		}
+
+		// --- Ziffer ---
+		if (isdigit(c))
+		{
+			lastWasOperator = false;
+			lastWasDecimal = false;
 		}
 	}
 
-	// Check for double operators
-	double dMultIndex = inputString.find("**");
-	double dDivIndex = inputString.find("//");
-	double dPlusIndex = inputString.find("++");
-	double dMinusIndex = inputString.find("--");
-	if (dMultIndex != string::npos || dDivIndex != string::npos || dPlusIndex != string::npos || dMinusIndex != string::npos)
-	{
+	// --- Letztes Zeichen darf kein Operator sein ---
+	if (isOp(s.back()))
 		return false;
-	}
-	if (inputString.empty())
-	{
+
+	// --- Klammern müssen ausgeglichen sein ---
+	if (bracketDepth != 0)
 		return false;
+
+	// --- Division durch 0 prüfen ---
+	size_t divPos = s.find('/');
+	while (divPos != std::string::npos)
+	{
+		// finde Zahl rechts vom '/'
+		size_t i = divPos + 1;
+
+		// optionales Minus
+		if (i < s.size() && s[i] == '-')
+			i++;
+
+		std::string number;
+		while (i < s.size() && (isdigit(s[i]) || s[i] == '.'))
+		{
+			number += s[i];
+			i++;
+		}
+
+		if (!number.empty() && stod(number) == 0.0)
+			return false;
+
+		divPos = s.find('/', divPos + 1);
 	}
+
 	return true;
 }
 
@@ -150,40 +204,25 @@ std::string Calculator::calculateHigherPrecedence(std::string inputString)
 		if (mulpos != string::npos)
 		{
 			setOperator(inputString[mulpos]);
-			int leftNum = mulpos - 1;
-			while (leftNum >= 0 && isdigit(inputString[leftNum]) || inputString[leftNum] == '.')
-			{
-				leftNum--;
-			}
-			leftNum++;
-			int rightNum = mulpos + 1;
-			while (rightNum < inputString.size() && isdigit(inputString[rightNum]) || inputString[rightNum] == '.')
-			{
-				rightNum++;
-			}
-			setNumber1(stod(inputString.substr(leftNum, mulpos - leftNum)));
-			setNumber2(stod(inputString.substr(mulpos + 1, rightNum - (mulpos + 1))));
+
+			ParsedOperation operands = findOperands(inputString, mulpos);
+
+			setNumber1(operands.left);
+			setNumber2(operands.right);
 			chooseOperration();
-			inputString.replace(leftNum, rightNum - leftNum, to_string(Result));
+
+			inputString.replace(operands.leftIndex, operands.rightIndex - operands.leftIndex, to_string(Result));
 		}
 		else if (divpos != string::npos)
 		{
 			setOperator(inputString[divpos]);
-			int leftNum = divpos - 1;
-			while (leftNum >= 0 && isdigit(inputString[leftNum]) || inputString[leftNum] == '.')
-			{
-				leftNum--;
-			}
-			leftNum++;
-			int rightNum = divpos + 1;
-			while (rightNum < inputString.size() && isdigit(inputString[rightNum]) || inputString[rightNum] == '.')
-			{
-				rightNum++;
-			}
-			setNumber1(stod(inputString.substr(leftNum, divpos - leftNum)));
-			setNumber2(stod(inputString.substr(divpos + 1, rightNum - (divpos + 1))));
+
+			ParsedOperation operands = findOperands(inputString, divpos);
+
+			setNumber1(operands.left);
+			setNumber2(operands.right);
 			chooseOperration();
-			inputString.replace(leftNum, rightNum - leftNum, to_string(Result));
+			inputString.replace(operands.leftIndex, operands.rightIndex - operands.leftIndex, to_string(Result));
 		}
 	}
 	return inputString;
@@ -201,40 +240,24 @@ std::string Calculator::calculateLowerPrecedence(string inputString)
 		if (pluspos != string::npos)
 		{
 			setOperator(inputString[pluspos]);
-			int leftNum = pluspos - 1;
-			while (leftNum >= 0 && isdigit(inputString[leftNum]) || inputString[leftNum] == '.')
-			{
-				leftNum--;
-			}
-			leftNum++;
-			int rightNum = pluspos + 1;
-			while (rightNum < inputString.size() && isdigit(inputString[rightNum]) || inputString[rightNum] == '.')
-			{
-				rightNum++;
-			}
-			setNumber1(stod(inputString.substr(leftNum, pluspos - leftNum)));
-			setNumber2(stod(inputString.substr(pluspos + 1, rightNum - (pluspos + 1))));
+
+			ParsedOperation operands = findOperands(inputString, pluspos);
+
+			setNumber1(operands.left);
+			setNumber2(operands.right);
 			chooseOperration();
-			inputString.replace(leftNum, rightNum - leftNum, to_string(Result));
+			inputString.replace(operands.leftIndex, operands.rightIndex - operands.leftIndex, to_string(Result));
 		}
 		else if (minuspos != string::npos)
 		{
 			setOperator(inputString[minuspos]);
-			int leftNum = minuspos - 1;
-			while (leftNum >= 0 && isdigit(inputString[leftNum]) || inputString[leftNum] == '.')
-			{
-				leftNum--;
-			}
-			leftNum++;
-			int rightNum = minuspos + 1;
-			while (rightNum < inputString.size() && isdigit(inputString[rightNum]) || inputString[rightNum] == '.')
-			{
-				rightNum++;
-			}
-			setNumber1(stod(inputString.substr(leftNum, minuspos - leftNum)));
-			setNumber2(stod(inputString.substr(minuspos + 1, rightNum - (minuspos + 1))));
+
+			ParsedOperation operands = findOperands(inputString, minuspos);
+
+			setNumber1(operands.left);
+			setNumber2(operands.right);
 			chooseOperration();
-			inputString.replace(leftNum, rightNum - leftNum, to_string(Result));
+			inputString.replace(operands.leftIndex, operands.rightIndex - operands.leftIndex, to_string(Result));
 		}
 	}
 	return inputString;
@@ -250,40 +273,47 @@ std::string Calculator::calculateExponentiation(string inputString)
 			break;
 		}
 
-		// find exponent
-		int rightNum = atIndex + 1;
-		while (rightNum < inputString.size() && isdigit(inputString[rightNum]) || inputString[rightNum] == '.')
-		{
-			rightNum++;
-		}
-		string sExponent = inputString.substr(atIndex + 1, rightNum - (atIndex + 1));
-		double exponent = stod(sExponent);
+		ParsedOperation operands = findOperands(inputString, atIndex);
 
-		// brackets get their own handling...
-		int leftNum = atIndex - 1;
-		if (!isdigit(inputString[leftNum]))
+		string sBaseNumber = inputString.substr(operands.leftIndex, atIndex - operands.leftIndex);
+		double baseNumber = stod(sBaseNumber);
+		string sExponent = inputString.substr(atIndex + 1, operands.rightIndex - (atIndex + 1));
+
+		if (!isdigit(inputString[atIndex - 1]))
 		{
 			// only return the exponentiation part of the string, the rest will be handled in calculateTerm
 			return sExponent;
 		}
-
-		// find base number
-		while (leftNum >= 0 && isdigit(inputString[leftNum]) || inputString[leftNum] == '.')
-		{
-			leftNum--;
-		}
-		leftNum++;
-		string sBaseNumber = inputString.substr(leftNum, atIndex - leftNum);
-		double baseNumber = stod(sBaseNumber);
+		double exponent = stod(sExponent);
 
 		// exponentiation of the baseNumber
 		double result = std::pow(baseNumber, exponent);
 
-		inputString.replace(leftNum, rightNum - leftNum, to_string(result));
+		inputString.replace(operands.leftIndex, operands.rightIndex - operands.leftIndex, to_string(result));
 	}
 
 	// returns the whole string with the exponentiation calculated
 	return inputString;
+}
+ParsedOperation Calculator::findOperands(std::string inputString, int operatorIndex)
+{
+	int leftNum = operatorIndex - 1;
+	while (leftNum >= 0 && (isdigit(inputString[leftNum])) || inputString[leftNum] == '.')
+	{
+		leftNum--;
+	}
+	leftNum++;
+	int rightNum = operatorIndex + 1;
+	while (rightNum < inputString.size() && (isdigit(inputString[rightNum])) || inputString[rightNum] == '.')
+	{
+		rightNum++;
+	}
+	ParsedOperation op;
+	op.left = stod(inputString.substr(leftNum, operatorIndex - leftNum));
+	op.right = stod(inputString.substr(operatorIndex + 1, rightNum - (operatorIndex + 1)));
+	op.leftIndex = leftNum;
+	op.rightIndex = rightNum;
+	return op;
 }
 std::string Calculator::calculateBracket(string inputString)
 {

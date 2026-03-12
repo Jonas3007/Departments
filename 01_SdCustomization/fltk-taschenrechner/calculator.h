@@ -1,6 +1,13 @@
 #pragma once
 #include <string>
 
+struct ParsedOperation
+	{
+		double left;
+		double right;
+		int leftIndex;
+		int rightIndex;
+	};
 class Calculator
 {
 public:
@@ -17,8 +24,12 @@ public:
 	double getNumber1() const;
 	double getNumber2() const;
 	char getOperator() const;
+
 	
-	//Inputchecks
+	// Helper functions
+	ParsedOperation findOperands(std::string inputString, int operatorIndex);
+
+	// Inputchecks
 	bool checkForInvalidInput(std::string inputString);
 	int checkForMultipleOperators(std::string inputString);
 
@@ -31,7 +42,7 @@ public:
 	void Multiply();
 	void Divide();
 	void chooseOperration();
-	
+
 	// Calculate Higher Precedence Operations
 	std::string calculateHigherPrecedence(std::string inputString);
 	// Calculate Lower Precedence Operations
@@ -40,19 +51,15 @@ public:
 	std::string calculateBracket(std::string inputString);
 	// calculate Exponentiation
 	std::string calculateExponentiation(std::string inputString);
-	
-	//Term calculation
+
+	// Term calculation
 	void calculateTerm(std::string inputString);
 	void calculateSimpleTerm(std::string inputString);
-	
-	
 
-	
 	// Split input string
 	void splitInput(std::string inputString);
 
 private:
-	
 	// Attributes
 	double Number1;
 	double Number2;
