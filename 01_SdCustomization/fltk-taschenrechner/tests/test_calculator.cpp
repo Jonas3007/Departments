@@ -72,3 +72,44 @@ TEST_CASE("setOperator invaild argument funktioniert", "[setOperator]")
 	char invalidOperator = 'c';
 	REQUIRE_THROWS_AS(calc.setOperator(invalidOperator), std::invalid_argument);
 }
+TEST_CASE("checkInput invaild argument funktioniert", "[checkInput]")
+{
+	Calculator calc;
+	std::string invalidInput = "5++7";
+	REQUIRE(calc.checkForInvalidInput(invalidInput) == false);
+}
+
+TEST_CASE("checkForMultipleOperators funktioniert", "[checkForMultipleOperators]")
+{
+	Calculator calc;
+	std::string input = "5+7*3-2";
+	int operatorCount = calc.checkForMultipleOperators(input);
+	REQUIRE(operatorCount == 3);
+}
+TEST_CASE("checkInput find double operators funktioniert", "[checkInput]")
+{
+	Calculator calc;
+	std::string invalidInput = "5++7";
+	REQUIRE(calc.checkForInvalidInput(invalidInput) == false);
+}
+TEST_CASE("calculateTerm funktioniert", "[calculateTerm]")
+{
+	Calculator calc;
+	std::string input = "5+7*3-2";
+	calc.calculateTerm(input);
+	REQUIRE(calc.Result == 24);
+}
+TEST_CASE("Only + and - in calculateTerm funktioniert", "[calculateTerm]")
+{
+	Calculator calc;
+	std::string input = "5+7-2";
+	calc.calculateTerm(input);
+	REQUIRE(calc.Result == 10);
+}
+TEST_CASE("Only * and / in calculateTerm funktioniert", "[calculateTerm]")
+{
+	Calculator calc;
+	std::string input = "5*7/2";
+	calc.calculateTerm(input);
+	REQUIRE(calc.Result == 17.5);
+}

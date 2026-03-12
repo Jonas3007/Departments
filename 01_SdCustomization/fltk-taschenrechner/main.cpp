@@ -6,6 +6,7 @@
 #include <FL/Fl_Group.H>
 #include <Fl/Fl_Return_Button.H>
 #include <FL/Fl_Output.H>
+#include <FL/Fl_Round_Button.H>
 #include <iostream>
 #include "calculator.h"
 struct Context
@@ -15,36 +16,6 @@ struct Context
 	Fl_Output *output;
 };
 
-// checks Input for things that are not allowed -> for example division through 0
-bool checkInput(std::string inputString)
-{
-	// checks for division through zero
-	char div = '/';
-	int divIndex = inputString.find(div);
-	double num2 = stod(inputString.substr(divIndex + 1, inputString.size()));
-	if (num2 == 0)
-	{
-		return false;
-	}
-	// checks fpr multiple operators
-	int operatorCount = 0;
-	for (char c : inputString)
-	{
-		if (c == '+' || c == '-' || c == '*' || c == '/')
-		{
-			operatorCount++;
-		}
-	}
-	if (operatorCount > 1)
-	{
-		return false;
-	}
-	if(inputString.empty())
-	{
-		return false;
-	}
-	return true;
-}
 
 void button_cb(Fl_Widget *w, void *data)
 {
@@ -65,15 +36,20 @@ void calculateResult_cb(Fl_Widget *w, void *data)
 {
 	Context *ctx = static_cast<Context *>(data);
 	std::string inputString = ctx->input->value();
+	bool validInput = ctx->calc->checkForInvalidInput(inputString);
 
-	if(checkInput(inputString) == false)
+	if(validInput == false)
 	{
 		ctx->output->value("Invalid");
 		return;
 	}
-	if (inputString[0] == '+' || inputString[0] == '-' || inputString[0] == '*' || inputString[0] == '/')
+	else if (inputString[0] == '+' || inputString[0] == '-' || inputString[0] == '*' || inputString[0] == '/')
 	{
 		ctx->calc->useResultForNextOperation(inputString);
+	}
+	else if (ctx->calc->checkForMultipleOperators(inputString) > 1)
+	{
+		ctx->calc->calculateTerm(inputString);
 	}
 	else
 	{
@@ -82,6 +58,13 @@ void calculateResult_cb(Fl_Widget *w, void *data)
 	}
 	std::string result = std::to_string(ctx->calc->Result);
 	ctx->output->value(result.c_str());
+}
+void clear_cb(Fl_Widget *w, void *data)
+{
+	Context *ctx = static_cast<Context *>(data);
+	ctx->input->value("");
+	ctx->output->value("");
+	ctx->calc->Result = 0;
 }
 
 int main(int argc, char **argv)
@@ -105,11 +88,22 @@ int main(int argc, char **argv)
 	ctx.calc = &calc;
 	ctx.input = input;
 	ctx.output = output;
+	
+	
+	//Clear Button
+	Fl_Button *bClear = new Fl_Button(360, 230, 80, 40, "C");
+	bClear -> box(FL_THIN_UP_BOX);
+	bClear ->labelfont(FL_BOLD);
+	bClear -> labelcolor(FL_RED);
+	
+	bClear ->callback(clear_cb, &ctx);
+
 
 	// "=" Box
 	Fl_Box *equal_box = new Fl_Box(345, 115, 10, 40, "=");
 	equal_box->labelfont(FL_BOLD);
 	equal_box->box(FL_NO_BOX);
+	
 
 	// Numpad Group
 	int grp_w = 180;
@@ -118,6 +112,8 @@ int main(int argc, char **argv)
 	int start_y = (window->h() - grp_h) / 2; // Zentriert die Gruppe vertikal
 	Fl_Group *nmpad_grp = new Fl_Group(start_x, start_y, grp_w, grp_h);
 	nmpad_grp->box(FL_ENGRAVED_FRAME);
+	
+
 
 	// Coordinates relative to nmpad_grp
 	int ngx = nmpad_grp->x();
@@ -138,7 +134,13 @@ int main(int argc, char **argv)
 	Fl_Button *bMult = new Fl_Button(ngx + 135, ngy + 90, 45, 45, "*");
 	Fl_Button *bDiv = new Fl_Button(ngx + 135, ngy + 135, 45, 45, "/");
 	Fl_Button *bEqual = new Fl_Return_Button(ngx, ngy + 135, 90, 45, "=");
-
+	
+	
+	
+	
+	
+	
+	//nmpad group begin and callbacks
 	nmpad_grp->begin();
 
 	b1->callback(button_cb, &ctx);
