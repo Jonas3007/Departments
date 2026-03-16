@@ -96,6 +96,17 @@ void bracket_cb(Fl_Widget *w, void *data)
 	}
 	
 }
+void backspace_cb(Fl_Widget *w, void *data)
+{
+	Context *ctx = static_cast<Context *>(data);
+	std::string currentInput = ctx->input->value();
+	if (!currentInput.empty())
+	{
+		currentInput.pop_back(); // Entfernt das letzte Zeichen
+		ctx->input->value(currentInput.c_str()); // Aktualisiert das Eingabefeld
+	}
+}
+
 // --- useResultForNextOperation ---  war Copilot
 void At_cb(Fl_Widget *w, void *data)
 {
@@ -132,9 +143,16 @@ int main(int argc, char **argv)
 	ctx.input = input;
 	ctx.output = output;
 	
+	//Backspace Button
+	Fl_Button *bBackspace = new Fl_Button(360, 250, 80, 45);
+	bBackspace->label("⌫");
+	bBackspace->box(FL_THIN_UP_BOX);
+	bBackspace->labelfont(FL_BOLD);
+	bBackspace->callback(backspace_cb, &ctx);
+		
 	
 	//Clear Button
-	Fl_Button *bClear = new Fl_Button(360, 250, 80, 45, "C");
+	Fl_Button *bClear = new Fl_Button(360, 205, 80, 45, "C");
 	bClear -> box(FL_THIN_UP_BOX);
 	bClear ->labelfont(FL_BOLD);
 	bClear -> labelcolor(FL_RED);

@@ -6,6 +6,16 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(FLTK REQUIRED)
 
+# -------------------------------
+# Coverage INTERFACE Library
+# -------------------------------
+add_library(coverage_config INTERFACE)
+target_compile_options(coverage_config INTERFACE -O0 -g --coverage)
+target_link_options(coverage_config INTERFACE --coverage)
+
+# -------------------------------
+# Hauptprogramm
+# -------------------------------
 add_executable(calculator
     main.cpp
     calculator.cpp
@@ -13,31 +23,30 @@ add_executable(calculator
 )
 
 target_include_directories(calculator PRIVATE ${FLTK_INCLUDE_DIR})
-target_link_libraries(calculator PRIVATE ${FLTK_LIBRARIES})
+target_link_libraries(calculator PRIVATE ${FLTK_LIBRARIES} coverage_config)
 
+# -------------------------------
+# TESTING
+# -------------------------------
+include(CTest)
 
-
-# CTest aktivieren
-include(CTest)            # setzt u.a. die Variable BUILD_TESTING
 if (BUILD_TESTING)
-  # Catch2 beziehen (v3 empfohlen)
-  include(FetchContent)
-  FetchContent_Declare(
-    catch2
-    GIT_REPOSITORY https://github.com/catchorg/Catch2.git
-    GIT_TAG v3.5.2      # oder eine aktuelle stabile Version
-  )
-  FetchContent_MakeAvailable(catch2)
+    include(FetchContent)
 
-  # Test-Executable (ohne FLTK!)
-  add_executable(tests
-      tests/test_calculator.cpp
-      calculator.cpp          # nur die Logik einbinden, NICHT main.cpp
-  )
-  target_include_directories(tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
-  target_link_libraries(tests PRIVATE Catch2::Catch2WithMain)
+    FetchContent_Declare(
+        catch2
+        GIT_REPOSITORY https://github.com/catchorg/Catch2.git
+        GIT_TAG v3.5.2
+    )
+    FetchContent_MakeAvailable(catch2)
 
-  # Catch2 test discovery -> ctest kann einzelne TEST_CASEs erkennen
-  include(Catch)
-  catch_discover_tests(tests)
+    add_executable(tests
+        tests/test_calculator.cpp
+        calculator.cpp
+    )
+    target_include_directories(tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+    target_link_libraries(tests PRIVATE Catch2::Catch2WithMain coverage_config)
+
+    include(Catch)
+    catch_discover_tests(tests)
 endif()
