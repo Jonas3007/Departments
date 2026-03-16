@@ -10,14 +10,24 @@
 #include <iostream>
 #include "calculator.h"
 #include <cmath>
+#include <historyService.h>
+#include <Fl/Fl_Multiline_Output.H>
+
+using namespace std;
 
 
-
+struct HistoryContext
+{
+	HistoryService *historyService;
+	Fl_Input *filenameInput;
+	Fl_Multiline_Output *historyOutput;
+};
 struct Context
 {
 	Calculator *calc;
 	Fl_Input *input;
 	Fl_Output *output;
+	HistoryService *historyService;
 };
 
 
@@ -35,19 +45,9 @@ void button_cb(Fl_Widget *w, void *data)
 	new_input += label;
 	ctx->input->value(new_input.c_str());
 }
-
-void calculateResult_cb(Fl_Widget *w, void *data)
+void chooseCalculator(string inputString, Context *ctx)
 {
-	Context *ctx = static_cast<Context *>(data);
-	std::string inputString = ctx->input->value();
-	bool validInput = ctx->calc->checkForInvalidInput(inputString);
-
-	if(validInput == false)
-	{
-		ctx->output->value("Invalid");
-		return;
-	}
-	else if (inputString[0] == '+' || inputString[0] == '-' || inputString[0] == '*' || inputString[0] == '/')
+	if (inputString[0] == '+' || inputString[0] == '-' || inputString[0] == '*' || inputString[0] == '/')
 	{
 		ctx->calc->useResultForNextOperation(inputString);
 	}
@@ -68,14 +68,37 @@ void calculateResult_cb(Fl_Widget *w, void *data)
 		ctx->calc->splitInput(inputString);
 		ctx->calc->chooseOperration();
 	}
+}
+
+void calculateResult_cb(Fl_Widget *w, void *data)
+{
+	Context *ctx = static_cast<Context *>(data);
+	std::string inputString = ctx->input->value();
+	bool validInput = ctx->calc->checkForInvalidInput(inputString);
+
+	if(validInput == false)
+	{
+		ctx->output->value("Invalid");
+		ctx->historyService->AddtoTempHistory(inputString, "Invalid");
+		return;
+	}
+	else
+	{
+		chooseCalculator(inputString, ctx);
+		
+		ctx->historyService->AddtoTempHistory(inputString, ctx->calc->Result);
+	}
+	
 	std::string result = std::to_string(ctx->calc->Result);
 	ctx->output->value(result.c_str());
 }
+
 void clear_cb(Fl_Widget *w, void *data)
 {
 	Context *ctx = static_cast<Context *>(data);
 	ctx->input->value("");
 }
+
 void bracket_cb(Fl_Widget *w, void *data)
 {
 	Context *ctx = static_cast<Context *>(data);
@@ -120,9 +143,88 @@ void At_cb(Fl_Widget *w, void *data)
 	new_input += label;
 	ctx->input->value(new_input.c_str());
 }
+void saveHistory_cb(Fl_Widget *w, void *data)
+{
+	const char *label = w->label();
+	HistoryContext *htx = static_cast<HistoryContext *>(data);
+	string inputfield = htx->filenameInput->value();
+	if (label == "QS")
+	{
+		htx->historyService->setCurrentFile("history");
+	}
+	if(!inputfield.empty())
+	{
+		htx->historyService->setCurrentFile(inputfield);
+	}
+	htx->historyService->SaveHistory();
+}
 
+void refresh_cb(Fl_Widget *w, void *data)
+{
+	HistoryContext *htx = static_cast<HistoryContext *>(data);
+
+	string historyfile = htx->filenameInput->value();
+	if(!historyfile.empty())
+	{
+		htx->historyService->setCurrentFile(historyfile);
+	}
+	htx->historyService->setCurrentFile("history");
+	htx->historyOutput->value(htx->historyService->GetHistory().c_str());
+}
+
+
+
+
+
+
+void history_cb(Fl_Widget *w, void *data)
+{
+	HistoryContext *htx = static_cast<HistoryContext *>(data);
+	HistoryService *service = htx->historyService;
+	
+	
+	cout << "Current File: " << service->getCurrentFile() << endl;
+	cout << "File Path: " << service->getFilePath() << endl;
+	
+	
+	// Create a new window for history
+	Fl_Window *historyWindow = new Fl_Window(245, 450, "History");
+	
+	//Inputfield to set filename for history. if left empty, default "history.txt" will be used
+	Fl_Input *filenameInput = new Fl_Input(10, 10, 135, 35);
+	filenameInput->box(FL_THIN_UP_BOX);
+	htx->filenameInput = filenameInput;
+	
+	// Create an output widget to display history
+	Fl_Multiline_Output *historyOutput = new Fl_Multiline_Output(10, 50, 220, 400);
+	historyOutput->box(FL_THIN_UP_BOX);
+	historyOutput->color(FL_WHITE);
+	historyOutput->value(service->GetHistory().c_str());
+	htx->historyOutput = historyOutput;
+	
+	//Button to save temp history to file
+	Fl_Button *saveHistoryButton = new Fl_Button(145, 10, 45, 35, "Save");
+	saveHistoryButton->box(FL_THIN_UP_BOX);
+	saveHistoryButton->callback(saveHistory_cb, htx);
+	
+	//Refresh button to update history output after saving new history
+	Fl_Button *refreshButton = new Fl_Button(190, 10, 35, 35, "⟳");
+	refreshButton->box(FL_THIN_UP_BOX);
+	refreshButton->callback(refresh_cb, htx);
+	
+	historyWindow->position(520, 30);
+	historyWindow->show();
+}
+
+void test_cb(Fl_Widget *w, void *data)
+{
+	HistoryService service;
+	service.createFile();
+}
 int main(int argc, char **argv)
 {
+	//Insancing Calculator and HistoryService
+	HistoryService historyService;
 	Calculator calc;
 	// Main Window
 	Fl_Window *window = new Fl_Window(500, 500, "Taschenrechner");
@@ -130,6 +232,11 @@ int main(int argc, char **argv)
 	// Input Fields
 	Fl_Input *input = new Fl_Input(160, 115, 180, 40);
 	input->box(FL_THIN_UP_BOX);
+	
+	//testbutton for filecreation 
+	Fl_Button *testFileButton = new Fl_Button(10, 10, 45, 35, "Test");
+	testFileButton->box(FL_THIN_UP_BOX);
+	testFileButton->callback(test_cb, nullptr);	
 
 	// Output
 
@@ -138,10 +245,28 @@ int main(int argc, char **argv)
 	output->color(FL_WHITE);
 	output->value();
 
+	HistoryContext htx;
+	htx.historyService = &historyService;
+	htx.filenameInput = nullptr;
+	htx.historyOutput = nullptr;
 	Context ctx;
 	ctx.calc = &calc;
 	ctx.input = input;
 	ctx.output = output;
+	ctx.historyService = &historyService;
+	
+	
+	// History Button 
+	Fl_Button *bHistory = new Fl_Button(360, 160, 80, 45);
+	bHistory->label("History");
+	bHistory->box(FL_THIN_UP_BOX);
+	bHistory ->callback(history_cb, &htx);
+	
+	// Qucisave Button
+	Fl_Button *qSave = new Fl_Button(110, 115, 45, 40, "QS");
+	qSave->box(FL_THIN_UP_BOX);
+	qSave->callback(saveHistory_cb, &htx);
+	
 	
 	//Backspace Button
 	Fl_Button *bBackspace = new Fl_Button(360, 250, 80, 45);

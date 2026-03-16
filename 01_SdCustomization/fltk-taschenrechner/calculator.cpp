@@ -193,15 +193,28 @@ std::string Calculator::calculateHigherPrecedence(std::string inputString)
 {
 	while (true)
 	{
-		int mulpos = inputString.find('*');
 		int divpos = inputString.find('/');
+		int mulpos = inputString.find('*');
+		
 
 		if (mulpos == string::npos && divpos == string::npos)
 		{
 			break;
 		}
 
-		if (mulpos != string::npos)
+		
+		if (divpos != string::npos)
+		{
+			setOperator(inputString[divpos]);
+
+			ParsedOperation operands = findOperands(inputString, divpos);
+
+			setNumber1(operands.left);
+			setNumber2(operands.right);
+			chooseOperration();
+			inputString.replace(operands.leftIndex, operands.rightIndex - operands.leftIndex, to_string(Result));
+		}
+		else if (mulpos != string::npos)
 		{
 			setOperator(inputString[mulpos]);
 
@@ -211,17 +224,6 @@ std::string Calculator::calculateHigherPrecedence(std::string inputString)
 			setNumber2(operands.right);
 			chooseOperration();
 
-			inputString.replace(operands.leftIndex, operands.rightIndex - operands.leftIndex, to_string(Result));
-		}
-		else if (divpos != string::npos)
-		{
-			setOperator(inputString[divpos]);
-
-			ParsedOperation operands = findOperands(inputString, divpos);
-
-			setNumber1(operands.left);
-			setNumber2(operands.right);
-			chooseOperration();
 			inputString.replace(operands.leftIndex, operands.rightIndex - operands.leftIndex, to_string(Result));
 		}
 	}

@@ -20,8 +20,11 @@ add_executable(calculator
     main.cpp
     calculator.cpp
     calculator.h
+    History/historyService.h
+    History/historyService.cpp
 )
 
+target_include_directories(calculator PRIVATE History)
 target_include_directories(calculator PRIVATE ${FLTK_INCLUDE_DIR})
 target_link_libraries(calculator PRIVATE ${FLTK_LIBRARIES} coverage_config)
 

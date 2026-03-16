@@ -116,3 +116,101 @@ TEST_CASE("Only * and / in calculateTerm funktioniert", "[calculateTerm]")
 	calc.calculateTerm(input);
 	REQUIRE(calc.Result == 17.5);
 }
+TEST_CASE("findOperands funktioniert", "[findOperands]")
+{
+	Calculator calc;
+	std::string input = "5+7*3-2";
+	int operatorIndex = 3; // Position des '*' Operators
+	ParsedOperation op = calc.findOperands(input, operatorIndex);
+	REQUIRE(op.left == 7);
+	REQUIRE(op.right == 3);
+}
+TEST_CASE("calculateExponentiation funktioniert", "[calculateExponentiation]")
+{
+	Calculator calc;
+	std::string input = "2^3";
+	double num1 = 2;
+	double num2 = 3;
+	double expectedResult = std::pow(num1, num2);
+	std::string resultString = calc.calculateExponentiation(input);
+	double result = std::stod(resultString);
+	REQUIRE(result == expectedResult);
+}
+TEST_CASE("calculateExponentiation in calculateTerm funktioniert", "[calculateTerm]")
+{
+	Calculator calc;
+	std::string input = "2^3+4";
+	calc.calculateTerm(input);
+	double expectedResult = std::pow(2, 3) + 4;
+	REQUIRE(calc.Result == expectedResult);
+}
+TEST_CASE("calculateBracket funktioniert", "[calculateBracket]")
+{
+	Calculator calc;
+	std::string input = "(3+4)";
+	double expectedResult =3 + 4 ;
+	double result = stod(calc.calculateBracket(input));
+	REQUIRE(result == expectedResult);
+}
+TEST_CASE("calculateBracket with nested brackets funktioniert", "[calculateBracket]")
+{
+	Calculator calc;
+	std::string input = "(3+(4*5))";
+	double expectedResult = 3 + (4 * 5);
+	double result = stod(calc.calculateBracket(input));
+	REQUIRE(result == expectedResult);
+}
+TEST_CASE("checkForInvalidInput detects invalid characters", "[checkForInvalidInput]")
+{
+	Calculator calc;
+	std::string invalidInput = "5+7a-2";
+	REQUIRE(calc.checkForInvalidInput(invalidInput) == false);
+}
+TEST_CASE("checkForInvalidInput detects unbalanced brackets", "[checkForInvalidInput]")
+{
+	Calculator calc;
+	std::string invalidInput = "5+(7-2";
+	REQUIRE(calc.checkForInvalidInput(invalidInput) == false);
+}
+TEST_CASE("checkForInvalidInput detects consecutive operators", "[checkForInvalidInput]")
+{
+	Calculator calc; 
+	std::string invalidInput = "5**7//2";
+	REQUIRE(calc.checkForInvalidInput(invalidInput) == false);
+}
+TEST_CASE("checkForInvalidInput detects empty string", "[checkForInvalidInput]")
+{
+	Calculator calc;
+	std::string invalidInput = "";
+	REQUIRE(calc.checkForInvalidInput(invalidInput) == false);
+}
+TEST_CASE("checkForInvalidInput detects wrong decimal points", "[checkForInvalidInput]")
+{
+	Calculator calc;
+	std::string invalidInput = "5..7+2";
+	REQUIRE(calc.checkForInvalidInput(invalidInput) == false);
+}
+TEST_CASE("checkForInvalidInput detects last char is operator", "[checkForInvalidInput]")
+{
+	Calculator calc;
+	std::string invalidInput = "5+7-";
+	REQUIRE(calc.checkForInvalidInput(invalidInput) == false);
+}
+TEST_CASE("checkForInvalidInput detects single minus at the beginning", "[checkForInvalidInput]")
+{
+	Calculator calc;
+	std::string validInput = "-5+7";
+	REQUIRE(calc.checkForInvalidInput(validInput) == true);
+}
+TEST_CASE("checkForInvalidInput detects single minus in the middle", "[checkForInvalidInput]")
+{
+	Calculator calc;
+	std::string validInput = "5+-7";
+	REQUIRE(calc.checkForInvalidInput(validInput) == false);
+}
+TEST_CASE("checkForInvalidInput detects valid input", "[checkForInvalidInput]")
+{
+	Calculator calc;
+	std::string validInput = "5+7-2*(3^2)";
+	REQUIRE(calc.checkForInvalidInput(validInput) == true);
+}

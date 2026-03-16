@@ -65,3 +65,4 @@ private:
 	double Number2;
 	char Operator;
 };
+
