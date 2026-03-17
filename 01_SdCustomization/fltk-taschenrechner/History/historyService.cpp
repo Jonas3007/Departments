@@ -9,7 +9,11 @@ std::ostream &operator<<(std::ostream &os, const HistoryEntry &h)
 }
 void HistoryService ::setCurrentFile(string file)
 {
-	currentFile = file + ".txt";
+	if(file.find(".txt") == string::npos)
+	{
+		file += ".txt";
+	}
+	currentFile = file;
 	filePath = std::string(PROJECT_SOURCE_DIR) + "/History/Data/" + currentFile;
 	
 }
@@ -71,3 +75,23 @@ string HistoryService ::GetHistory()
 	content << historyFile.rdbuf();
 	return content.str();
 }
+vector<string> HistoryService ::GetIncomingFile(string filename)
+{
+	ifstream incomingFile(std::string(PROJECT_SOURCE_DIR) + "/History/Data/Incoming/" + filename );
+
+	if (!incomingFile.is_open())
+	{
+		std::cerr << "[ERROR] File could not be opened!\n";
+	}
+	vector<string> listOfCalculations;
+	string line;
+	while (std::getline(incomingFile, line))
+	{
+		listOfCalculations.push_back(line);
+	}
+	incomingFile.close();
+	return listOfCalculations;
+	
+}
+
+	

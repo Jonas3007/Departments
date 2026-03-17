@@ -21,6 +21,7 @@ public:
 	string currentFile;
 	std::vector<HistoryEntry> tempHistory;
 	string filePath;
+	
 
 	// Getter/Setter
 	string getCurrentFile() const { return currentFile; }
@@ -32,5 +33,6 @@ public:
 	void AddtoTempHistory(string entry, string result);
 	void createFile();
 	void SaveHistory();
+	vector<string> GetIncomingFile(string filename);
 	string GetHistory();
 };

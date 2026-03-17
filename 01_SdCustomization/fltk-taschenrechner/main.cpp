@@ -16,7 +16,17 @@
 #include <Fl/Fl_Choice.H>
 
 using namespace std;
-//structs
+// structs
+struct CalcFromFileContext
+{
+	Fl_Input *fileInput;
+	Fl_Choice *fileChoice;
+	Fl_Button *addFileButton;
+	Calculator *calculator;
+	HistoryService *historyService;
+	bool buttonClicked;
+};
+
 struct HistoryContext
 {
 	HistoryService *historyService;
@@ -32,7 +42,7 @@ struct Context
 	HistoryService *historyService;
 };
 
-//callbacks and helper functions
+// callbacks and helper functions
 void button_cb(Fl_Widget *w, void *data)
 {
 	Context *ctx = static_cast<Context *>(data);
@@ -223,23 +233,74 @@ void history_cb(Fl_Widget *w, void *data)
 void checkBox_cb(Fl_Widget *w, void *data)
 {
 	Fl_Check_Button *checkButton = static_cast<Fl_Check_Button *>(w);
-	Fl_Choice *fileChoice = static_cast<Fl_Choice *>(data);
+	CalcFromFileContext *cfftx = static_cast<CalcFromFileContext *>(data);
 	bool isChecked = checkButton->value();
 	if (isChecked == true)
 	{
-		fileChoice->activate();
-		fileChoice->show();
+		cfftx->fileChoice->activate();
+		cfftx->fileChoice->show();
+		cfftx->addFileButton->activate();
+		cfftx->addFileButton->show();
 		cout << "Calculate from file: EIN" << endl;
 	}
 	else
 	{
-		fileChoice->deactivate();
-		fileChoice->hide();
+		cfftx->fileChoice->deactivate();
+		cfftx->fileChoice->hide();
+		cfftx->addFileButton->deactivate();
+		cfftx->addFileButton->hide();
 		cout << "Calculate from file: AUS" << endl;
 	}
-	
 }
 
+void addFile_cb(Fl_Widget *w, void *data)
+{
+	CalcFromFileContext *cfftx = static_cast<CalcFromFileContext *>(data);
+	if(cfftx->buttonClicked == false)
+	{
+		cfftx->fileInput->activate();
+		cfftx->fileInput->show();
+		cfftx->buttonClicked = true;
+	}
+	else
+	{
+		string newFile = cfftx->fileInput->value();
+		newFile += ".txt";
+		if(!newFile.empty())
+		{
+			cfftx->fileChoice->add(newFile.c_str());
+			cfftx->historyService->setCurrentFile(newFile);
+			cfftx->historyService->createFile();
+			cfftx->fileInput->value("");
+			cfftx->fileInput->deactivate();
+			cfftx->fileInput->hide();
+			cout << "Added file: " << newFile << endl;
+			cfftx->buttonClicked = false;
+		}
+		
+	}
+}
+
+void fileChoice_cb(Fl_Widget *w, void *data)
+{
+	
+	Fl_Choice *fileChoice = static_cast<Fl_Choice *>(w);
+	CalcFromFileContext *cfftx = static_cast<CalcFromFileContext *>(data);
+	int selectedIndex = fileChoice->value();
+	if (selectedIndex >= 0)
+	{
+		string selectedFile = fileChoice->text(selectedIndex);
+		cout << "Selected file: " << selectedFile << endl;
+		vector<string> calculations = cfftx->historyService->GetIncomingFile(selectedFile);
+		for(const auto& calc : calculations)
+		{
+			cfftx->calculator->calculateTerm(calc);
+			cfftx->historyService->AddtoTempHistory(calc,to_string(cfftx->calculator->Result));
+		}
+		cfftx->historyService->SaveHistory();
+		
+	}
+}
 
 int main(int argc, char **argv)
 {
@@ -252,7 +313,6 @@ int main(int argc, char **argv)
 	// Input Fields
 	Fl_Input *input = new Fl_Input(160, 115, 180, 40);
 	input->box(FL_THIN_UP_BOX);
-
 
 	// Output
 
@@ -358,21 +418,42 @@ int main(int argc, char **argv)
 	bAt->callback(At_cb, &ctx);
 
 	nmpad_grp->end();
+
+	// Context for calculating from file
+	CalcFromFileContext cfftx;
+	
+	bool buttonClicked = false;
+	cfftx.buttonClicked = buttonClicked;
+	cfftx.calculator = &calc;
+	cfftx.historyService = &historyService;
 	
 	// Dropdown Menu to choose history file for calculations
 	Fl_Choice *fileChoice = new Fl_Choice(110, 390, 160, 35, "File:");
-	fileChoice->add("history.txt");
 	fileChoice->deactivate();
 	fileChoice->hide();
 	
+	// Button to add optoins to dropdown menu
+	Fl_Button *addFileButton = new Fl_Button(270, 390, 35, 35, "+");
+	addFileButton->deactivate();
+	addFileButton->hide();
+	
 	// Checkbutton: if true use calculations from file if false use normal calculations
 	Fl_Check_Button *checkFileCalc = new Fl_Check_Button(110, 360, 160, 30, "Calculate from file");
-	checkFileCalc->callback(checkBox_cb, fileChoice);
 	
+	// Inputfield to add new files to dropdown menu
+	Fl_Input *fileInput = new Fl_Input(110, 390, 160, 35);
+	fileInput->deactivate();
+	fileInput->hide();
+
+	cfftx.fileInput = fileInput;
+	cfftx.fileChoice = fileChoice;
+	cfftx.addFileButton = addFileButton;
 	
-	
-	
-	
+	checkFileCalc->callback(checkBox_cb, &cfftx);
+	addFileButton->callback(addFile_cb, &cfftx);
+	fileChoice->callback(fileChoice_cb, &cfftx);
+
+
 
 	window->end();
 	window->show(argc, argv);
