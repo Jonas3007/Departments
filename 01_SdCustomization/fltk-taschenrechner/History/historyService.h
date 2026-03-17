@@ -20,7 +20,7 @@ public:
 	// Attributes
 	string currentFile;
 	std::vector<HistoryEntry> tempHistory;
-	string filePath = "fltk-taschenrechner/History/Data/" + currentFile;
+	string filePath;
 
 	// Getter/Setter
 	string getCurrentFile() const { return currentFile; }

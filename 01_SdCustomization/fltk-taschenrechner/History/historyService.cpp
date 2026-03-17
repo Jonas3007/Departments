@@ -10,6 +10,8 @@ std::ostream &operator<<(std::ostream &os, const HistoryEntry &h)
 void HistoryService ::setCurrentFile(string file)
 {
 	currentFile = file + ".txt";
+	filePath = std::string(PROJECT_SOURCE_DIR) + "/History/Data/" + currentFile;
+	
 }
 
 

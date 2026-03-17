@@ -23,7 +23,8 @@ add_executable(calculator
     History/historyService.h
     History/historyService.cpp
 )
-
+target_compile_definitions(calculator PRIVATE PROJECT_SOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
+add_definitions(-DPROJECT_SOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
 target_include_directories(calculator PRIVATE History)
 target_include_directories(calculator PRIVATE ${FLTK_INCLUDE_DIR})
 target_link_libraries(calculator PRIVATE ${FLTK_LIBRARIES} coverage_config)
