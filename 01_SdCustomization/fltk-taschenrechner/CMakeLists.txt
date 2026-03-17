@@ -18,14 +18,33 @@ target_link_options(coverage_config INTERFACE --coverage)
 # -------------------------------
 add_executable(calculator
     main.cpp
-    calculator.cpp
-    calculator.h
-    History/historyService.h
-    History/historyService.cpp
+    Classes/calculator.cpp
+    Classes/calculator.h
+    Classes/historyService.h
+    Classes/historyService.cpp
+    Context/Appcontext.h
+    UI/Main/UI_MainWindow.cpp
+    UI/Main/UI_MainWindow.h
+    UI/History/UI_HistoryWindow.cpp
+    UI/History/UI_HistoryWindow.h
+    UI/Callbacks/Callbacks.cpp
+    UI/Callbacks/Callbacks.h
+
 )
 target_compile_definitions(calculator PRIVATE PROJECT_SOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
 add_definitions(-DPROJECT_SOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
-target_include_directories(calculator PRIVATE History)
+
+target_include_directories(calculator PRIVATE
+    ${FLTK_INCLUDE_DIR}
+    ${CMAKE_SOURCE_DIR}
+    ${CMAKE_SOURCE_DIR}/Classes
+    ${CMAKE_SOURCE_DIR}/Context
+    ${CMAKE_SOURCE_DIR}/UI
+    ${CMAKE_SOURCE_DIR}/UI/Main
+    ${CMAKE_SOURCE_DIR}/UI/History
+    ${CMAKE_SOURCE_DIR}/UI/Callbacks
+)
+
 target_include_directories(calculator PRIVATE ${FLTK_INCLUDE_DIR})
 target_link_libraries(calculator PRIVATE ${FLTK_LIBRARIES} coverage_config)
 
@@ -46,9 +65,15 @@ if (BUILD_TESTING)
 
     add_executable(tests
         tests/test_calculator.cpp
-        calculator.cpp
+        Classes/calculator.cpp
+        Classes/calculator.h
     )
-    target_include_directories(tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+    
+target_include_directories(tests PRIVATE
+    ${CMAKE_SOURCE_DIR}
+    ${CMAKE_SOURCE_DIR}/Classes
+)
+
     target_link_libraries(tests PRIVATE Catch2::Catch2WithMain coverage_config)
 
     include(Catch)
