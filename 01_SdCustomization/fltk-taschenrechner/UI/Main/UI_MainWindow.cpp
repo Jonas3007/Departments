@@ -101,6 +101,10 @@ Fl_Window *buildMainWindow(AppContext *ctx)
 	bEqual->box(FL_THIN_UP_BOX);
 	bEqual->labelfont(FL_BOLD);
 	bEqual->callback(calculateResult_cb, ctx);
+	
+	Fl_Button *bDot = new Fl_Button(110, 295, 45, 45, ".");
+	bDot->box(FL_THIN_UP_BOX);
+	bDot->callback(append_cb, ctx);
 
 	// QuickSave (QS)
 	Fl_Button *qSave = new Fl_Button(110, 115, 45, 40, "QS");

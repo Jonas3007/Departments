@@ -14,7 +14,7 @@ void HistoryService ::setCurrentFile(string file)
 		file += ".txt";
 	}
 	currentFile = file;
-	filePath = std::string(PROJECT_SOURCE_DIR) + "/History/Data/" + currentFile;
+	filePath = std::string(PROJECT_SOURCE_DIR) + "/History/Data/Outgoing/" + currentFile;
 	
 }
 

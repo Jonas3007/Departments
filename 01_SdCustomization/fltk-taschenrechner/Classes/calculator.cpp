@@ -5,7 +5,6 @@
 #include <stdexcept>
 using namespace std;
 
-// Structs
 
 // --- Getter/Setter ---
 void Calculator::setNumber1(double value) { this->Number1 = value; }
