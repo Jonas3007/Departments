@@ -4,14 +4,22 @@ project(war_ships)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+find_package(FLTK REQUIRED)
+
 # Coverage Lib
 add_library(coverage_config INTERFACE)
 target_compile_options(coverage_config INTERFACE -O0 -g --coverage)
 target_link_options(coverage_config INTERFACE --coverage)
 
+
+file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
+    "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
+)
+
+
 # Main executable
 add_executable(warShips
-    main.cpp
+    ${SOURCES}
 )
 
 target_compile_definitions(warShips PRIVATE PROJECT_SOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
@@ -20,10 +28,20 @@ add_definitions(-DPROJECT_SOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
 target_include_directories(warShips PRIVATE
     ${FLTK_INCLUDE_DIR}
     ${CMAKE_SOURCE_DIR}
+    ${CMAKE_SOURCE_DIR}/Factory
+    ${CMAKE_SOURCE_DIR}/Context
+    ${CMAKE_SOURCE_DIR}/Models
+    ${CMAKE_SOURCE_DIR}/Models/ShipModels
+    ${CMAKE_SOURCE_DIR}/UI
+    ${CMAKE_SOURCE_DIR}/UI/Callbacks
 )
 
-target_link_libraries(warShips PRIVATE ${FLTK_LIBRARIES} coverage_config)
+target_link_libraries(warShips PRIVATE
+    ${FLTK_LIBRARIES}
+)
 
+target_compile_definitions(warShips PRIVATE PROJECT_SOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
+add_definitions(-DPROJECT_SOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
 
 # -----------------------
 #        TESTING
