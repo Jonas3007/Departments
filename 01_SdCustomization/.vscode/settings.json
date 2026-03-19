@@ -56,7 +56,8 @@
   "C_Cpp_Runner.showCompilationTime": false,
   "C_Cpp_Runner.useLinkTimeOptimization": false,
   "C_Cpp_Runner.msvcSecureNoWarnings": false,
-  "cmake.buildDirectory": "${workspaceFolder}/00_Calculator/fltk-taschenrechner/build",
-  "cmake.sourceDirectory": "${workspaceFolder}/00_Calculator/fltk-taschenrechner",
+  "cmake.buildDirectory": "${workspaceFolder}/build",
+  "cmake.sourceDirectory": "/home/korman4/development/Departments/01_SdCustomization/01_WarShips",
   "C_Cpp.errorSquiggles": "disabled"
+
 }
