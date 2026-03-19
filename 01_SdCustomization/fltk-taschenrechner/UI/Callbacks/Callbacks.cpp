@@ -103,9 +103,9 @@ void bracket_cb(Fl_Widget* w, void* data)
 	const auto openPos  = s.find_last_of('(');
 	const auto closePos = s.find_last_of(')');
 
-	if (closePos != std::string::npos && closePos > openPos) {
+	if (closePos > openPos && closePos != std::string::npos) {
 		s += '(';
-	} else if (openPos != std::string::npos && openPos > closePos) {
+	} else if (openPos > closePos && openPos != std::string::npos || openPos != string::npos && closePos == string::npos) {
 		s += ')';
 	} else {
 		s += '(';
