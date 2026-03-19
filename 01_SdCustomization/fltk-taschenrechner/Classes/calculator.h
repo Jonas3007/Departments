@@ -13,6 +13,7 @@ class Calculator
 public:
 	// Attributes
 	double Result;
+	double PrevResult;
 	// Setter
 	void setNumber1(double value);
 	void setNumber1(std::string value);
