@@ -5,5 +5,5 @@
 class ShipFactory
 {
 	public:
-		static Ship CreateShip(vector<Coordinates> coords, int shipSize);
+		Ship CreateShip(vector<Coordinates> coords, int shipSize);
 };

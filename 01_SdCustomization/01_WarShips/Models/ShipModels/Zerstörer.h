@@ -6,8 +6,6 @@
 class Zerstörer : public Ship
 {
 	public:
-	Zerstörer()
-	{
-		Size = 3;
-	}
+	
+	int Size = 3;
 };	

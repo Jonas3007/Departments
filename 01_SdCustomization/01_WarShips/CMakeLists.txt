@@ -20,6 +20,7 @@ file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
 # Main executable
 add_executable(warShips
     ${SOURCES}
+
 )
 
 target_compile_definitions(warShips PRIVATE PROJECT_SOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
@@ -28,7 +29,7 @@ add_definitions(-DPROJECT_SOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
 target_include_directories(warShips PRIVATE
     ${FLTK_INCLUDE_DIR}
     ${CMAKE_SOURCE_DIR}
-    ${CMAKE_SOURCE_DIR}/Factory
+    ${CMAKE_SOURCE_DIR}/Models/Factory
     ${CMAKE_SOURCE_DIR}/Context
     ${CMAKE_SOURCE_DIR}/Models
     ${CMAKE_SOURCE_DIR}/Models/ShipModels

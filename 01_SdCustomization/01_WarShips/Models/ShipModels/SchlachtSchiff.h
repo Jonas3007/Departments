@@ -1,14 +1,12 @@
-#pragma once 
+#pragma once
 #include "Ship.h"
 #include "Coordinates.h"
 #include <vector>
 
-
 class SchlachtSchiff : public Ship
 {
-	public:
-	SchlachtSchiff()
-	{
-		Size = 5;
-	}
+
+public:
+
+	int Size = 5;
 };

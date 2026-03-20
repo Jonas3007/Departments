@@ -6,8 +6,6 @@
 class Kreuzer : public Ship
 {
 	public:
-	Kreuzer()
-	{
-		Size = 4;
-	}
+
+	int Size = 4;
 };	

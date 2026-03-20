@@ -6,8 +6,6 @@
 class U_Boot : public Ship
 {
 	public:
-	U_Boot()
-	{
-		Size = 2;
-	}
+
+	int Size = 2;
 };

@@ -19,18 +19,10 @@ class Ship
 		bool Destroyed;
 		
 	//Methods
-		void TakeHit(Coordinates coords);
-		void CheckDestroyed();
+		virtual void TakeHit(Coordinates coords);
+		virtual void CheckDestroyed();
 		
-		void setGridLocation(vector<Coordinates> coords, int shipSize);
-		vector<Coordinates> getGridLocation();
+		virtual void setGridLocation(vector<Coordinates> coords, int shipSize);
+		virtual vector<Coordinates> getGridLocation();
 };
 
-class SchlachtSchiff : public Ship
-{
-	public:
-	SchlachtSchiff()
-	{
-		Size = 5;
-	}
-};

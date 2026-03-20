@@ -12,17 +12,20 @@ using namespace std;
 
 Ship ShipFactory::CreateShip(vector<Coordinates> coords, int shipSize)
 {
-	switch(shipSize)
-	{
-		case 2:
-			return new U_Boot(coords);
-		case 3:
-			return Zerstörer(coords);
-		case 4:
-			return Kreuzer(coords);
-		case 5:
-			return SchlachtSchiff(coords);
-		default:
-			cout << "Invalid ship size. Returning default ship." << endl;
-	}
+	
+	
+	// switch(shipSize)
+	// {
+	// 	case 2:
+	// 		return new U_Boot(coords);
+	// 	case 3:
+	// 		return new Zerstörer(coords);
+	// 	case 4:
+	// 		return new Kreuzer(coords);
+	// 	case 5:
+	// 		return new SchlachtSchiff(coords);
+	// 	default:
+	// 		cout << "Invalid ship size. Returning default ship." << endl;
+	// }
+	
 }

@@ -21,7 +21,7 @@ class Player
 		
 	
 	//Methods
-		void PlaceShip(vector<Coordinates> coordsm, int shipSize);
+		void placeShip(vector<Coordinates> coords, int shipSize);
 		void placeFlag(Coordinates coords);
 		void FireShot(Coordinates coords);
 		bool CheckForHit(Coordinates coords);
