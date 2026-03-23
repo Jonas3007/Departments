@@ -17,9 +17,15 @@ file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
 )
 
 
+list(FILTER SOURCES EXCLUDE REGEX ".+[\\/]Tests[\\/]")
+list(FILTER SOURCES EXCLUDE REGEX ".+[\\/]Tools[\\/]")
+
+
+
 # Main executable
 add_executable(warShips
     ${SOURCES}
+   
 
 )
 
@@ -62,10 +68,11 @@ if (BUILD_TESTING)
     # ---- Das Test-Target definieren ----
     add_executable(warShips_test
         Tests/test_player.cpp
+       
     )
 
     target_include_directories(warShips_test PRIVATE
-        ${CMAKE_SOURCE_DIR}
+    ${CMAKE_SOURCE_DIR}
     )
 
     target_link_libraries(warShips_test PRIVATE

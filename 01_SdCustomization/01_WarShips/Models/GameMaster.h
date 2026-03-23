@@ -7,16 +7,10 @@
 #include "UIContext.h"
 #include <vector>
 #include <string>
+#include "GamePhase.h"
 
 
 
-enum GamePhase
-{
-	PlaceShips,
-	Player1Turn,
-	Player2Turn,
-	GameOver
-};
 
 
 class GameMaster
@@ -24,8 +18,13 @@ class GameMaster
 	public:
 		GamePhase CurrentPhase;
 		vector<ShipConfig> ShipConfigs;
-		vector<Ship> PlayerShips;
-		vector<Ship> OpponentShips;
+		vector<Ship> Player1Ships;
+		vector<Ship> Player2Ships;
 
 		void InitializeGame();
+		vector<Coordinates> CalculateGridOccupancie(vector<Coordinates> initialCoords, int shipSize);
+		bool placedInGrid(vector<Coordinates> coords, int shipSize);
+		bool CheckForOverlap(vector<Coordinates> occupiedCoords, vector<Ship> existingShips);
+
+		
 };

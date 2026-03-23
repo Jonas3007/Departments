@@ -2,8 +2,8 @@
 
 struct Coordinates
 {
-	int Number;
 	char Letter;
+	int Number;
 }; 
 
  

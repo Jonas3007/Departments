@@ -12,15 +12,26 @@ bool Player::CheckForHit(Coordinates coords)
 		{
 			if (shipcoords.Letter == coords.Letter && shipcoords.Number == coords.Number)
 			{
-				ship.TakeHit(coords);
+				// ship.TakeHit(coords);
 				hitsReceived.push_back(coords);
 				return true;
 			}
 		}
 	}
+	return false;
 }
 
 void Player::placeShip(vector<Coordinates> coords, int ShipSize)
 {
-	
+	ShipFactory shipFactory;
+	Ship newShip = shipFactory.CreateShip(coords, ShipSize);
+	ShipInventory.push_back(newShip);
+	for(ShipConfig config : ShipsToPlace)
+	{
+		if(config.ShipSize == ShipSize)
+		{
+			config.Count --;
+			break;
+		}
+	}
 }

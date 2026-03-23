@@ -5,6 +5,9 @@
 #include "Ship.h"
 #include "UIContext.h"
 #include "PlayerIntel.h"
+#include "ShipFactory.h"
+#include <typeinfo>
+#include "GameMaster.h"
 
 using namespace std;
 
@@ -15,4 +18,5 @@ int main(int argc, char** argv)
 	Fl_Window* playerWindow = CreatePlayerWindow();
 	playerWindow->show(argc, argv);
 	return Fl::run();
+
 }

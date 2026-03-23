@@ -12,7 +12,7 @@ class Player
 	public:
 	//Attributes
 		bool AllShipsDestroyed;
-		std::vector<Ship> ShipInventory;
+		vector<Ship> ShipInventory;
 		vector<Coordinates> Flag;
 		vector<Coordinates> ShotsFired;
 		vector<Coordinates> hitsReceived;

@@ -1,5 +1,7 @@
 #pragma once
-#include "GameMaster.h"
+#include "PlayerIntel.h"
+#include "GamePhase.h"
+
 
 struct UIContext
 {

@@ -7,9 +7,10 @@ using namespace std;
 class Ship
 {
 	public:
-	Ship(vector<Coordinates> coords)
+	Ship(vector<Coordinates> coords, int size)
 	{
 		GridLocation = coords;
+		Size = size;
 		Destroyed = false;
 	}
 	//Attributes
@@ -19,10 +20,10 @@ class Ship
 		bool Destroyed;
 		
 	//Methods
-		virtual void TakeHit(Coordinates coords);
-		virtual void CheckDestroyed();
+		void TakeHit(Coordinates coords);
+		void CheckDestroyed();
 		
-		virtual void setGridLocation(vector<Coordinates> coords, int shipSize);
-		virtual vector<Coordinates> getGridLocation();
+		void setGridLocation(vector<Coordinates> coords);
+		vector<Coordinates> getGridLocation();
 };
 
