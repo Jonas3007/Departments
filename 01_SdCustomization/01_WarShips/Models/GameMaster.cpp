@@ -124,3 +124,8 @@ bool GameMaster::CheckForOverlap(vector<Coordinates> occupiedCoords, vector<Ship
 	}
 	return false;
 }
+
+void GameMaster::InitializeGame()
+{
+	
+}

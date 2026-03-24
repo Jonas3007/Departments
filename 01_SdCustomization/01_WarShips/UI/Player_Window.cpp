@@ -3,6 +3,7 @@
 #include "UIContext.h"
 #include "PlayerIntel.h"
 #include <iostream>
+#include "Callbacks.h"
 
 #include <Fl/Fl_Window.H>
 #include <Fl/Fl_Button.H>
@@ -11,12 +12,11 @@
 #include <Fl/Fl_Group.H>
 #include <Fl/Fl_Output.H>
 #include <string>
-using namespace std;	
 
-
-void createOceanGrid(Fl_Group* group, int gridSize, int cellSize)
+void createOceanGrid(Fl_Group *group, int gridSize, int cellSize, GridCellData *gridData)
 {
-	if (!group) {
+	if (!group)
+	{
 		return;
 	}
 
@@ -27,67 +27,125 @@ void createOceanGrid(Fl_Group* group, int gridSize, int cellSize)
 	const int gridStartX = group->x() + leftAxisWidth;
 	const int gridStartY = group->y() + topAxisHeight;
 
-	for (int row = 0; row < gridSize; ++row) {
+	for (int row = 0; row < gridSize; ++row)
+	{
 		int rowLabel = row + 1;
 
-		for (int col = 0; col < gridSize; ++col) {
+		for (int col = 0; col < gridSize; ++col)
+		{
 			int x = gridStartX + col * cellSize;
 			int y = gridStartY + row * cellSize;
 
-			Fl_Box* cell = new Fl_Box(x, y, cellSize, cellSize);
+			// Zell-Label erzeugen (A1, B1, ... A2, B2, ...)
+			char colChar = 'A' + col;
+			std::string cellLabel = std::string(1, colChar) + std::to_string(rowLabel);
+
+			Fl_Box *cell = new Fl_Box(x, y, cellSize, cellSize);
 			cell->box(FL_BORDER_BOX);
 			cell->color(FL_BLUE);
-			cell->label("");
+
+			// Label setzen, aber unsichtbar machen
+			cell->copy_label(cellLabel.c_str());
+			cell->labeltype(FL_NO_LABEL);
+			
+			// Zelle wird in einem vektor gespeichert 
+			gridData->gridCells.push_back(cell);
 		}
 
 		int axisY = gridStartY + row * cellSize;
 		string yLabel = to_string(rowLabel);
-		Fl_Box* yAxisLabel = new Fl_Box(group->x(), axisY, leftAxisWidth, cellSize);
+		Fl_Box *yAxisLabel = new Fl_Box(group->x(), axisY, leftAxisWidth, cellSize);
 		yAxisLabel->copy_label(yLabel.c_str());
 		yAxisLabel->box(FL_NO_BOX);
 		yAxisLabel->labelsize(14);
 		yAxisLabel->labelfont(FL_BOLD);
 		yAxisLabel->align(FL_ALIGN_CENTER);
-		
 	}
 
-	for (int col = 0; col < gridSize; ++col) {
+	for (int col = 0; col < gridSize; ++col)
+	{
 		int axisX = gridStartX + col * cellSize;
 		char xLabelChar = static_cast<char>('A' + col);
 		string xLabel(1, xLabelChar);
-		Fl_Box* xAxisLabel = new Fl_Box(axisX, group->y(), cellSize, topAxisHeight);
+		Fl_Box *xAxisLabel = new Fl_Box(axisX, group->y(), cellSize, topAxisHeight);
 		xAxisLabel->copy_label(xLabel.c_str());
 		xAxisLabel->box(FL_NO_BOX);
 		xAxisLabel->labelsize(14);
 		xAxisLabel->labelfont(FL_BOLD);
 		xAxisLabel->align(FL_ALIGN_CENTER);
 	}
-
 }
 
-
-
-Fl_Window* CreatePlayerWindow()
+void shipPlacementElements(UIContext *UIctx, Fl_Input *coordsInput, Fl_Button *takeInput_btn, ShipPlacementData *spd)
 {
-	Fl_Window* window = new Fl_Window(1000,1000);
+	// Output to Display Selected Ship
+	Fl_Output *selectedShipOutput = new Fl_Output(620, 305, 120, 40, "Selected Ship:");
+	selectedShipOutput->box(FL_PLASTIC_UP_BOX);
 	
-	Fl_Box* title = new Fl_Box(-25,-1,1050,50, "WarShips");
-	title->labelfont(FL_BOLD+FL_ITALIC);
+	spd->selectedShipOutput = selectedShipOutput;
+	
+	// Buttons for selecting ships to place
+	Fl_Button *ship5_btn = new Fl_Button(620, 400, 90, 40, "Battleship");
+	Fl_Button *ship4_btn = new Fl_Button(720, 400, 90, 40, "Cruiser");
+	Fl_Button *ship3_btn = new Fl_Button(620, 450, 90, 40, "Destroyer");
+	Fl_Button *ship2_btn = new Fl_Button(720, 450, 90, 40, "Submarine");
+	//Button Style	
+	ship5_btn->box(FL_PLASTIC_UP_BOX);
+	ship4_btn->box(FL_PLASTIC_UP_BOX);
+	ship3_btn->box(FL_PLASTIC_UP_BOX);
+	ship2_btn->box(FL_PLASTIC_UP_BOX);
+	//Callbacks for ship selection
+	ship5_btn->callback(shipSelect_cb, spd);
+	ship4_btn->callback(shipSelect_cb, spd);
+	ship3_btn->callback(shipSelect_cb, spd);
+	ship2_btn->callback(shipSelect_cb, spd);
+}
+void InputMode(Fl_Input *coordsInput, Fl_Button *takeInput_btn, UIContext *UIctx)
+{
+	if (UIctx->CurrentPhase == PlaceShips)
+	{
+		takeInput_btn->label("Place Ship");
+	}
+	else if (UIctx->CurrentPhase == Player1Turn || UIctx->CurrentPhase == Player2Turn)
+	{
+		takeInput_btn->label("Fire!");
+	}
+	else if (UIctx->CurrentPhase == GameOver)
+	{
+		takeInput_btn->hide();
+		takeInput_btn->deactivate();
+		coordsInput->hide();
+		coordsInput->deactivate();
+	}
+}
+
+Fl_Window *CreatePlayerWindow(UIContext *UIctx)
+{
+	//Initialize DataStructs
+	GridCellData *gridData = new GridCellData();
+	ShipPlacementData *spd = new ShipPlacementData();
+	//Create Main Window
+	Fl_Window *window = new Fl_Window(1000, 800);
+	//Title Box
+	Fl_Box *title = new Fl_Box(-25, -1, 1050, 50, "WarShips");
+	title->labelfont(FL_BOLD + FL_ITALIC);
 	title->labelsize(24);
-	title->box(FL_BORDER_BOX);
-	
-	Fl_Input* CoordsInput = new Fl_Input(500,450, 100,30, "Enter Coordinates:");
-	CoordsInput->box(FL_BORDER_BOX);
-	
-	Fl_Button* fireButton = new Fl_Button(610,450, 80,30, "Fire!");
-	fireButton->box(FL_BORDER_BOX);
-	// fireButton->callback(shotFiredCallback);
-	
-	
-	
-	Fl_Group* oceanGrid = new Fl_Group(50, 200, 450, 450);
+	//Input for Coordinates and Button to confirm input
+	Fl_Input *coordsInput = new Fl_Input(620, 350, 120, 40, "Enter Coordinates:");
+	Fl_Button *takeInput_btn = new Fl_Button(745, 350, 90, 40);
+	spd->coordsInput = coordsInput;
+	//Styling Input and Button
+	coordsInput->box(FL_PLASTIC_UP_BOX);
+	takeInput_btn->box(FL_PLASTIC_UP_BOX);
+	//Input Mode depending on GamePhase	
+	InputMode(coordsInput, takeInput_btn, UIctx);
+	//ocean grid creation
+	Fl_Group *oceanGrid = new Fl_Group(50, 200, 450, 450);
 	oceanGrid->begin();
-	createOceanGrid(oceanGrid, 10, 35);
+	createOceanGrid(oceanGrid, 10, 35, gridData);
 	oceanGrid->end();
+	//Buttons and ui elements for ship placement
+	shipPlacementElements(UIctx, coordsInput, takeInput_btn, spd);
+
 	return window;
 }

@@ -3,4 +3,4 @@
 #include "UIContext.h"
 #include "Callbacks.h"
 
-Fl_Window* CreatePlayerWindow();
+Fl_Window* CreatePlayerWindow(UIContext *UIctx);

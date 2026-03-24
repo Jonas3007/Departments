@@ -13,9 +13,10 @@ using namespace std;
 
 int main(int argc, char** argv)
 {
-	
+	UIContext* UIctx;
+	UIctx->CurrentPhase = PlaceShips;
 
-	Fl_Window* playerWindow = CreatePlayerWindow();
+	Fl_Window* playerWindow = CreatePlayerWindow(UIctx);
 	playerWindow->show(argc, argv);
 	return Fl::run();
 
