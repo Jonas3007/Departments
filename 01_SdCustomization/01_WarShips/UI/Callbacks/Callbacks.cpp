@@ -9,35 +9,51 @@
 #include <vector>	
 #include <string>
 #include "Coordinates.h"
+#include "InputParser.h"
 //Helper
-void setSelectedShipSize(Fl_Widget *widget, ShipPlacementData *spd)
+int setSelectedShipSize(Fl_Widget *widget)
 {
 	switch (widget->label()[0]) //Erste Buchstabe des Button-Labels
 	{
 		case 'B': // Battleship
-			spd->selectedShipSize = 5;
+			return 5;
 			break;
 		case 'C': // Cruiser
-			spd->selectedShipSize = 4;
+			return 4;
 			break;
 		case 'D': // Destroyer
-			spd->selectedShipSize = 3;
+			return 3;
 			break;
 		case 'S': // Submarine
-			spd->selectedShipSize = 2;
+			return 2;
 			break;
 		default:
-			spd->selectedShipSize = 0;
+			return 0; // Unbekannter Button
 	}
 }
+
+//Callbacks
 void takeInput_cb(Fl_Widget *widget, void *data)
 {
-	
+	InputParser parser;
+	auto spd = static_cast<ShipPlacementData*>(data);	
+	if(widget->label() == "Place Ship")
+	{
+		
+		vector<Coordinates> shipCoords = parser.placeShipInputTokenizer(spd->coordsInput->value());
+		std::cout << "Placing ship of size " << spd->selectedShipSize << " at coordinates: " << spd->coordsInput->value() << std::endl;
+		
+	}
+	else if(widget->label() == "Fire!")
+	{
+		Coordinates fireCoords = parser.fireInputTokenizer(spd->coordsInput->value());
+		std::cout << "Firing at coordinates: " << spd->coordsInput->value() << std::endl;
+	}
 }
 
 void shipSelect_cb(Fl_Widget *widget, void *data)
 {
 	auto* spd = static_cast<ShipPlacementData*>(data);
-	setSelectedShipSize(widget, spd);
-	
+	spd->selectedShipSize = setSelectedShipSize(widget);
+	spd->selectedShipOutput->value(widget->label());
 }

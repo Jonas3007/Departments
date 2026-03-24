@@ -17,9 +17,13 @@ class GameMaster
 {
 	public:
 		GamePhase CurrentPhase;
-		vector<ShipConfig> ShipConfigs;
-		vector<Ship> Player1Ships;
-		vector<Ship> Player2Ships;
+		Player Player1;
+		Player Player2;
+		UIContext UIctx;
+		
+		void SetPlayer1(Player player);
+		void SetPlayer2(Player player);
+		
 		
 		//Main
 		void InitializeGame();
@@ -32,6 +36,6 @@ class GameMaster
 		vector<Coordinates> CalculateGridOccupancie(vector<Coordinates> initialCoords, int shipSize);
 		bool placedInGrid(vector<Coordinates> coords, int shipSize);
 		bool CheckForOverlap(vector<Coordinates> occupiedCoords, vector<Ship> existingShips);
-
+		bool checkIfAttackIsHit(Coordinates coords, PlayerIntel opponentIntel);
 		
 };

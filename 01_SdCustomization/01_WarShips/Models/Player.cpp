@@ -80,3 +80,7 @@ void Player::checkIfAllShipsPlaced(PlayerIntel *playerIntel)
 	}
 	playerIntel->AllShipsPlaced = allShipsPlaced;
 }
+void Player::fireShot(Coordinates coords)
+{
+	ShotsFired.push_back(coords);
+}

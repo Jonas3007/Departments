@@ -25,6 +25,7 @@ struct GridCellData
 struct ShipPlacementData
 {
 	int selectedShipSize;
+	vector<ShipConfig> shipConfigs;
 	Fl_Output *selectedShipOutput;
 	Fl_Input *coordsInput;
 };

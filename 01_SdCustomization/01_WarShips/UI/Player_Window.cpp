@@ -5,6 +5,7 @@
 #include <iostream>
 #include "Callbacks.h"
 
+
 #include <Fl/Fl_Window.H>
 #include <Fl/Fl_Button.H>
 #include <Fl/Fl_Box.H>
@@ -124,6 +125,7 @@ Fl_Window *CreatePlayerWindow(UIContext *UIctx)
 	//Initialize DataStructs
 	GridCellData *gridData = new GridCellData();
 	ShipPlacementData *spd = new ShipPlacementData();
+	spd->shipConfigs = {{5,1}, {4,2}, {3,3}, {2,4}};
 	//Create Main Window
 	Fl_Window *window = new Fl_Window(1000, 800);
 	//Title Box
@@ -137,6 +139,8 @@ Fl_Window *CreatePlayerWindow(UIContext *UIctx)
 	//Styling Input and Button
 	coordsInput->box(FL_PLASTIC_UP_BOX);
 	takeInput_btn->box(FL_PLASTIC_UP_BOX);
+	//Callbacks for Input and Button
+	takeInput_btn->callback(takeInput_cb,spd);
 	//Input Mode depending on GamePhase	
 	InputMode(coordsInput, takeInput_btn, UIctx);
 	//ocean grid creation
