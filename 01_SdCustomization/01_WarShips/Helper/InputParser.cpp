@@ -42,23 +42,28 @@ vector<Coordinates> InputParser::placeShipInputTokenizer(string input)
 		{
 			break;
 		}
-		string coordPart = input.substr(0, colPos);
-		input.erase(0, colPos + 1);
-		if(inputIsValid(coordPart))
+		string coordPart1 = input.substr(0, colPos);
+		string coordPart2 = input.substr(colPos + 1);	
+		if(inputIsValid(coordPart1) && inputIsValid(coordPart2))
 		{
-			char letter = toupper(coordPart[0]);
-			int number = stoi(coordPart.substr(1));
-			if (number < 1 || number > 10)
+			char letter1 = toupper(coordPart1[0]);
+			int number1 = stoi(coordPart1.substr(1));
+			char letter2 = toupper(coordPart2[0]);
+			int number2 = stoi(coordPart2.substr(1));
+			if (number1 < 1 || number1 > 10 || number2 < 1 || number2 > 10)
 			{
-				cout << "Ungültige Zahl in Eingabe: " << coordPart << endl;
+				cout << "Ungültige Zahl in Eingabe: " << input << endl;
 				break;
 			}
-			Coordinates coords = {letter, number};
-			shipPlacementCoords.push_back(coords);
+			Coordinates coords1 = {letter1, number1};
+			Coordinates coords2 = {letter2, number2};
+			shipPlacementCoords.push_back(coords1);
+			shipPlacementCoords.push_back(coords2);
+			break;
 		}
 		else
 		{
-			cout << "Ungültige Eingabe: " << coordPart << endl;
+			cout << "Ungültige Eingabe: " << input << endl;
 			break;
 		}
 		
@@ -83,4 +88,4 @@ Coordinates InputParser::fireInputTokenizer(string input)
 	}
 	Coordinates coords = {letter, number};
 	return coords;
-}
+} 

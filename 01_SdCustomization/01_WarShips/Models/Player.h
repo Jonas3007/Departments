@@ -26,7 +26,7 @@ class Player
 		void placeFlag(Coordinates coords);
 		void fireShot(Coordinates coords);
 		bool checkForHit(Coordinates coords);
-		void checkIfAllShipsPlaced(PlayerIntel *playerIntel);
+		bool checkIfAllShipsPlaced();
 		void checkAllShipsDestroyed();
 		void updateShipStatus();
 		

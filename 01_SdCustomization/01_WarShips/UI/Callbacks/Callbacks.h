@@ -25,10 +25,12 @@ struct GridCellData
 struct ShipPlacementData
 {
 	int selectedShipSize;
-	vector<ShipConfig> shipConfigs;
 	Fl_Output *selectedShipOutput;
 	Fl_Input *coordsInput;
+	GameMaster *gameMaster;
 };
 void takeInput_cb(Fl_Widget *widget, void *data);
 void shipSelect_cb(Fl_Widget *widget, void *data);
+void fireInput_cb(Fl_Widget *widget, void *data);
 void reColorGridCell(GridCellData gridData,string cellPos, Fl_Color color);
+void testforPlaceShipInput(Fl_Widget *widget, void *data);	

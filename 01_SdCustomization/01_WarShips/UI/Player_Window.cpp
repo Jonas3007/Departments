@@ -5,7 +5,6 @@
 #include <iostream>
 #include "Callbacks.h"
 
-
 #include <Fl/Fl_Window.H>
 #include <Fl/Fl_Button.H>
 #include <Fl/Fl_Box.H>
@@ -48,8 +47,8 @@ void createOceanGrid(Fl_Group *group, int gridSize, int cellSize, GridCellData *
 			// Label setzen, aber unsichtbar machen
 			cell->copy_label(cellLabel.c_str());
 			cell->labeltype(FL_NO_LABEL);
-			
-			// Zelle wird in einem vektor gespeichert 
+
+			// Zelle wird in einem vektor gespeichert
 			gridData->gridCells.push_back(cell);
 		}
 
@@ -77,79 +76,71 @@ void createOceanGrid(Fl_Group *group, int gridSize, int cellSize, GridCellData *
 	}
 }
 
-void shipPlacementElements(UIContext *UIctx, Fl_Input *coordsInput, Fl_Button *takeInput_btn, ShipPlacementData *spd)
+void shipPlacementElements(Fl_Input *coordsInput, ShipPlacementData *spd)
 {
 	// Output to Display Selected Ship
 	Fl_Output *selectedShipOutput = new Fl_Output(620, 305, 120, 40, "Selected Ship:");
 	selectedShipOutput->box(FL_PLASTIC_UP_BOX);
-	
+
 	spd->selectedShipOutput = selectedShipOutput;
-	
+
+	Fl_Button *placeShip_btn = new Fl_Button(745, 350, 90, 40, "Place Ship");
+	placeShip_btn->box(FL_PLASTIC_UP_BOX);
+	placeShip_btn->callback(takeInput_cb, spd);
 	// Buttons for selecting ships to place
 	Fl_Button *ship5_btn = new Fl_Button(620, 400, 90, 40, "Battleship");
 	Fl_Button *ship4_btn = new Fl_Button(720, 400, 90, 40, "Cruiser");
 	Fl_Button *ship3_btn = new Fl_Button(620, 450, 90, 40, "Destroyer");
 	Fl_Button *ship2_btn = new Fl_Button(720, 450, 90, 40, "Submarine");
-	//Button Style	
+	// Button Style
 	ship5_btn->box(FL_PLASTIC_UP_BOX);
 	ship4_btn->box(FL_PLASTIC_UP_BOX);
 	ship3_btn->box(FL_PLASTIC_UP_BOX);
 	ship2_btn->box(FL_PLASTIC_UP_BOX);
-	//Callbacks for ship selection
+	// Callbacks for ship selection
 	ship5_btn->callback(shipSelect_cb, spd);
 	ship4_btn->callback(shipSelect_cb, spd);
 	ship3_btn->callback(shipSelect_cb, spd);
 	ship2_btn->callback(shipSelect_cb, spd);
 }
-void InputMode(Fl_Input *coordsInput, Fl_Button *takeInput_btn, UIContext *UIctx)
-{
-	if (UIctx->CurrentPhase == PlaceShips)
-	{
-		takeInput_btn->label("Place Ship");
-	}
-	else if (UIctx->CurrentPhase == Player1Turn || UIctx->CurrentPhase == Player2Turn)
-	{
-		takeInput_btn->label("Fire!");
-	}
-	else if (UIctx->CurrentPhase == GameOver)
-	{
-		takeInput_btn->hide();
-		takeInput_btn->deactivate();
-		coordsInput->hide();
-		coordsInput->deactivate();
-	}
-}
 
-Fl_Window *CreatePlayerWindow(UIContext *UIctx)
+Fl_Window *CreatePlayerWindow(UIContext *UIctx, GameMaster *gameMaster)
 {
-	//Initialize DataStructs
+	// Initialize DataStructs
 	GridCellData *gridData = new GridCellData();
 	ShipPlacementData *spd = new ShipPlacementData();
-	spd->shipConfigs = {{5,1}, {4,2}, {3,3}, {2,4}};
-	//Create Main Window
+	spd->gameMaster = gameMaster;
+
+	// Create Main Window
 	Fl_Window *window = new Fl_Window(1000, 800);
-	//Title Box
+
+	// Title Box
 	Fl_Box *title = new Fl_Box(-25, -1, 1050, 50, "WarShips");
 	title->labelfont(FL_BOLD + FL_ITALIC);
 	title->labelsize(24);
-	//Input for Coordinates and Button to confirm input
+
+	// Input for Coordinates and Button to confirm input
 	Fl_Input *coordsInput = new Fl_Input(620, 350, 120, 40, "Enter Coordinates:");
-	Fl_Button *takeInput_btn = new Fl_Button(745, 350, 90, 40);
+	Fl_Button *takeInput_btn = new Fl_Button(745, 350, 90, 40, "Fire!");
 	spd->coordsInput = coordsInput;
-	//Styling Input and Button
+	// Styling Input and Button
 	coordsInput->box(FL_PLASTIC_UP_BOX);
 	takeInput_btn->box(FL_PLASTIC_UP_BOX);
-	//Callbacks for Input and Button
-	takeInput_btn->callback(takeInput_cb,spd);
-	//Input Mode depending on GamePhase	
-	InputMode(coordsInput, takeInput_btn, UIctx);
-	//ocean grid creation
+	// Callbacks for Input and Button
+	takeInput_btn->callback(fireInput_cb, spd);
+
+	// ocean grid creation
 	Fl_Group *oceanGrid = new Fl_Group(50, 200, 450, 450);
 	oceanGrid->begin();
 	createOceanGrid(oceanGrid, 10, 35, gridData);
 	oceanGrid->end();
-	//Buttons and ui elements for ship placement
-	shipPlacementElements(UIctx, coordsInput, takeInput_btn, spd);
+	// Buttons and ui elements for ship placement
+	if (gameMaster->CurrentPhase == PlaceShipsP1 || gameMaster->CurrentPhase == PlaceShipsP2)
+	{
+		shipPlacementElements(coordsInput, spd);
+	}
 
+	window->end();
+	window->show();
 	return window;
 }

@@ -64,7 +64,7 @@ void Player::updateShipStatus()
 	}
 }	
 
-void Player::checkIfAllShipsPlaced(PlayerIntel *playerIntel)
+bool Player::checkIfAllShipsPlaced()
 {
 	bool allShipsPlaced = false;
 	for(ShipConfig config : ShipsToPlace)
@@ -78,7 +78,7 @@ void Player::checkIfAllShipsPlaced(PlayerIntel *playerIntel)
 			allShipsPlaced = false;
 		}
 	}
-	playerIntel->AllShipsPlaced = allShipsPlaced;
+	return allShipsPlaced;
 }
 void Player::fireShot(Coordinates coords)
 {

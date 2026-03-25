@@ -12,16 +12,100 @@
 #include "Player_Window.h"
 #include "Fl/Fl_Window.H"
 #include "xyCoordinates.h"
+#include "InputParser.h"
+#include <FL/Fl.H>
+//---------------------
+// Getter and Setter
+//---------------------
+//Setter
+void GameMaster::setActivePlayer()
+{
+	if (CurrentPhase == Player1Turn || CurrentPhase == PlaceShipsP1 || CurrentPhase == PickNamePlayer1)
+	{
+		ActivePlayer = Player1;
+	}
+	else if (CurrentPhase == Player2Turn || CurrentPhase == PlaceShipsP2 || CurrentPhase == PickNamePlayer2)
+	{
+		ActivePlayer = Player2;
+	}	
+}
+void GameMaster::SetPlayer1(Player *player)
+{
+	Player1 = *player;
+}
+void GameMaster::SetPlayer2(Player *player)
+{
+	Player2 = *player;
+}
+//---------------------
+//Update UIContext
+//---------------------
+void GameMaster::updateUIContext(Player player)
+{
+	if(CurrentPhase == Player1Turn || CurrentPhase == PlaceShipsP1)
+	{
+		UIctx.Player1Intel.PlayerName = player.Name;
+		UIctx.Player1Intel.Alive = !player.AllShipsDestroyed;
+		UIctx.Player1Intel.AllShipsPlaced = player.checkIfAllShipsPlaced();
+		UIctx.Player1Intel.ShipsInventory = player.ShipInventory;
+		UIctx.Player1Intel.Flag = player.Flag;
+		UIctx.Player1Intel.ShotsFired = player.ShotsFired;
+		UIctx.Player1Intel.hitsReceived = player.hitsReceived;
+	}
+	else if(CurrentPhase == Player2Turn || CurrentPhase == PlaceShipsP2)
+	{
+		UIctx.Player2Intel.PlayerName = player.Name;
+		UIctx.Player2Intel.Alive = !player.AllShipsDestroyed;
+		UIctx.Player2Intel.AllShipsPlaced = player.checkIfAllShipsPlaced();
+		UIctx.Player2Intel.ShipsInventory = player.ShipInventory;
+		UIctx.Player2Intel.Flag = player.Flag;
+		UIctx.Player2Intel.ShotsFired = player.ShotsFired;
+		UIctx.Player2Intel.hitsReceived = player.hitsReceived;
+	}
+}
 
-// Set Player1 and Player2
-void GameMaster::SetPlayer1(Player player)
+void GameMaster::updatePlayer(Player player)
 {
-	Player1 = player;
+	if(CurrentPhase == Player1Turn || CurrentPhase == PlaceShipsP1)
+	{
+		Player1 = player;
+	}
+	else if(CurrentPhase == Player2Turn || CurrentPhase == PlaceShipsP2)
+	{
+		Player2 = player;
+	}
 }
-void GameMaster::SetPlayer2(Player player)
+//---------------------
+// Helper Functions
+//---------------------
+// Turn Helper
+void GameMaster::switchTurn()
 {
-	Player2 = player;
+	if (CurrentPhase == Player1Turn)
+	{
+		CurrentPhase = Player2Turn;
+	}
+	else if (CurrentPhase == Player2Turn)
+	{
+		CurrentPhase = Player1Turn;
+	}
+	setActivePlayer();
 }
+// Random Start
+void GameMaster::randomPlayerStart()
+{
+	int randomNum = rand() % 2; // Generates a random number, either 0 or 1
+	if (randomNum == 0)
+	{
+		CurrentPhase = PickNamePlayer1;
+	}
+	else
+	{
+		CurrentPhase = PickNamePlayer2;
+	}
+	setActivePlayer();
+}
+// Coordinate Helper
 xyCoordinates coordsConverter(char letter, int number)
 {
 	xyCoordinates xyCoords;
@@ -57,7 +141,7 @@ Coordinates xyCoordsToCoords(xyCoordinates xyCoords)
 	int number = xyCoords.y;
 	return {letter, number};
 }
-
+// Placement Helper
 vector<Coordinates> GameMaster::CalculateGridOccupancie(vector<Coordinates> initialCoords, int shipSize)
 {
 
@@ -113,7 +197,6 @@ bool GameMaster::placedInGrid(vector<Coordinates> initialCoords, int shipSize)
 	}
 	return false;
 }
-
 bool GameMaster::CheckForOverlap(vector<Coordinates> occupiedCoords, vector<Ship> existingShips)
 {
 	for (Ship ship : existingShips)
@@ -131,17 +214,48 @@ bool GameMaster::CheckForOverlap(vector<Coordinates> occupiedCoords, vector<Ship
 	}
 	return false;
 }
+// Player Helperprocesses
+void GameMaster::PlacePlayerShip(string input, void *data)
+{
+	auto spd = static_cast<ShipPlacementData *>(data);
+	InputParser coordsParser;
+	vector<Coordinates> initShipCoords = coordsParser.placeShipInputTokenizer(input);
+	if (!placedInGrid(initShipCoords, spd->selectedShipSize))
+	{
+		cout << "Ship not placed: not in grid" << endl;
+		return;
+	}
+	vector<Coordinates> fullShipCoords = CalculateGridOccupancie(initShipCoords, spd->selectedShipSize);
+	vector<Ship> currentPlayerShips = ActivePlayer.ShipInventory;
+	if(CheckForOverlap(fullShipCoords, currentPlayerShips))
+	{
+		cout<<"Ship not Placed: overlap"<<endl;
+		return;
+	}
+	ActivePlayer.placeShip(fullShipCoords, spd->selectedShipSize);
+	if(ActivePlayer.checkIfAllShipsPlaced())
+	{
+		updateUIContext(ActivePlayer);
+		updatePlayer(ActivePlayer);
+		switchTurn();
+		spd->selectedShipSize = 0;
+		spd->selectedShipOutput->value("");
+		return;
+	}
+	updateUIContext(ActivePlayer);
+	updatePlayer(ActivePlayer);
+	spd->selectedShipOutput->value("");
+}
 
 void GameMaster::InitializeGame()
 {
 	Player player1;
 	Player player2;
+
+	SetPlayer1(&player1);
+	SetPlayer2(&player2);
 	
-	SetPlayer1(player1);
-	SetPlayer2(player2);
-	UIctx.CurrentPhase = PlaceShips;
-	CurrentPhase = PlaceShips;
+	CurrentPhase = PlaceShipsP1;
+	UIctx.CurrentPhase = CurrentPhase;
 	
-	Fl_Window* player1Window = CreatePlayerWindow(&UIctx, this GameMaster);
-	Fl_Window* player2Window = CreatePlayerWindow(&UIctx, this GameMaster);
 }

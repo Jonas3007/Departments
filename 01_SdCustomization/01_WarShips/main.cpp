@@ -15,5 +15,8 @@ int main(int argc, char** argv)
 {
 	GameMaster gameMaster;
 	gameMaster.InitializeGame();
+	UIContext UIctx = gameMaster.UIctx;
+	Fl_Window *player1Window = CreatePlayerWindow(&UIctx, &gameMaster);
 
+	return Fl::run();
 }

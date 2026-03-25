@@ -8,6 +8,7 @@
 #include <vector>
 #include <string>
 #include "GamePhase.h"
+#include "Player.h"
 
 
 
@@ -19,23 +20,35 @@ class GameMaster
 		GamePhase CurrentPhase;
 		Player Player1;
 		Player Player2;
+		Player ActivePlayer;
 		UIContext UIctx;
 		
-		void SetPlayer1(Player player);
-		void SetPlayer2(Player player);
+		
+		//Getter and Setter
+		void setActivePlayer();
+		void SetPlayer1(Player* player);
+		void SetPlayer2(Player* player);
 		
 		
-		//Main
+		//Initialize Game
 		void InitializeGame();
 		
-		//Game Loops
-		void PlaceShipsPhase(UIContext *UIctx, PlayerIntel player1Intel, PlayerIntel player2Intel);
-		void MainLoop();
-		void GameOver();
-		//Helper
-		vector<Coordinates> CalculateGridOccupancie(vector<Coordinates> initialCoords, int shipSize);
-		bool placedInGrid(vector<Coordinates> coords, int shipSize);
-		bool CheckForOverlap(vector<Coordinates> occupiedCoords, vector<Ship> existingShips);
-		bool checkIfAttackIsHit(Coordinates coords, PlayerIntel opponentIntel);
-		
+		//----------------------
+		// Helper Functions
+		//----------------------
+		// Update UIContext
+		void updateUIContext(Player player);
+		// Update Playerattributes
+		void updatePlayer(Player player);
+		// Turn Helper
+		void switchTurn();
+		void randomPlayerStart();
+		//Coordinate Helpers
+		vector<Coordinates> CalculateGridOccupancie(vector<Coordinates> initialCoords, int shipSize); // calculates the coordinates which will be occuppied by a ship
+		bool placedInGrid(vector<Coordinates> coords, int shipSize); // checks if the ship placement is within the grid boundaries
+		bool CheckForOverlap(vector<Coordinates> occupiedCoords, vector<Ship> existingShips); // checks if the proposed ship placement overlaps with existing ships
+		//Attack Helpers
+		bool checkIfAttackIsHit(Coordinates coords, PlayerIntel opponentIntel); // checks if the attack coordinates hit an opponent's ship
+		//Place player ships
+		void PlacePlayerShip(string input, void* data);
 };
