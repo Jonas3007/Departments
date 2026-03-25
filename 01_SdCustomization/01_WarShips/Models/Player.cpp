@@ -5,6 +5,11 @@
 #include "Player.h"
 #include "PlayerIntel.h"
 
+
+void Player::setName(string name)
+{
+	Name = name;
+}
 bool Player::checkForHit(Coordinates coords)
 {
 	for (Ship ship: ShipInventory )
@@ -27,11 +32,11 @@ void Player::placeShip(vector<Coordinates> coords, int ShipSize)
 	ShipFactory shipFactory;
 	Ship newShip = shipFactory.CreateShip(coords, ShipSize);
 	ShipInventory.push_back(newShip);
-	for(ShipConfig config : ShipsToPlace)
+	for(int i = 0; i < ShipsToPlace.size(); i++)
 	{
-		if(config.ShipSize == ShipSize)
+		if(ShipsToPlace[i].ShipSize == ShipSize)
 		{
-			config.Count --;
+			ShipsToPlace[i].Count--;
 			break;
 		}
 	}
@@ -69,7 +74,7 @@ bool Player::checkIfAllShipsPlaced()
 	bool allShipsPlaced = false;
 	for(ShipConfig config : ShipsToPlace)
 	{
-		if(config.Count >= 0)
+		if(config.Count<= 0)
 		{
 			allShipsPlaced = true;
 		}

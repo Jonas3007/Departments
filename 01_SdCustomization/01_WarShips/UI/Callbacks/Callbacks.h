@@ -7,21 +7,9 @@
 #include <Fl/Fl_Input.H>
 #include <Fl/Fl_Box.H>
 #include <Fl/Fl_Output.H>	
+#include "UIElements.h"
 
-struct CallbackData
-{
-	UIContext *UIctx;
-	PlayerIntel *player1Intel;
-	PlayerIntel *player2Intel;
-	GameMaster *gameMaster;
-	Fl_Input *coordsInput;
-	Fl_Button *takeInput_btn;
-};
 
-struct GridCellData
-{
-	vector<Fl_Box*> gridCells;
-};
 struct ShipPlacementData
 {
 	int selectedShipSize;
@@ -29,8 +17,10 @@ struct ShipPlacementData
 	Fl_Input *coordsInput;
 	GameMaster *gameMaster;
 };
+
 void takeInput_cb(Fl_Widget *widget, void *data);
 void shipSelect_cb(Fl_Widget *widget, void *data);
 void fireInput_cb(Fl_Widget *widget, void *data);
-void reColorGridCell(GridCellData gridData,string cellPos, Fl_Color color);
-void testforPlaceShipInput(Fl_Widget *widget, void *data);	
+void reColorGridCell(UIElements uiData,string cellPos, Fl_Color color);
+void testforPlaceShipInput(Fl_Widget *widget, void *data);
+void getPlayerNames_cb(Fl_Widget *widget, void *data);	

@@ -1,0 +1,23 @@
+#pragma once
+#include <Fl/Fl_Window.H>
+#include <Fl/Fl_Input.H>
+#include <Fl/Fl_Button.H>
+#include "GameMaster.h"	
+#include "PlayerNames.h"
+
+class NameWindow : public Fl_Window
+{
+public:
+	NameWindow(GameMaster *gameMaster);
+
+private:
+	PlayerNames *pn;
+
+	Fl_Input* nameInput;
+
+	
+
+	// statische Callback-Wrapper
+	static void cb_refresh(Fl_Widget*, void*);
+	static void cb_save(Fl_Widget*, void*);
+};

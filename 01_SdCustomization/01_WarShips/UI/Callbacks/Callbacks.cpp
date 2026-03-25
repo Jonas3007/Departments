@@ -38,6 +38,12 @@ void takeInput_cb(Fl_Widget *widget, void *data)
 	auto spd = static_cast<ShipPlacementData *>(data);
 	std::cout << "Placing ship of size " << spd->selectedShipSize << " at coordinates: " << spd->coordsInput->value() << std::endl;
 	spd->gameMaster->PlacePlayerShip(spd->coordsInput->value(), spd);
+	bool P1ShipsPlaced = spd->gameMaster->Player1.checkIfAllShipsPlaced();
+	bool P2ShipsPlaced = spd->gameMaster->Player2.checkIfAllShipsPlaced();
+	if (P1ShipsPlaced && P2ShipsPlaced)
+	{		
+		spd->gameMaster->selectRandomPlayer();
+	}
 }
 
 void shipSelect_cb(Fl_Widget *widget, void *data)
@@ -48,10 +54,39 @@ void shipSelect_cb(Fl_Widget *widget, void *data)
 }
 void fireInput_cb(Fl_Widget *widget, void *data)
 {
+	auto spd = static_cast<ShipPlacementData *>(data);
 	cout << "Fire Input Callback triggered" << endl;
+	spd->gameMaster->FireAtCoordinates(spd->coordsInput->value(), spd);
 }
 void testforPlaceShipInput(Fl_Widget *widget, void *data)
 {
 	auto spd = static_cast<ShipPlacementData *>(data);
 	cout << "Test for Place Ship Input Callback triggered, input was: " << spd->coordsInput->value() << endl;
+}
+void getPlayerNames_cb(Fl_Widget *widget, void *data)
+{
+	auto pn = static_cast<PlayerNames *>(data);
+	string playerName = pn->nameInput->value();
+	if (pn->Player1Name.empty())
+	{
+		pn->Player1Name = playerName;
+		pn->nameInput->value("");
+		pn->nameInput->label("Player 2:");
+	}
+	else if (pn->Player2Name.empty())
+	{
+		pn->Player2Name = playerName;
+		pn->nameInput->value("");
+		pn->nameInput->deactivate();
+		pn->nameInput->hide();
+		cout << "Player 1 Name: " << pn->Player1Name << endl;
+		cout << "Player 2 Name: " << pn->Player2Name << endl;
+	}
+	if (!pn->Player1Name.empty() && !pn->Player2Name.empty())
+	{
+		pn->gameMaster->setPlayerNames(*pn);
+		pn->gameMaster->updateUIContext(pn->gameMaster->Player1);
+		pn->gameMaster->updateUIContext(pn->gameMaster->Player2);
+		pn->gameMaster->selectRandomPlayer();
+	}
 }

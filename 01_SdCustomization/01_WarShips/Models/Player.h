@@ -22,6 +22,7 @@ class Player
 		
 	
 	//Methods
+		void setName(string name);
 		void placeShip(vector<Coordinates> coords, int shipSize);
 		void placeFlag(Coordinates coords);
 		void fireShot(Coordinates coords);

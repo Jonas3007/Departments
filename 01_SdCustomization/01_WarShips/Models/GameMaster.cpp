@@ -14,20 +14,21 @@
 #include "xyCoordinates.h"
 #include "InputParser.h"
 #include <FL/Fl.H>
+#include "Callbacks.h"
 //---------------------
 // Getter and Setter
 //---------------------
-//Setter
+// Setter
 void GameMaster::setActivePlayer()
 {
-	if (CurrentPhase == Player1Turn || CurrentPhase == PlaceShipsP1 || CurrentPhase == PickNamePlayer1)
+	if (CurrentPhase == Player1Turn || CurrentPhase == PlaceShipsP1)
 	{
 		ActivePlayer = Player1;
 	}
-	else if (CurrentPhase == Player2Turn || CurrentPhase == PlaceShipsP2 || CurrentPhase == PickNamePlayer2)
+	else if (CurrentPhase == Player2Turn || CurrentPhase == PlaceShipsP2)
 	{
 		ActivePlayer = Player2;
-	}	
+	}
 }
 void GameMaster::SetPlayer1(Player *player)
 {
@@ -37,40 +38,53 @@ void GameMaster::SetPlayer2(Player *player)
 {
 	Player2 = *player;
 }
+void GameMaster::setPlayerNames(PlayerNames names)
+{
+	Player1.setName(names.Player1Name);
+	Player2.setName(names.Player2Name);
+}
 //---------------------
-//Update UIContext
+// Update UIContext
 //---------------------
+void GameMaster::updateP1UIContext(Player player)
+{
+	UIctx.Player1Intel.PlayerName = player.Name;
+	UIctx.Player1Intel.Alive = !player.AllShipsDestroyed;
+	UIctx.Player1Intel.AllShipsPlaced = player.checkIfAllShipsPlaced();
+	UIctx.Player1Intel.ShipsInventory = player.ShipInventory;
+	UIctx.Player1Intel.Flag = player.Flag;
+	UIctx.Player1Intel.ShotsFired = player.ShotsFired;
+	UIctx.Player1Intel.hitsReceived = player.hitsReceived;
+}
+void GameMaster::updateP2UIContext(Player player)
+{
+	UIctx.Player2Intel.PlayerName = player.Name;
+	UIctx.Player2Intel.Alive = !player.AllShipsDestroyed;
+	UIctx.Player2Intel.AllShipsPlaced = player.checkIfAllShipsPlaced();
+	UIctx.Player2Intel.ShipsInventory = player.ShipInventory;
+	UIctx.Player2Intel.Flag = player.Flag;
+	UIctx.Player2Intel.ShotsFired = player.ShotsFired;
+	UIctx.Player2Intel.hitsReceived = player.hitsReceived;
+}
 void GameMaster::updateUIContext(Player player)
 {
-	if(CurrentPhase == Player1Turn || CurrentPhase == PlaceShipsP1)
+	if (CurrentPhase == Player1Turn || CurrentPhase == PlaceShipsP1)
 	{
-		UIctx.Player1Intel.PlayerName = player.Name;
-		UIctx.Player1Intel.Alive = !player.AllShipsDestroyed;
-		UIctx.Player1Intel.AllShipsPlaced = player.checkIfAllShipsPlaced();
-		UIctx.Player1Intel.ShipsInventory = player.ShipInventory;
-		UIctx.Player1Intel.Flag = player.Flag;
-		UIctx.Player1Intel.ShotsFired = player.ShotsFired;
-		UIctx.Player1Intel.hitsReceived = player.hitsReceived;
+		updateP1UIContext(player);
 	}
-	else if(CurrentPhase == Player2Turn || CurrentPhase == PlaceShipsP2)
+	else if (CurrentPhase == Player2Turn || CurrentPhase == PlaceShipsP2)
 	{
-		UIctx.Player2Intel.PlayerName = player.Name;
-		UIctx.Player2Intel.Alive = !player.AllShipsDestroyed;
-		UIctx.Player2Intel.AllShipsPlaced = player.checkIfAllShipsPlaced();
-		UIctx.Player2Intel.ShipsInventory = player.ShipInventory;
-		UIctx.Player2Intel.Flag = player.Flag;
-		UIctx.Player2Intel.ShotsFired = player.ShotsFired;
-		UIctx.Player2Intel.hitsReceived = player.hitsReceived;
+		updateP2UIContext(player);
 	}
 }
 
 void GameMaster::updatePlayer(Player player)
 {
-	if(CurrentPhase == Player1Turn || CurrentPhase == PlaceShipsP1)
+	if (CurrentPhase == Player1Turn || CurrentPhase == PlaceShipsP1)
 	{
 		Player1 = player;
 	}
-	else if(CurrentPhase == Player2Turn || CurrentPhase == PlaceShipsP2)
+	else if (CurrentPhase == Player2Turn || CurrentPhase == PlaceShipsP2)
 	{
 		Player2 = player;
 	}
@@ -81,7 +95,15 @@ void GameMaster::updatePlayer(Player player)
 // Turn Helper
 void GameMaster::switchTurn()
 {
-	if (CurrentPhase == Player1Turn)
+	if(CurrentPhase == PlaceShipsP1)
+	{
+		CurrentPhase = PlaceShipsP2;
+	}
+	else if (CurrentPhase == PlaceShipsP2)
+	{
+		randomPlayerStart();
+	}
+	else if (CurrentPhase == Player1Turn)
 	{
 		CurrentPhase = Player2Turn;
 	}
@@ -91,17 +113,16 @@ void GameMaster::switchTurn()
 	}
 	setActivePlayer();
 }
-// Random Start
-void GameMaster::randomPlayerStart()
+void GameMaster::selectRandomPlayer()
 {
 	int randomNum = rand() % 2; // Generates a random number, either 0 or 1
 	if (randomNum == 0)
 	{
-		CurrentPhase = PickNamePlayer1;
+		CurrentPhase = Player1Turn;
 	}
 	else
 	{
-		CurrentPhase = PickNamePlayer2;
+		CurrentPhase = Player2Turn;
 	}
 	setActivePlayer();
 }
@@ -217,6 +238,7 @@ bool GameMaster::CheckForOverlap(vector<Coordinates> occupiedCoords, vector<Ship
 // Player Helperprocesses
 void GameMaster::PlacePlayerShip(string input, void *data)
 {
+
 	auto spd = static_cast<ShipPlacementData *>(data);
 	InputParser coordsParser;
 	vector<Coordinates> initShipCoords = coordsParser.placeShipInputTokenizer(input);
@@ -227,24 +249,46 @@ void GameMaster::PlacePlayerShip(string input, void *data)
 	}
 	vector<Coordinates> fullShipCoords = CalculateGridOccupancie(initShipCoords, spd->selectedShipSize);
 	vector<Ship> currentPlayerShips = ActivePlayer.ShipInventory;
-	if(CheckForOverlap(fullShipCoords, currentPlayerShips))
+	if (CheckForOverlap(fullShipCoords, currentPlayerShips))
 	{
-		cout<<"Ship not Placed: overlap"<<endl;
+		cout << "Ship not Placed: overlap" << endl;
 		return;
 	}
 	ActivePlayer.placeShip(fullShipCoords, spd->selectedShipSize);
-	if(ActivePlayer.checkIfAllShipsPlaced())
+	if (ActivePlayer.checkIfAllShipsPlaced())
 	{
 		updateUIContext(ActivePlayer);
 		updatePlayer(ActivePlayer);
 		switchTurn();
-		spd->selectedShipSize = 0;
-		spd->selectedShipOutput->value("");
 		return;
 	}
 	updateUIContext(ActivePlayer);
 	updatePlayer(ActivePlayer);
-	spd->selectedShipOutput->value("");
+}
+
+void GameMaster::FireAtCoordinates(string input, void *data)
+{
+	auto spd = static_cast<ShipPlacementData *>(data);
+	InputParser coordsParser;
+	Coordinates targetCoords = coordsParser.fireInputTokenizer(input);
+	ActivePlayer.fireShot(targetCoords);
+	if (CurrentPhase == Player1Turn)
+	{
+		Player2.checkForHit(targetCoords);
+		Player2.updateShipStatus();
+		Player2.checkAllShipsDestroyed();
+		updateP2UIContext(Player2);
+	}
+	else
+	{
+		Player1.checkForHit(targetCoords);
+		Player1.updateShipStatus();
+		Player1.checkAllShipsDestroyed();
+		updateP1UIContext(Player1);
+	}
+	updatePlayer(ActivePlayer);
+	updateUIContext(ActivePlayer);
+	switchTurn();
 }
 
 void GameMaster::InitializeGame()
@@ -254,8 +298,7 @@ void GameMaster::InitializeGame()
 
 	SetPlayer1(&player1);
 	SetPlayer2(&player2);
-	
-	CurrentPhase = PlaceShipsP1;
+
+	CurrentPhase = PickNamePhase;
 	UIctx.CurrentPhase = CurrentPhase;
-	
 }

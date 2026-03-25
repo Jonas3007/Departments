@@ -9,6 +9,7 @@
 #include <string>
 #include "GamePhase.h"
 #include "Player.h"
+#include "PlayerNames.h"
 
 
 
@@ -28,6 +29,7 @@ class GameMaster
 		void setActivePlayer();
 		void SetPlayer1(Player* player);
 		void SetPlayer2(Player* player);
+		void setPlayerNames(PlayerNames names);
 		
 		
 		//Initialize Game
@@ -37,18 +39,20 @@ class GameMaster
 		// Helper Functions
 		//----------------------
 		// Update UIContext
+		void updateP1UIContext(Player player);
+		void updateP2UIContext(Player player);
 		void updateUIContext(Player player);
 		// Update Playerattributes
 		void updatePlayer(Player player);
 		// Turn Helper
 		void switchTurn();
 		void randomPlayerStart();
+		void selectRandomPlayer();
 		//Coordinate Helpers
 		vector<Coordinates> CalculateGridOccupancie(vector<Coordinates> initialCoords, int shipSize); // calculates the coordinates which will be occuppied by a ship
 		bool placedInGrid(vector<Coordinates> coords, int shipSize); // checks if the ship placement is within the grid boundaries
 		bool CheckForOverlap(vector<Coordinates> occupiedCoords, vector<Ship> existingShips); // checks if the proposed ship placement overlaps with existing ships
 		//Attack Helpers
-		bool checkIfAttackIsHit(Coordinates coords, PlayerIntel opponentIntel); // checks if the attack coordinates hit an opponent's ship
-		//Place player ships
 		void PlacePlayerShip(string input, void* data);
+		void FireAtCoordinates(string input, void* data);
 };

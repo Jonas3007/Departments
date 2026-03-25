@@ -2,8 +2,7 @@
 
 enum GamePhase
 {
-	PickNamePlayer1,
-	PickNamePlayer2,
+	PickNamePhase,
 	PlaceShipsP1,
 	PlaceShipsP2,
 	Player1Turn,
