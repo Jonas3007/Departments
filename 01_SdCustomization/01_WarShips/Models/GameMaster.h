@@ -55,6 +55,8 @@ class GameMaster
 		vector<Coordinates> CalculateGridOccupancie(vector<Coordinates> initialCoords, int shipSize); // calculates the coordinates which will be occuppied by a ship
 		bool placedInGrid(vector<Coordinates> coords, int shipSize); // checks if the ship placement is within the grid boundaries
 		bool CheckForOverlap(vector<Coordinates> occupiedCoords, vector<Ship> existingShips); // checks if the proposed ship placement overlaps with existing ships
+		//PLace Ship Helper
+		void checkShipsPlacedToUpdatePhase();
 		//Attack Helpers
 		void PlacePlayerShip(string input, void* data);
 		void FireAtCoordinates(string input, void* data);

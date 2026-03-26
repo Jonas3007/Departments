@@ -261,15 +261,6 @@ void GameMaster::PlacePlayerShip(string input, void *data)
 		cout << "Ship of size " << spd->selectedShipSize << " not available for placement." << endl;
 		return;
 	}
-	ActivePlayer.checkIfAllShipsPlaced();	
-	if (ActivePlayer.AllShipsPlaced)
-	{
-		updateUIContext(ActivePlayer);
-		updatePlayer(ActivePlayer);
-		switchTurn();
-		uiHandler->updateShipSizeOutput(this);
-		return;
-	}
 	ActivePlayer.placeShip(fullShipCoords, spd->selectedShipSize);
 	uiHandler->updateShipSizeOutput(this);
 	updateUIContext(ActivePlayer);
@@ -311,6 +302,28 @@ void GameMaster::FireAtCoordinates(string input, void *data)
 	updatePlayer(ActivePlayer);
 	updateUIContext(ActivePlayer);
 	switchTurn();
+}
+void GameMaster::checkShipsPlacedToUpdatePhase()
+{
+	Player1.checkIfAllShipsPlaced();
+	Player2.checkIfAllShipsPlaced();
+	if(Player1.AllShipsPlaced )
+	{
+		CurrentPhase = PlaceShipsP2;
+		updateUIContext(ActivePlayer);
+		updatePlayer(ActivePlayer);
+		uiHandler->updatePhaseBox(this);
+		uiHandler->updatePlayerTurnBox(this);
+		uiHandler->updatePlayerWindows(this);
+	}
+	else if (Player1.AllShipsPlaced && Player2.AllShipsPlaced)
+	{
+		selectRandomPlayer();
+		uiHandler->toggleShipPlacementElements(this);
+		uiHandler->updatePlayerTurnBox(this);
+		uiHandler->updatePhaseBox(this);
+		uiHandler->updatePlayerWindows(this);
+	}
 }
 
 void GameMaster::InitializeGame()
