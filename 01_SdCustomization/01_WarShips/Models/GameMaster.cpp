@@ -240,7 +240,6 @@ bool GameMaster::CheckForOverlap(vector<Coordinates> occupiedCoords, vector<Ship
 // Player Helperprocesses
 void GameMaster::PlacePlayerShip(string input, void *data)
 {
-
 	auto spd = static_cast<ShipPlacementData *>(data);
 	InputParser coordsParser;
 	vector<Coordinates> initShipCoords = coordsParser.placeShipInputTokenizer(input);
@@ -256,14 +255,23 @@ void GameMaster::PlacePlayerShip(string input, void *data)
 		cout << "Ship not Placed: overlap" << endl;
 		return;
 	}
-	ActivePlayer.placeShip(fullShipCoords, spd->selectedShipSize);
-	if (ActivePlayer.checkIfAllShipsPlaced())
+	
+	if (!ActivePlayer.checkIfShipSizeAvailable(spd->selectedShipSize))
+	{
+		cout << "Ship of size " << spd->selectedShipSize << " not available for placement." << endl;
+		return;
+	}
+	ActivePlayer.checkIfAllShipsPlaced();	
+	if (ActivePlayer.AllShipsPlaced)
 	{
 		updateUIContext(ActivePlayer);
 		updatePlayer(ActivePlayer);
 		switchTurn();
+		uiHandler->updateShipSizeOutput(this);
 		return;
 	}
+	ActivePlayer.placeShip(fullShipCoords, spd->selectedShipSize);
+	uiHandler->updateShipSizeOutput(this);
 	updateUIContext(ActivePlayer);
 	updatePlayer(ActivePlayer);
 	uiHandler->updatePlayerWindows(this);
@@ -282,6 +290,7 @@ void GameMaster::FireAtCoordinates(string input, void *data)
 		{
 			Player1.hits.push_back(targetCoords);
 		}
+		Player1.placeFlag(targetCoords);
 		Player2.updateShipStatus();
 		Player2.checkAllShipsDestroyed();
 		updateP2UIContext(Player2);
@@ -293,6 +302,7 @@ void GameMaster::FireAtCoordinates(string input, void *data)
 		{
 			Player2.hits.push_back(targetCoords);
 		}
+		Player2.placeFlag(targetCoords);
 		Player1.updateShipStatus();
 		Player1.checkAllShipsDestroyed();
 		updateP1UIContext(Player1);

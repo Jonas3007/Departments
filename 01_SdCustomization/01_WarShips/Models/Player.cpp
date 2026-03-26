@@ -27,8 +27,25 @@ bool Player::checkForHit(Coordinates coords)
 	return false;
 }
 
+bool Player::checkIfShipSizeAvailable(int shipSize)
+{
+	for(ShipConfig config : ShipsToPlace)
+	{
+		if(config.ShipSize == shipSize && config.Count > 0)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 void Player::placeShip(vector<Coordinates> coords, int ShipSize)
 {
+	if(!checkIfShipSizeAvailable(ShipSize))
+	{
+		cout << "Ship of size " << ShipSize << " not available for placement." << endl;
+		return;
+	}
 	ShipFactory shipFactory;
 	Ship newShip = shipFactory.CreateShip(coords, ShipSize);
 	ShipInventory.push_back(newShip);
@@ -71,17 +88,14 @@ void Player::updateShipStatus()
 
 bool Player::checkIfAllShipsPlaced()
 {
-	bool allShipsPlaced = false;
-	for(ShipConfig config : ShipsToPlace)
+	vector<ShipConfig> allShipsPlaced = { {5, 0}, {4, 0}, {3, 0}, {2, 0} };
+	if(ShipsToPlace[0].Count == allShipsPlaced[0].Count && ShipsToPlace[1].Count == allShipsPlaced[1].Count && ShipsToPlace[2].Count == allShipsPlaced[2].Count && ShipsToPlace[3].Count == allShipsPlaced[3].Count)
 	{
-		if(config.Count<= 0)
-		{
-			allShipsPlaced = true;
-		}
-		else
-		{
-			allShipsPlaced = false;
-		}
+		AllShipsPlaced = true;
+		return true;
 	}
-	return allShipsPlaced;
+	else
+	{
+		return false;
+	}
 }

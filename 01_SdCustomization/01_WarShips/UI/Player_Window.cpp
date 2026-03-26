@@ -6,7 +6,6 @@
 #include "Callbacks.h"
 #include "Name_Window.h"
 #include "GameMaster.h"
-#include "UIElements.h"
 #include "ShipPlacementData.h"
 #include "UIHandler.h"	
 
@@ -16,6 +15,7 @@
 #include <Fl/Fl_Input.H>
 #include <Fl/Fl_Group.H>
 #include <Fl/Fl_Output.H>
+#include <Fl/Fl_Multiline_Output.H>
 #include <string>
 
 void createOceanGrid(Fl_Group *group, int gridSize, int cellSize, ShipPlacementData *spd)
@@ -81,12 +81,15 @@ void createOceanGrid(Fl_Group *group, int gridSize, int cellSize, ShipPlacementD
 	}
 }
 
-void shipPlacementElements(Fl_Input *coordsInput, ShipPlacementData *spd)
+void shipPlacementElements(Fl_Input *coordsInput, ShipPlacementData *spd, GameMaster *gameMaster)
 {
 	
 	// Output to Display Selected Ship
 	Fl_Output *selectedShipOutput = new Fl_Output(620, 305, 120, 40, "Selected Ship:");
 	selectedShipOutput->box(FL_PLASTIC_UP_BOX);
+	// Output for ship size and the amount of ships of this size left to place
+	Fl_Multiline_Output *shipSizeOutput = new Fl_Multiline_Output(480, 400, 130, 90);
+	shipSizeOutput->box(FL_PLASTIC_UP_BOX);	
 
 	spd->selectedShipOutput = selectedShipOutput;
 
@@ -108,15 +111,15 @@ void shipPlacementElements(Fl_Input *coordsInput, ShipPlacementData *spd)
 	ship4_btn->callback(shipSelect_cb, spd);
 	ship3_btn->callback(shipSelect_cb, spd);
 	ship2_btn->callback(shipSelect_cb, spd);
-	spd->gameMaster->uiHandler->setShipPlacementElements(ship5_btn, ship4_btn, ship3_btn, ship2_btn, selectedShipOutput, coordsInput);
-	if (spd->gameMaster->CurrentPhase != PlaceShipsP1 && spd->gameMaster->CurrentPhase != PlaceShipsP2)
+	gameMaster->uiHandler->setShipPlacementElements(ship5_btn, ship4_btn, ship3_btn, ship2_btn, selectedShipOutput, coordsInput, shipSizeOutput);
+	if (gameMaster->CurrentPhase != PlaceShipsP1 && gameMaster->CurrentPhase != PlaceShipsP2)
 	{
 		ship5_btn->hide();
 		ship4_btn->hide();
 		ship3_btn->hide();
 		ship2_btn->hide();
 		selectedShipOutput->hide();
-	
+		shipSizeOutput->hide();
 	}
 }
 
@@ -173,7 +176,7 @@ Fl_Window *CreatePlayerWindow(UIContext *UIctx, GameMaster *gameMaster, ShipPlac
 	oceanGrid->end();
 	// Buttons and ui elements for ship placement
 	
-	shipPlacementElements(coordsInput, spd);
+	shipPlacementElements(coordsInput, spd, gameMaster);
 	
 
 	window->end();

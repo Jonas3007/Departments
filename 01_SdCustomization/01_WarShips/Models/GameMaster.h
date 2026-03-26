@@ -10,7 +10,7 @@
 #include "GamePhase.h"
 #include "Player.h"
 #include "PlayerNames.h"
-#include "UIElements.h"
+
 #include "UIHandler.h"
 #include "ShipPlacementData.h"
 
@@ -45,9 +45,7 @@ class GameMaster
 		void updateP1UIContext(Player player);
 		void updateP2UIContext(Player player);
 		void updateUIContext(Player player);
-		//Update UI
-		void reColorGridCell(UIElements uiData, string cellPos);
-		void updatePlayerTurnBox(UIElements uiData, ShipPlacementData *spd);
+	
 		// Update Playerattributes
 		void updatePlayer(Player player);
 		// Turn Helper

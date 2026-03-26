@@ -40,9 +40,7 @@ void takeInput_cb(Fl_Widget *widget, void *data)
 	auto spd = static_cast<ShipPlacementData *>(data);
 	std::cout << "Placing ship of size " << spd->selectedShipSize << " at coordinates: " << spd->coordsInput->value() << std::endl;
 	spd->gameMaster->PlacePlayerShip(spd->coordsInput->value(), spd);
-	bool P1ShipsPlaced = spd->gameMaster->Player1.checkIfAllShipsPlaced();
-	bool P2ShipsPlaced = spd->gameMaster->Player2.checkIfAllShipsPlaced();
-	if (P1ShipsPlaced && P2ShipsPlaced)
+	if (spd->gameMaster->Player1.checkIfAllShipsPlaced() && spd->gameMaster->Player2.checkIfAllShipsPlaced())
 	{		
 		spd->gameMaster->selectRandomPlayer();
 		spd->gameMaster->uiHandler->toggleShipPlacementElements(spd->gameMaster);
@@ -90,10 +88,10 @@ void getPlayerNames_cb(Fl_Widget *widget, void *data)
 	}
 	if (!gameMaster->Player1.Name.empty() && !gameMaster->Player2.Name.empty())
 	{
-		gameMaster->updateUIContext(gameMaster->Player1);
-		gameMaster->updateUIContext(gameMaster->Player2);
 		gameMaster->CurrentPhase = PlaceShipsP1;
 		gameMaster->ActivePlayer = gameMaster->Player1;
+		gameMaster->updateUIContext(gameMaster->Player1);
+		gameMaster->updateUIContext(gameMaster->Player2);
 		gameMaster->uiHandler->updatePhaseBox(gameMaster);
 		gameMaster->uiHandler->updatePlayerTurnBox(gameMaster);
 		gameMaster->uiHandler->toggleShipPlacementElements(gameMaster);
