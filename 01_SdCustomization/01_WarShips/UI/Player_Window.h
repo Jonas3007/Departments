@@ -7,4 +7,4 @@
 #include "ShipPlacementData.h"
 class GameMaster;
 
-Fl_Window* CreatePlayerWindow(UIContext *UIctx, GameMaster *gameMaster, UIElements *uiData, ShipPlacementData *spd);
+Fl_Window* CreatePlayerWindow(UIContext *UIctx, GameMaster *gameMaster, ShipPlacementData *spd);

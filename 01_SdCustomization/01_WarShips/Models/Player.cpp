@@ -85,7 +85,3 @@ bool Player::checkIfAllShipsPlaced()
 	}
 	return allShipsPlaced;
 }
-void Player::fireShot(Coordinates coords)
-{
-	ShotsFired.push_back(coords);
-}

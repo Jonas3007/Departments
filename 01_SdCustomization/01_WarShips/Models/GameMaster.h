@@ -14,7 +14,7 @@
 #include "UIHandler.h"
 #include "ShipPlacementData.h"
 
-
+class UIHandler;
 struct ShipPlacementData;
 
 class GameMaster
@@ -24,6 +24,7 @@ class GameMaster
 		Player Player1;
 		Player Player2;
 		Player ActivePlayer;
+		UIHandler *uiHandler;
 		UIContext UIctx;
 		
 		

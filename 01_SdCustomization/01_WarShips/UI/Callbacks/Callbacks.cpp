@@ -11,6 +11,7 @@
 #include "Coordinates.h"
 #include "InputParser.h"
 #include "ShipPlacementData.h"
+#include "Name_Window.h"
 // Helper
 int setSelectedShipSize(Fl_Widget *widget)
 {
@@ -44,6 +45,10 @@ void takeInput_cb(Fl_Widget *widget, void *data)
 	if (P1ShipsPlaced && P2ShipsPlaced)
 	{		
 		spd->gameMaster->selectRandomPlayer();
+		spd->gameMaster->uiHandler->toggleShipPlacementElements(spd->gameMaster);
+		spd->gameMaster->uiHandler->updatePlayerTurnBox(spd->gameMaster);
+		spd->gameMaster->uiHandler->updatePhaseBox(spd->gameMaster);
+		spd->gameMaster->uiHandler->updatePlayerWindows(spd->gameMaster);
 	}
 }
 
@@ -60,35 +65,37 @@ void fireInput_cb(Fl_Widget *widget, void *data)
 	cout << "Fire Input Callback triggered" << endl;
 	spd->gameMaster->FireAtCoordinates(spd->coordsInput->value(), spd);
 }
-void testforPlaceShipInput(Fl_Widget *widget, void *data)
+
+void createNameWindow_cb(Fl_Widget *widget, void *data)
 {
 	auto spd = static_cast<ShipPlacementData *>(data);
-	cout << "Test for Place Ship Input Callback triggered, input was: " << spd->coordsInput->value() << endl;
+	(new NameWindow(spd->gameMaster))->show();
 }
 void getPlayerNames_cb(Fl_Widget *widget, void *data)
 {
-	auto pn = static_cast<PlayerNames *>(data);
-	string playerName = pn->nameInput->value();
-	if (pn->Player1Name.empty())
+	auto gameMaster = static_cast<GameMaster *>(data);	
+	string playerName = gameMaster->uiHandler->getPlayerName();
+	if (gameMaster->Player1.Name.empty())
 	{
-		pn->Player1Name = playerName;
-		pn->nameInput->value("");
-		pn->nameInput->label("Player 2:");
+		gameMaster->Player1.setName(playerName);
+		gameMaster->uiHandler->nameInput->value(""); // Clear input field after setting name
 	}
-	else if (pn->Player2Name.empty())
+	else if (gameMaster->Player2.Name.empty())
 	{
-		pn->Player2Name = playerName;
-		pn->nameInput->value("");
-		pn->nameInput->deactivate();
-		pn->nameInput->hide();
-		cout << "Player 1 Name: " << pn->Player1Name << endl;
-		cout << "Player 2 Name: " << pn->Player2Name << endl;
+		gameMaster->Player2.setName(playerName);
+		gameMaster->uiHandler->nameInput->value(""); // Clear input field after setting name	
+		
+		cout << "Player 1 Name: " << gameMaster->Player1.Name << endl;
+		cout << "Player 2 Name: " << gameMaster->Player2.Name << endl;
 	}
-	if (!pn->Player1Name.empty() && !pn->Player2Name.empty())
+	if (!gameMaster->Player1.Name.empty() && !gameMaster->Player2.Name.empty())
 	{
-		pn->gameMaster->setPlayerNames(*pn);
-		pn->gameMaster->updateUIContext(pn->gameMaster->Player1);
-		pn->gameMaster->updateUIContext(pn->gameMaster->Player2);
-		pn->gameMaster->selectRandomPlayer();
+		gameMaster->updateUIContext(gameMaster->Player1);
+		gameMaster->updateUIContext(gameMaster->Player2);
+		gameMaster->CurrentPhase = PlaceShipsP1;
+		gameMaster->ActivePlayer = gameMaster->Player1;
+		gameMaster->uiHandler->updatePhaseBox(gameMaster);
+		gameMaster->uiHandler->updatePlayerTurnBox(gameMaster);
+		gameMaster->uiHandler->toggleShipPlacementElements(gameMaster);
 	}
 }

@@ -8,4 +8,5 @@ struct UIElements
 {
 	vector<Fl_Box *> gridCells;
 	Fl_Box *playerTurnBox;
+	Fl_Box *phaseBox;
 };

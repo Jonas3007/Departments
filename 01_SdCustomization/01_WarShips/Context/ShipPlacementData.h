@@ -11,5 +11,4 @@ struct ShipPlacementData
 	Fl_Output *selectedShipOutput;
 	Fl_Input *coordsInput;
 	GameMaster *gameMaster;
-	UIElements *uiData;
 };

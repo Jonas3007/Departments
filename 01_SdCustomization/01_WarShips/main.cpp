@@ -8,18 +8,20 @@
 #include "ShipFactory.h"
 #include <typeinfo>
 #include "GameMaster.h"
+#include "UIHandler.h"
 
 using namespace std;
 
 int main(int argc, char** argv)
 {
 	GameMaster gameMaster;
+	UIHandler uiHandler;
+	gameMaster.uiHandler = &uiHandler;
 	gameMaster.InitializeGame();
 	UIContext UIctx = gameMaster.UIctx;
-	UIElements *uiData = new UIElements();
 	ShipPlacementData *spd = new ShipPlacementData();
 	
-	Fl_Window *player1Window = CreatePlayerWindow(&UIctx, &gameMaster, uiData, spd);
+	Fl_Window *player1Window = CreatePlayerWindow(&UIctx, &gameMaster, spd);
 
 	return Fl::run();
 }

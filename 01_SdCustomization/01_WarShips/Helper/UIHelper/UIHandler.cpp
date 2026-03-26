@@ -16,13 +16,45 @@ string coordsToCellPos(Coordinates coords)
 	return coords.Letter + to_string(coords.Number);
 }
 //---------------------
+//Setter for UI elements
+//---------------------
+void UIHandler::setNameInput(Fl_Input *input)
+{
+	nameInput = input;
+}
+void UIHandler::setPlayerTurnBox(Fl_Box *box)
+{	
+	playerTurnBox = box;
+}
+void UIHandler::setPhaseBox(Fl_Box *box)
+{
+	phaseBox = box;
+}
+void UIHandler::setGridCells(Fl_Box *cell)
+{
+		gridCells.push_back(cell);
+}
+void UIHandler::setShipPlacementElements(Fl_Button *battleshipBtn, Fl_Button *cruiserBtn, Fl_Button *destroyerBtn, Fl_Button *submarineBtn, Fl_Output *selectedShipOutput, Fl_Input *coordsInput)
+{	this->battleshipBtn = battleshipBtn;
+	this->cruiserBtn = cruiserBtn;
+	this->destroyerBtn = destroyerBtn;
+	this->submarineBtn = submarineBtn;
+	this->selectedShipOutput = selectedShipOutput;
+	this->coordsInput = coordsInput;
+}
+string UIHandler::getPlayerName()
+{
+	return nameInput->value();	
+}
+
+//---------------------
 // Update UI
 //---------------------
 
-void reColorGridCell(UIElements uiData, string cellPos, Fl_Color color)
+void UIHandler::reColorGridCell( string cellPos, Fl_Color color)
 { 
 	
-	for (Fl_Box* cell : uiData.gridCells)
+	for (Fl_Box* cell : gridCells)
 	{
 		if (cell->label() == cellPos)
 		{
@@ -32,16 +64,46 @@ void reColorGridCell(UIElements uiData, string cellPos, Fl_Color color)
 		}
 	}
 }
-void updatePlayerTurnBox(UIElements uiData, ShipPlacementData *spd)
+void UIHandler::updatePlayerTurnBox(GameMaster *gameMaster)
 {
-	string playerName = spd->gameMaster->ActivePlayer.Name;
-	uiData.playerTurnBox->copy_label(("Current Player: " + playerName).c_str());
-	uiData.playerTurnBox->redraw();
+	string playerName = gameMaster->ActivePlayer.Name;
+	gameMaster->uiHandler->playerTurnBox->copy_label(("Player: " + playerName).c_str());
+	gameMaster->uiHandler->playerTurnBox->redraw();
+}
+void UIHandler::updatePhaseBox(GameMaster *gameMaster)
+{
+	string phaseName;
+	switch (gameMaster->CurrentPhase)
+	{
+	case GamePhase::PlaceShipsP1:
+		phaseName = "Place Ships - Player 1";
+		break;
+	case GamePhase::PlaceShipsP2:
+		phaseName = "Place Ships - Player 2";
+		break;
+	case GamePhase::Player1Turn:
+		phaseName = "Player 1's Turn";
+		break;
+	case GamePhase::Player2Turn:
+		phaseName = "Player 2's Turn";
+		break;
+	case GamePhase::GameOver:
+		phaseName = "Game Over";
+		break;
+	case GamePhase::PickNamePhase:
+		phaseName = "Pick Name Phase";
+		break;
+	default:
+		phaseName = "Unknown Phase";
+		break;
+	}
+	gameMaster->uiHandler->phaseBox->copy_label(("Phase: " + phaseName).c_str());
+	gameMaster->uiHandler->phaseBox->redraw();
 }
 
-void updatePlayer1Grid(UIElements uiData, ShipPlacementData *spd)
+void UIHandler::updatePlayer1Grid(GameMaster *gameMaster)
 {
-	UIContext uiContext = spd->gameMaster->UIctx;
+	UIContext uiContext = gameMaster->UIctx;
 	vector<Ship> P1Inventory = uiContext.Player1Intel.ShipsInventory;
 	//Show ships in grid
 	for(Ship ship : P1Inventory)
@@ -50,7 +112,7 @@ void updatePlayer1Grid(UIElements uiData, ShipPlacementData *spd)
 		{
 			Fl_Color color = FL_BLACK;
 			string cellPos = coordsToCellPos(coord);
-			reColorGridCell(uiData,cellPos, color);
+			reColorGridCell(cellPos, color);
 		}
 	}
 	//Show hits received
@@ -59,7 +121,7 @@ void updatePlayer1Grid(UIElements uiData, ShipPlacementData *spd)
 	{
 		Fl_Color color = FL_RED;
 		string cellPos = coordsToCellPos(hit);
-		reColorGridCell(uiData,cellPos, color);
+		reColorGridCell(cellPos, color);
 	}
 	//show hits on opponent
 	vector<Coordinates> hits = uiContext.Player1Intel.hits;
@@ -67,23 +129,80 @@ void updatePlayer1Grid(UIElements uiData, ShipPlacementData *spd)
 	{
 		Fl_Color color = FL_GREEN;
 		string cellPos = coordsToCellPos(hit);
-		reColorGridCell(uiData,cellPos, color);
+		reColorGridCell(cellPos, color);
 	}
 	
 
 }
-void updatePlayer2Grid(UIElements uiData, ShipPlacementData *spd)
+void UIHandler::updatePlayer2Grid(GameMaster *gameMaster)
 {
-	
+	UIContext uiContext = gameMaster->UIctx;
+	vector<Ship> P2Inventory = uiContext.Player2Intel.ShipsInventory;
+	//Show ships in grid
+	for(Ship ship : P2Inventory)
+	{
+		for(Coordinates coord : ship.GridLocation)
+		{
+			Fl_Color color = FL_BLACK;
+			string cellPos = coordsToCellPos(coord);
+			reColorGridCell(cellPos, color);
+		}
+	}
+	//Show hits received
+	vector<Coordinates> hitsReceived = uiContext.Player2Intel.hitsReceived;
+	for(Coordinates hit : hitsReceived)
+	{
+		Fl_Color color = FL_RED;
+		string cellPos = coordsToCellPos(hit);
+		reColorGridCell(cellPos, color);
+	}
+	//show hits on opponent
+	vector<Coordinates> hits = uiContext.Player2Intel.hits;
+	for(Coordinates hit : hits)
+	{
+		Fl_Color color = FL_GREEN;
+		string cellPos = coordsToCellPos(hit);
+		reColorGridCell(cellPos, color);
+	}
 }
 
-void updatePlayerWindows(UIElements uiData, ShipPlacementData *spd )
+void UIHandler::updatePlayerWindows(GameMaster *gameMaster)
 {
 	//Update Player Turn Box
-	updatePlayerTurnBox(uiData, spd);
+	updatePlayerTurnBox(gameMaster);
 	
 	//Place Ships in Grid
-	UIContext uiContext = spd->gameMaster->UIctx;
+	UIContext uiContext = gameMaster->UIctx;
+	if(uiContext.CurrentPhase == PlaceShipsP1 || uiContext.CurrentPhase == Player1Turn)
+	{
+		updatePlayer1Grid(gameMaster);
+	}
+	else if (uiContext.CurrentPhase == PlaceShipsP2 || uiContext.CurrentPhase == Player2Turn)
+	{
+		updatePlayer2Grid(gameMaster);
+	}
 	
-	
-}	
+}
+void UIHandler::toggleShipPlacementElements(GameMaster *gameMaster)
+{
+	bool visible = gameMaster->CurrentPhase == PlaceShipsP1 || gameMaster->CurrentPhase == PlaceShipsP2;
+	if (visible)
+	{
+		battleshipBtn->show();
+		cruiserBtn->show();
+		destroyerBtn->show();
+		submarineBtn->show();
+		selectedShipOutput->show();
+		coordsInput->show();
+	}
+	else
+	{
+		battleshipBtn->hide();
+		cruiserBtn->hide();
+		destroyerBtn->hide();
+		submarineBtn->hide();
+		selectedShipOutput->hide();
+		coordsInput->hide();
+		
+	}
+}

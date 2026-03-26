@@ -15,7 +15,6 @@ class Player
 		bool AllShipsDestroyed;
 		vector<Ship> ShipInventory;
 		vector<Coordinates> Flag;
-		vector<Coordinates> ShotsFired;
 		vector<Coordinates> hits;
 		vector<Coordinates> hitsReceived;
 		// ShipsToPlace = {{ShipSize, Count}}
@@ -26,7 +25,6 @@ class Player
 		void setName(string name);
 		void placeShip(vector<Coordinates> coords, int shipSize);
 		void placeFlag(Coordinates coords);
-		void fireShot(Coordinates coords);
 		bool checkForHit(Coordinates coords);
 		bool checkIfAllShipsPlaced();
 		void checkAllShipsDestroyed();

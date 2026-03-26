@@ -18,4 +18,5 @@ void shipSelect_cb(Fl_Widget *widget, void *data);
 void fireInput_cb(Fl_Widget *widget, void *data);
 void reColorGridCell(UIElements uiData,string cellPos, Fl_Color color);
 void testforPlaceShipInput(Fl_Widget *widget, void *data);
+void createNameWindow_cb(Fl_Widget *widget, void *data);
 void getPlayerNames_cb(Fl_Widget *widget, void *data);	

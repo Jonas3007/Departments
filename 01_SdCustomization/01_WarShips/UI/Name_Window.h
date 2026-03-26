@@ -11,7 +11,7 @@ public:
 	NameWindow(GameMaster *gameMaster);
 
 private:
-	PlayerNames *pn;
+	
 
 	Fl_Input* nameInput;
 
