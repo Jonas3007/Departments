@@ -10,10 +10,12 @@
 #include "GamePhase.h"
 #include "Player.h"
 #include "PlayerNames.h"
+#include "UIElements.h"
+#include "UIHandler.h"
+#include "ShipPlacementData.h"
 
 
-
-
+struct ShipPlacementData;
 
 class GameMaster
 {
@@ -42,11 +44,13 @@ class GameMaster
 		void updateP1UIContext(Player player);
 		void updateP2UIContext(Player player);
 		void updateUIContext(Player player);
+		//Update UI
+		void reColorGridCell(UIElements uiData, string cellPos);
+		void updatePlayerTurnBox(UIElements uiData, ShipPlacementData *spd);
 		// Update Playerattributes
 		void updatePlayer(Player player);
 		// Turn Helper
 		void switchTurn();
-		void randomPlayerStart();
 		void selectRandomPlayer();
 		//Coordinate Helpers
 		vector<Coordinates> CalculateGridOccupancie(vector<Coordinates> initialCoords, int shipSize); // calculates the coordinates which will be occuppied by a ship

@@ -16,6 +16,7 @@ class Player
 		vector<Ship> ShipInventory;
 		vector<Coordinates> Flag;
 		vector<Coordinates> ShotsFired;
+		vector<Coordinates> hits;
 		vector<Coordinates> hitsReceived;
 		// ShipsToPlace = {{ShipSize, Count}}
 		vector<ShipConfig> ShipsToPlace = { {5, 1}, {4, 2}, {3, 3}, {2, 4} }; // Default ship configuration, can be modified as needed

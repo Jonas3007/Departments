@@ -8,15 +8,10 @@
 #include <Fl/Fl_Box.H>
 #include <Fl/Fl_Output.H>	
 #include "UIElements.h"
+#include "ShipPlacementData.h"
 
 
-struct ShipPlacementData
-{
-	int selectedShipSize;
-	Fl_Output *selectedShipOutput;
-	Fl_Input *coordsInput;
-	GameMaster *gameMaster;
-};
+
 
 void takeInput_cb(Fl_Widget *widget, void *data);
 void shipSelect_cb(Fl_Widget *widget, void *data);

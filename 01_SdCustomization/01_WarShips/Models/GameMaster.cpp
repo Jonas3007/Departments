@@ -15,6 +15,7 @@
 #include "InputParser.h"
 #include <FL/Fl.H>
 #include "Callbacks.h"
+#include "ShipPlacementData.h"	
 //---------------------
 // Getter and Setter
 //---------------------
@@ -55,6 +56,7 @@ void GameMaster::updateP1UIContext(Player player)
 	UIctx.Player1Intel.Flag = player.Flag;
 	UIctx.Player1Intel.ShotsFired = player.ShotsFired;
 	UIctx.Player1Intel.hitsReceived = player.hitsReceived;
+	UIctx.Player1Intel.hits = player.hits;
 }
 void GameMaster::updateP2UIContext(Player player)
 {
@@ -65,6 +67,7 @@ void GameMaster::updateP2UIContext(Player player)
 	UIctx.Player2Intel.Flag = player.Flag;
 	UIctx.Player2Intel.ShotsFired = player.ShotsFired;
 	UIctx.Player2Intel.hitsReceived = player.hitsReceived;
+	UIctx.Player2Intel.hits = player.hits;
 }
 void GameMaster::updateUIContext(Player player)
 {
@@ -77,7 +80,6 @@ void GameMaster::updateUIContext(Player player)
 		updateP2UIContext(player);
 	}
 }
-
 void GameMaster::updatePlayer(Player player)
 {
 	if (CurrentPhase == Player1Turn || CurrentPhase == PlaceShipsP1)
@@ -89,6 +91,7 @@ void GameMaster::updatePlayer(Player player)
 		Player2 = player;
 	}
 }
+
 //---------------------
 // Helper Functions
 //---------------------
@@ -101,7 +104,7 @@ void GameMaster::switchTurn()
 	}
 	else if (CurrentPhase == PlaceShipsP2)
 	{
-		randomPlayerStart();
+		selectRandomPlayer();
 	}
 	else if (CurrentPhase == Player1Turn)
 	{
@@ -274,14 +277,28 @@ void GameMaster::FireAtCoordinates(string input, void *data)
 	ActivePlayer.fireShot(targetCoords);
 	if (CurrentPhase == Player1Turn)
 	{
-		Player2.checkForHit(targetCoords);
+		if(	Player2.checkForHit(targetCoords))
+		{
+			Player1.hits.push_back(targetCoords);
+		}
+		else
+		{
+			Player1.ShotsFired.push_back(targetCoords);
+		}
 		Player2.updateShipStatus();
 		Player2.checkAllShipsDestroyed();
 		updateP2UIContext(Player2);
 	}
 	else
 	{
-		Player1.checkForHit(targetCoords);
+		(Player1.checkForHit(targetCoords))
+		{
+			Player2.hits.push_back(targetCoords);
+		}
+		else
+		{
+			Player2.ShotsFired.push_back(targetCoords);
+		}
 		Player1.updateShipStatus();
 		Player1.checkAllShipsDestroyed();
 		updateP1UIContext(Player1);

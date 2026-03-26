@@ -11,6 +11,6 @@ struct PlayerIntel
 	bool AllShipsPlaced;
 	vector<Ship> ShipsInventory;
 	vector<Coordinates> Flag;
-	vector<Coordinates> ShotsFired;
+	vector<Coordinates> hits;
 	vector<Coordinates> hitsReceived;
 };

@@ -3,7 +3,8 @@
 #include "UIContext.h"
 #include "Callbacks.h"
 #include "GameMaster.h"
-
+#include "UIElements.h"
+#include "ShipPlacementData.h"
 class GameMaster;
 
-Fl_Window* CreatePlayerWindow(UIContext *UIctx, GameMaster *gameMaster);
+Fl_Window* CreatePlayerWindow(UIContext *UIctx, GameMaster *gameMaster, UIElements *uiData, ShipPlacementData *spd);

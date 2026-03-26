@@ -10,6 +10,7 @@
 #include <string>
 #include "Coordinates.h"
 #include "InputParser.h"
+#include "ShipPlacementData.h"
 // Helper
 int setSelectedShipSize(Fl_Widget *widget)
 {
@@ -55,6 +56,7 @@ void shipSelect_cb(Fl_Widget *widget, void *data)
 void fireInput_cb(Fl_Widget *widget, void *data)
 {
 	auto spd = static_cast<ShipPlacementData *>(data);
+	
 	cout << "Fire Input Callback triggered" << endl;
 	spd->gameMaster->FireAtCoordinates(spd->coordsInput->value(), spd);
 }

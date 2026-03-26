@@ -36,6 +36,8 @@ target_include_directories(warShips PRIVATE
     ${FLTK_INCLUDE_DIR}
     ${CMAKE_SOURCE_DIR}
     ${CMAKE_SOURCE_DIR}/Helper
+    ${CMAKE_SOURCE_DIR}/Helper/InputHelper
+    ${CMAKE_SOURCE_DIR}/Helper/UIHelper
     ${CMAKE_SOURCE_DIR}/Models/Factory
     ${CMAKE_SOURCE_DIR}/Context
     ${CMAKE_SOURCE_DIR}/Models

@@ -7,6 +7,7 @@
 #include "Name_Window.h"
 #include "GameMaster.h"
 #include "UIElements.h"
+#include "ShipPlacementData.h"
 
 #include <Fl/Fl_Window.H>
 #include <Fl/Fl_Button.H>
@@ -108,12 +109,11 @@ void shipPlacementElements(Fl_Input *coordsInput, ShipPlacementData *spd)
 }
 
 
-Fl_Window *CreatePlayerWindow(UIContext *UIctx, GameMaster *gameMaster)
+Fl_Window *CreatePlayerWindow(UIContext *UIctx, GameMaster *gameMaster, UIElements *uiData, ShipPlacementData *spd)
 {
 	// Initialize DataStructs
-	UIElements *uiData = new UIElements();
-	ShipPlacementData *spd = new ShipPlacementData();
 	spd->gameMaster = gameMaster;
+	spd->uiData = uiData;
 
 	// Create Main Window
 	Fl_Window *window = new Fl_Window(1000, 800);
@@ -123,10 +123,12 @@ Fl_Window *CreatePlayerWindow(UIContext *UIctx, GameMaster *gameMaster)
 	title->labelfont(FL_BOLD + FL_ITALIC);
 	title->labelsize(24);
 	
+	// Player Turn Box
 	Fl_Box *playerTurnBox = new Fl_Box(50, 50, 200, 30);
 	playerTurnBox->labelfont(FL_BOLD);
 	playerTurnBox->labelsize(16);
 	playerTurnBox->copy_label("Current Player: ");
+	uiData->playerTurnBox = playerTurnBox;
 	
 
 	// Input for Coordinates and Button to confirm input
