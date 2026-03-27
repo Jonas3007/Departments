@@ -33,8 +33,9 @@ void UIHandler::setGridCells(Fl_Box *cell)
 {
 		gridCells.push_back(cell);
 }
-void UIHandler::setShipPlacementElements(Fl_Button *battleshipBtn, Fl_Button *cruiserBtn, Fl_Button *destroyerBtn, Fl_Button *submarineBtn, Fl_Output *selectedShipOutput, Fl_Input *coordsInput, Fl_Multiline_Output *shipSizeOutput)
-{	this->battleshipBtn = battleshipBtn;
+void UIHandler::setShipPlacementElements(Fl_Button placeShipbtn,Fl_Button *battleshipBtn, Fl_Button *cruiserBtn, Fl_Button *destroyerBtn, Fl_Button *submarineBtn, Fl_Output *selectedShipOutput, Fl_Input *coordsInput, Fl_Multiline_Output *shipSizeOutput)
+{	this->placeShipBtn = placeShipbtn;
+	this->battleshipBtn = battleshipBtn;
 	this->cruiserBtn = cruiserBtn;
 	this->destroyerBtn = destroyerBtn;
 	this->submarineBtn = submarineBtn;
@@ -62,6 +63,14 @@ void UIHandler::reColorGridCell( string cellPos, Fl_Color color)
 			cell->redraw();
 			break;
 		}
+	}
+}
+void UIHandler::resetGridColors()
+{
+	for (Fl_Box* cell : gridCells)
+	{
+		cell->color(FL_BLUE);
+		cell->redraw();
 	}
 }
 void UIHandler::updatePlayerTurnBox(GameMaster *gameMaster)
@@ -104,8 +113,7 @@ void UIHandler::updatePhaseBox(GameMaster *gameMaster)
 void UIHandler::updatePlayer1Grid(GameMaster *gameMaster)
 {
 	Fl_Color color;
-	UIContext uiContext = gameMaster->UIctx;
-	vector<Ship> P1Inventory = uiContext.Player1Intel.ShipsInventory;
+	vector<Ship> P1Inventory = gameMaster->Player1.ShipInventory;
 	//Show ships in grid
 	for(Ship ship : P1Inventory)
 	{
@@ -117,7 +125,7 @@ void UIHandler::updatePlayer1Grid(GameMaster *gameMaster)
 		}
 	}
 	//Show hits received
-	vector<Coordinates> hitsReceived = uiContext.Player1Intel.hitsReceived;
+	vector<Coordinates> hitsReceived = gameMaster->Player1.hitsReceived;
 	for(Coordinates hit : hitsReceived)
 	{
 		color = FL_RED;
@@ -125,7 +133,7 @@ void UIHandler::updatePlayer1Grid(GameMaster *gameMaster)
 		reColorGridCell(cellPos, color);
 	}
 	//show hits on opponent
-	vector<Coordinates> hits = uiContext.Player1Intel.hits;
+	vector<Coordinates> hits = gameMaster->Player1.hits;
 	for(Coordinates hit : hits)
 	{
 		color = FL_GREEN;
@@ -137,8 +145,8 @@ void UIHandler::updatePlayer1Grid(GameMaster *gameMaster)
 }
 void UIHandler::updatePlayer2Grid(GameMaster *gameMaster)
 {
-	UIContext uiContext = gameMaster->UIctx;
-	vector<Ship> P2Inventory = uiContext.Player2Intel.ShipsInventory;
+
+	vector<Ship> P2Inventory = gameMaster->Player2.ShipInventory;
 	//Show ships in grid
 	for(Ship ship : P2Inventory)
 	{
@@ -150,7 +158,7 @@ void UIHandler::updatePlayer2Grid(GameMaster *gameMaster)
 		}
 	}
 	//Show hits received
-	vector<Coordinates> hitsReceived = uiContext.Player2Intel.hitsReceived;
+	vector<Coordinates> hitsReceived = gameMaster->Player2.hitsReceived;
 	for(Coordinates hit : hitsReceived)
 	{
 		Fl_Color color = FL_RED;
@@ -158,7 +166,7 @@ void UIHandler::updatePlayer2Grid(GameMaster *gameMaster)
 		reColorGridCell(cellPos, color);
 	}
 	//show hits on opponent
-	vector<Coordinates> hits = uiContext.Player2Intel.hits;
+	vector<Coordinates> hits = gameMaster->Player2.hits;
 	for(Coordinates hit : hits)
 	{
 		Fl_Color color = FL_GREEN;
@@ -170,16 +178,24 @@ void UIHandler::updatePlayer2Grid(GameMaster *gameMaster)
 void UIHandler::updatePlayerWindows(GameMaster *gameMaster)
 {
 	//Update Player Turn Box
-	updatePlayerTurnBox(gameMaster);
 	
 	//Place Ships in Grid
 	if(gameMaster->CurrentPhase == PlaceShipsP1 || gameMaster->CurrentPhase == Player1Turn)
 	{
+		resetGridColors();
 		updatePlayer1Grid(gameMaster);
+		updatePlayerTurnBox(gameMaster);
+		updatePhaseBox(gameMaster);
+		updateShipSizeOutput(gameMaster);
+		
 	}
 	else if (gameMaster->CurrentPhase == PlaceShipsP2 || gameMaster->CurrentPhase == Player2Turn)
 	{
+		resetGridColors();
 		updatePlayer2Grid(gameMaster);
+		updatePlayerTurnBox(gameMaster);
+		updatePhaseBox(gameMaster);
+		updateShipSizeOutput(gameMaster);
 	}
 	
 }
@@ -213,6 +229,7 @@ void UIHandler::toggleShipPlacementElements(GameMaster *gameMaster)
 	bool visible = gameMaster->CurrentPhase == PlaceShipsP1 || gameMaster->CurrentPhase == PlaceShipsP2;
 	if (visible)
 	{
+		placeShipBtn->show();
 		battleshipBtn->show();
 		cruiserBtn->show();
 		destroyerBtn->show();
@@ -223,13 +240,12 @@ void UIHandler::toggleShipPlacementElements(GameMaster *gameMaster)
 	}
 	else
 	{
+		placeShipBtn->hide();
 		battleshipBtn->hide();
 		cruiserBtn->hide();
 		destroyerBtn->hide();
 		submarineBtn->hide();
 		selectedShipOutput->hide();
-		coordsInput->hide();
 		shipSizeOutput->hide();
-		
 	}
 }

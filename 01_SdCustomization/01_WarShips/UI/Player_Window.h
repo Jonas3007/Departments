@@ -1,9 +1,8 @@
 #pragma once
 #include <Fl/Fl_Window.H>
-#include "UIContext.h"
 #include "Callbacks.h"
 #include "GameMaster.h"
 #include "ShipPlacementData.h"
 class GameMaster;
 
-Fl_Window* CreatePlayerWindow(UIContext *UIctx, GameMaster *gameMaster, ShipPlacementData *spd);
+Fl_Window* CreatePlayerWindow( GameMaster *gameMaster, ShipPlacementData *spd);

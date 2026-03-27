@@ -3,7 +3,6 @@
 #include "Ship.h"
 #include "Coordinates.h"
 #include "Player.h"
-#include "PlayerIntel.h"
 
 
 void Player::setName(string name)
@@ -86,16 +85,17 @@ void Player::updateShipStatus()
 	}
 }	
 
-bool Player::checkIfAllShipsPlaced()
+void Player::checkIfAllShipsPlaced()
 {
-	vector<ShipConfig> allShipsPlaced = { {5, 0}, {4, 0}, {3, 0}, {2, 0} };
-	if(ShipsToPlace[0].Count == allShipsPlaced[0].Count && ShipsToPlace[1].Count == allShipsPlaced[1].Count && ShipsToPlace[2].Count == allShipsPlaced[2].Count && ShipsToPlace[3].Count == allShipsPlaced[3].Count)
+	for(auto const config : ShipsToPlace)
 	{
-		AllShipsPlaced = true;
-		return true;
-	}
-	else
-	{
-		return false;
+		if(config.Count > 0)
+		{
+			AllShipsPlaced = false;
+		}
+		else 
+		{
+			AllShipsPlaced = true;
+		}
 	}
 }

@@ -4,8 +4,6 @@
 #include "ShipConfig.h"
 #include <vector>
 #include <string>
-#include "PlayerIntel.h"
-
 
 class Player
 {
@@ -28,7 +26,7 @@ class Player
 		void placeShip(vector<Coordinates> coords, int shipSize);
 		void placeFlag(Coordinates coords);
 		bool checkForHit(Coordinates coords);
-		bool checkIfAllShipsPlaced();
+		void checkIfAllShipsPlaced();
 		void checkAllShipsDestroyed();
 		void updateShipStatus();
 		

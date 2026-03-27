@@ -1,7 +1,5 @@
 #include "Player_Window.h"
 #include "Coordinates.h"
-#include "UIContext.h"
-#include "PlayerIntel.h"
 #include <iostream>
 #include "Callbacks.h"
 #include "Name_Window.h"
@@ -111,7 +109,7 @@ void shipPlacementElements(Fl_Input *coordsInput, ShipPlacementData *spd, GameMa
 	ship4_btn->callback(shipSelect_cb, spd);
 	ship3_btn->callback(shipSelect_cb, spd);
 	ship2_btn->callback(shipSelect_cb, spd);
-	gameMaster->uiHandler->setShipPlacementElements(ship5_btn, ship4_btn, ship3_btn, ship2_btn, selectedShipOutput, coordsInput, shipSizeOutput);
+	gameMaster->uiHandler->setShipPlacementElements(placeShip_btn,ship5_btn, ship4_btn, ship3_btn, ship2_btn, selectedShipOutput, coordsInput, shipSizeOutput);
 	if (gameMaster->CurrentPhase != PlaceShipsP1 && gameMaster->CurrentPhase != PlaceShipsP2)
 	{
 		ship5_btn->hide();
@@ -124,7 +122,7 @@ void shipPlacementElements(Fl_Input *coordsInput, ShipPlacementData *spd, GameMa
 }
 
 
-Fl_Window *CreatePlayerWindow(UIContext *UIctx, GameMaster *gameMaster, ShipPlacementData *spd)
+Fl_Window *CreatePlayerWindow( GameMaster *gameMaster, ShipPlacementData *spd)
 {
 	// Initialize DataStructs
 	spd->gameMaster = gameMaster;

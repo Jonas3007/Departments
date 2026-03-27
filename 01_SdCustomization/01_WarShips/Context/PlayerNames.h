@@ -2,8 +2,6 @@
 #include <string>
 #include <Fl/Fl_Input.H>
 #include "GameMaster.h"
-#include "PlayerIntel.h"
-#include "UIContext.h"
 
 class GameMaster;	
 

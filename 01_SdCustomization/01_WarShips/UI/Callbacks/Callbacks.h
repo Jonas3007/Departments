@@ -1,8 +1,6 @@
 #pragma once 
-#include "PlayerIntel.h"
 #include "GameMaster.h"
 #include "Player_Window.h"
-#include "UIContext.h"
 #include <Fl/Fl_Button.H>
 #include <Fl/Fl_Input.H>
 #include <Fl/Fl_Box.H>

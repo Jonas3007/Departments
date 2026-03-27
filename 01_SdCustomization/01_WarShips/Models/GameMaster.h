@@ -1,16 +1,13 @@
 #pragma once
 #include "Coordinates.h"
-#include "PlayerIntel.h"
 #include "ShipFactory.h"
 #include "ShipConfig.h"
 #include "Ship.h"
-#include "UIContext.h"
 #include <vector>
 #include <string>
 #include "GamePhase.h"
 #include "Player.h"
 #include "PlayerNames.h"
-
 #include "UIHandler.h"
 #include "ShipPlacementData.h"
 
@@ -25,7 +22,6 @@ class GameMaster
 		Player Player2;
 		Player ActivePlayer;
 		UIHandler *uiHandler;
-		UIContext UIctx;
 		
 		
 		//Getter and Setter
@@ -41,10 +37,6 @@ class GameMaster
 		//----------------------
 		// Helper Functions
 		//----------------------
-		// Update UIContext
-		void updateP1UIContext(Player player);
-		void updateP2UIContext(Player player);
-		void updateUIContext(Player player);
 	
 		// Update Playerattributes
 		void updatePlayer(Player player);
@@ -58,6 +50,7 @@ class GameMaster
 		//PLace Ship Helper
 		void checkShipsPlacedToUpdatePhase();
 		//Attack Helpers
+		void checkPlayerHit(Coordinates targetCoords);
 		void PlacePlayerShip(string input, void* data);
 		void FireAtCoordinates(string input, void* data);
 };

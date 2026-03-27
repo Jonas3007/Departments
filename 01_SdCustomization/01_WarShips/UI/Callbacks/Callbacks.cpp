@@ -1,8 +1,6 @@
 #include "Callbacks.h"
-#include "PlayerIntel.h"
 #include "GameMaster.h"
 #include "Player_Window.h"
-#include "UIContext.h"
 #include <Fl/Fl_Button.H>
 #include <Fl/Fl_Input.H>
 #include <iostream>
@@ -83,8 +81,6 @@ void getPlayerNames_cb(Fl_Widget *widget, void *data)
 	{
 		gameMaster->CurrentPhase = PlaceShipsP1;
 		gameMaster->ActivePlayer = gameMaster->Player1;
-		gameMaster->updateUIContext(gameMaster->Player1);
-		gameMaster->updateUIContext(gameMaster->Player2);
 		gameMaster->uiHandler->updatePhaseBox(gameMaster);
 		gameMaster->uiHandler->updatePlayerTurnBox(gameMaster);
 		gameMaster->uiHandler->toggleShipPlacementElements(gameMaster);

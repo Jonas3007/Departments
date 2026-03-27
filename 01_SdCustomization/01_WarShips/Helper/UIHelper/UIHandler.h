@@ -1,6 +1,5 @@
 #pragma once 
 #include "ShipPlacementData.h"
-#include "UIContext.h"
 #include "GameMaster.h"
 #include "Player_Window.h"
 #include <Fl/Fl_Input.H>
@@ -22,17 +21,22 @@ class UIHandler
 		void setPlayerTurnBox(Fl_Box *box);
 		void setPhaseBox(Fl_Box *box);
 		void setGridCells(Fl_Box *cells);
-		void setShipPlacementElements(Fl_Button *battleshipBtn, Fl_Button *cruiserBtn, Fl_Button *destroyerBtn, Fl_Button *submarineBtn, Fl_Output *selectedShipOutput, Fl_Input *coordsInput, Fl_Multiline_Output *shipSizeOutput);
+		void setShipPlacementElements(Fl_Button placeShipbtn,Fl_Button *battleshipBtn, Fl_Button *cruiserBtn, Fl_Button *destroyerBtn, Fl_Button *submarineBtn, Fl_Output *selectedShipOutput, Fl_Input *coordsInput, Fl_Multiline_Output *shipSizeOutput);
 		string getPlayerName();	
-		//UI Update Functions
+		
+		//UI Update single Elements
 		void reColorGridCell(string cellPos, Fl_Color color);
 		void updatePlayerTurnBox(GameMaster *gameMaster);
 		void updatePhaseBox(GameMaster *gameMaster);
 		void updatePlayer1Grid(GameMaster *gameMaster);
 		void updatePlayer2Grid(GameMaster *gameMaster);
+		void updateShipSizeOutput(GameMaster *gameMaster);
+		void resetGridColors();	
+		
+		//UI Update according to GameState
 		void updatePlayerWindows(GameMaster *gameMaster);
 		void toggleShipPlacementElements(GameMaster *gameMaster);
-		void updateShipSizeOutput(GameMaster *gameMaster);
+		
 		
 		Fl_Input *nameInput;
 
@@ -42,6 +46,7 @@ class UIHandler
 		vector<Fl_Box *> gridCells;
 		
 		// shipplacement elements
+		Fl_Button *placeShipBtn;
 		Fl_Button *battleshipBtn;
 		Fl_Button *cruiserBtn;
 		Fl_Button *destroyerBtn;
