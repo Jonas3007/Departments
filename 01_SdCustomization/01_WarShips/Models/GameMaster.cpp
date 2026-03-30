@@ -15,6 +15,7 @@
 #include "Callbacks.h"
 #include "ShipPlacementData.h"
 #include "UIHandler.h"
+#include "GameOver_Window.h"	
 //---------------------
 // Getter and Setter
 //---------------------
@@ -71,7 +72,8 @@ void GameMaster::switchTurn()
 	{
 		if(Player1.AllShipsPlaced && Player2.AllShipsPlaced)
 		{
-			selectRandomPlayer();
+			CurrentPhase = Player1Turn; // Default to Player 1 starting, can be randomized if desired
+			uiHandler->toggleFinishTurnBtn(this);
 		}
 		else
 		{
@@ -158,7 +160,7 @@ vector<Coordinates> GameMaster::CalculateGridOccupancie(vector<Coordinates> init
 	}
 	else if (xyInitialCoordinates[0].y == xyInitialCoordinates[1].y)
 	{
-		for (int i = 0; i > shipSize; i++)
+		for (int i = 0; i < shipSize; i++)
 		{
 			xyShipCoordinates.push_back(xyInitialCoordinates[0]);
 			xyInitialCoordinates[0].x++;
@@ -183,11 +185,11 @@ bool GameMaster::placedInGrid(vector<Coordinates> initialCoords, int shipSize)
 	}
 
 	// Checking if ship is in Grid
-	if (xyIniCoords[0].x == xyIniCoords[1].x && xyIniCoords[0].x + shipSize - 1 <= 10 && xyIniCoords[0].x >= 1)
+	if (xyIniCoords[0].x == xyIniCoords[1].x && xyIniCoords[0].y + shipSize - 1 <= 10 && xyIniCoords[0].x >= 1)
 	{
 		return true;
 	}
-	else if (xyIniCoords[0].y == xyIniCoords[1].y && xyIniCoords[0].y + shipSize - 1 <= 10 && xyIniCoords[0].y >= 1)
+	else if (xyIniCoords[0].y == xyIniCoords[1].y && xyIniCoords[0].x + shipSize - 1 <= 10 && xyIniCoords[0].y >= 1)
 	{
 		return true;
 	}
@@ -218,6 +220,7 @@ void GameMaster::checkPlayerHit(Coordinates targetCoords)
 		if (Player2.checkForHit(targetCoords))
 		{
 			Player1.hits.push_back(targetCoords);
+			cout << "Hit at " << targetCoords.Letter << targetCoords.Number << endl;	
 		}
 		Player1.placeFlag(targetCoords);
 		Player2.updateShipStatus();
@@ -234,6 +237,11 @@ void GameMaster::checkPlayerHit(Coordinates targetCoords)
 		Player1.updateShipStatus();
 		Player1.checkAllShipsDestroyed();
 		uiHandler->updatePlayerWindows(this);
+	}
+	if(Player1.AllShipsDestroyed || Player2.AllShipsDestroyed)
+	{
+		CurrentPhase = GameOver;
+		uiHandler->updatePhaseBox(this);
 	}
 }
 void GameMaster::PlacePlayerShip(string input, void *data)
@@ -274,7 +282,8 @@ void GameMaster::FireAtCoordinates(string input, void *data)
 	InputParser coordsParser;
 	Coordinates targetCoords = coordsParser.fireInputTokenizer(input);
 	checkPlayerHit(targetCoords);
-	updatePlayer(ActivePlayer);
+	uiHandler->updatePlayerWindows(this);
+	
 }
 void GameMaster::checkShipsPlacedToUpdatePhase()
 {
@@ -290,6 +299,7 @@ void GameMaster::checkShipsPlacedToUpdatePhase()
 	{
 		selectRandomPlayer();
 		uiHandler->toggleShipPlacementElements(this);
+		uiHandler->toggleFinishTurnBtn(this);
 		uiHandler->updatePlayerTurnBox(this);
 		uiHandler->updatePhaseBox(this);
 		uiHandler->updatePlayerWindows(this);
@@ -298,11 +308,28 @@ void GameMaster::checkShipsPlacedToUpdatePhase()
 
 void GameMaster::InitializeGame()
 {
-	Player player1;
-	Player player2;
-
-	SetPlayer1(&player1);
-	SetPlayer2(&player2);
+	SetPlayer1(new Player());
+	SetPlayer2(new Player());
 
 	CurrentPhase = PickNamePhase;
 }
+
+void GameMaster::checkNamesEntered()
+{
+	if(!Player1.Name.empty() && !Player2.Name.empty())
+	{
+		uiHandler->toggleEnterNamesBtn(this);
+	}
+}
+void GameMaster::finishTurn()
+{
+	switchTurn();
+	uiHandler->updatePlayerWindows(this);
+}
+
+void GameMaster::createGameOverWindow( )
+{
+	(new GameOverWindow(this))->show();
+	
+}
+

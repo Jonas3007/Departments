@@ -21,7 +21,9 @@ class UIHandler
 		void setPlayerTurnBox(Fl_Box *box);
 		void setPhaseBox(Fl_Box *box);
 		void setGridCells(Fl_Box *cells);
-		void setShipPlacementElements(Fl_Button placeShipbtn,Fl_Button *battleshipBtn, Fl_Button *cruiserBtn, Fl_Button *destroyerBtn, Fl_Button *submarineBtn, Fl_Output *selectedShipOutput, Fl_Input *coordsInput, Fl_Multiline_Output *shipSizeOutput);
+		void setFinishTurnBtn(Fl_Button *btn);
+		void setEnterNamesBtn(Fl_Button *btn);	
+		void setShipPlacementElements(Fl_Button *placeShipbtn,Fl_Button *battleshipBtn, Fl_Button *cruiserBtn, Fl_Button *destroyerBtn, Fl_Button *submarineBtn, Fl_Output *selectedShipOutput, Fl_Input *coordsInput, Fl_Multiline_Output *shipSizeOutput);
 		string getPlayerName();	
 		
 		//UI Update single Elements
@@ -35,12 +37,17 @@ class UIHandler
 		
 		//UI Update according to GameState
 		void updatePlayerWindows(GameMaster *gameMaster);
+		void toggleEnterNamesBtn(GameMaster *gameMaster);	
+		void toggleFinishTurnBtn(GameMaster *gameMaster);
 		void toggleShipPlacementElements(GameMaster *gameMaster);
 		
 		
 		Fl_Input *nameInput;
 
 	private:
+		Fl_Button *enterNamesBtn;	
+		Fl_Button *finishTurnBtn;
+		//Game State Elements
 		Fl_Box *playerTurnBox;
 		Fl_Box *phaseBox;
 		vector<Fl_Box *> gridCells;

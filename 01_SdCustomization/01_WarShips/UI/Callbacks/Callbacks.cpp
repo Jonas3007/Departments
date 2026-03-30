@@ -85,4 +85,16 @@ void getPlayerNames_cb(Fl_Widget *widget, void *data)
 		gameMaster->uiHandler->updatePlayerTurnBox(gameMaster);
 		gameMaster->uiHandler->toggleShipPlacementElements(gameMaster);
 	}
+	gameMaster->checkNamesEntered();
+}
+void finishTurn_cb(Fl_Widget *widget, void *data)
+{
+	cout << "Finish Turn Callback triggered" << endl;
+	auto gameMaster = static_cast<GameMaster *>(data);
+	gameMaster->finishTurn();
+}
+void continue_cb(Fl_Widget *widget, void *data)
+{
+	auto gameMaster = static_cast<GameMaster *>(data);
+	gameMaster->InitializeGame();
 }

@@ -3,6 +3,7 @@
 #include <iostream>
 #include "Callbacks.h"
 #include "Name_Window.h"
+#include "GameOver_Window.h"
 #include "GameMaster.h"
 #include "ShipPlacementData.h"
 #include "UIHandler.h"	
@@ -154,7 +155,15 @@ Fl_Window *CreatePlayerWindow( GameMaster *gameMaster, ShipPlacementData *spd)
 	Fl_Button *enterNamesBtn = new Fl_Button(650, 50, 150, 35, "Enter Player Names");
 	enterNamesBtn->box(FL_PLASTIC_UP_BOX);
 	enterNamesBtn->callback(createNameWindow_cb, spd);
+	gameMaster->uiHandler->setEnterNamesBtn(enterNamesBtn);
 	
+	
+	//Finish Turn Button
+	Fl_Button *finishTurnBtn = new Fl_Button(650, 100, 150, 35, "Finish Turn");
+	finishTurnBtn->box(FL_PLASTIC_UP_BOX);
+	finishTurnBtn->callback(finishTurn_cb, gameMaster);
+	gameMaster->uiHandler->setFinishTurnBtn(finishTurnBtn);
+	finishTurnBtn->hide();
 
 	
 	// Input for Coordinates and Button to confirm input
@@ -175,6 +184,8 @@ Fl_Window *CreatePlayerWindow( GameMaster *gameMaster, ShipPlacementData *spd)
 	// Buttons and ui elements for ship placement
 	
 	shipPlacementElements(coordsInput, spd, gameMaster);
+	
+	
 	
 
 	window->end();

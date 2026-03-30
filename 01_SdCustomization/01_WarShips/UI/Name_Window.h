@@ -11,13 +11,5 @@ public:
 	NameWindow(GameMaster *gameMaster);
 
 private:
-	
-
 	Fl_Input* nameInput;
-
-	
-
-	// statische Callback-Wrapper
-	static void cb_refresh(Fl_Widget*, void*);
-	static void cb_save(Fl_Widget*, void*);
 };

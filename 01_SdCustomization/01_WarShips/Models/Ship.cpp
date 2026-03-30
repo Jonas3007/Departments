@@ -18,6 +18,11 @@ void Ship::CheckDestroyed()
 			{
 				Destroyed = true;
 			}
+			else
+			{
+				Destroyed = false;
+				return;
+			}
 		}
 	}
 }

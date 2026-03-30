@@ -33,7 +33,7 @@ void UIHandler::setGridCells(Fl_Box *cell)
 {
 		gridCells.push_back(cell);
 }
-void UIHandler::setShipPlacementElements(Fl_Button placeShipbtn,Fl_Button *battleshipBtn, Fl_Button *cruiserBtn, Fl_Button *destroyerBtn, Fl_Button *submarineBtn, Fl_Output *selectedShipOutput, Fl_Input *coordsInput, Fl_Multiline_Output *shipSizeOutput)
+void UIHandler::setShipPlacementElements(Fl_Button *placeShipbtn,Fl_Button *battleshipBtn, Fl_Button *cruiserBtn, Fl_Button *destroyerBtn, Fl_Button *submarineBtn, Fl_Output *selectedShipOutput, Fl_Input *coordsInput, Fl_Multiline_Output *shipSizeOutput)
 {	this->placeShipBtn = placeShipbtn;
 	this->battleshipBtn = battleshipBtn;
 	this->cruiserBtn = cruiserBtn;
@@ -109,6 +109,14 @@ void UIHandler::updatePhaseBox(GameMaster *gameMaster)
 	gameMaster->uiHandler->phaseBox->copy_label(("Phase: " + phaseName).c_str());
 	gameMaster->uiHandler->phaseBox->redraw();
 }
+void UIHandler::setFinishTurnBtn(Fl_Button *btn)
+{
+	this->finishTurnBtn = btn;
+}	
+void UIHandler::setEnterNamesBtn(Fl_Button *btn)
+{
+	this->enterNamesBtn = btn;
+}	
 
 void UIHandler::updatePlayer1Grid(GameMaster *gameMaster)
 {
@@ -247,5 +255,28 @@ void UIHandler::toggleShipPlacementElements(GameMaster *gameMaster)
 		submarineBtn->hide();
 		selectedShipOutput->hide();
 		shipSizeOutput->hide();
+	}
+}
+void UIHandler::toggleFinishTurnBtn(GameMaster *gameMaster)
+{
+	bool visible = gameMaster->CurrentPhase == Player1Turn || gameMaster->CurrentPhase == Player2Turn;
+	if(visible)
+	{
+		finishTurnBtn->show();
+	}
+	else
+	{
+		finishTurnBtn->hide();
+	}
+}
+void UIHandler::toggleEnterNamesBtn(GameMaster *gameMaster)
+{
+	if(!gameMaster->Player1.Name.empty() && !gameMaster->Player2.Name.empty())
+	{
+		enterNamesBtn->hide();
+	}
+	else
+	{
+		enterNamesBtn->show();
 	}
 }

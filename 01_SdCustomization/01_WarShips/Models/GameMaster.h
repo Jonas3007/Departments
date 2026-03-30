@@ -33,16 +33,15 @@ class GameMaster
 		
 		//Initialize Game
 		void InitializeGame();
-		
-		//----------------------
-		// Helper Functions
-		//----------------------
-	
+		//check if Names have been entered 
+		void checkNamesEntered();
+
 		// Update Playerattributes
 		void updatePlayer(Player player);
 		// Turn Helper
 		void switchTurn();
 		void selectRandomPlayer();
+		void finishTurn();	
 		//Coordinate Helpers
 		vector<Coordinates> CalculateGridOccupancie(vector<Coordinates> initialCoords, int shipSize); // calculates the coordinates which will be occuppied by a ship
 		bool placedInGrid(vector<Coordinates> coords, int shipSize); // checks if the ship placement is within the grid boundaries
@@ -53,4 +52,7 @@ class GameMaster
 		void checkPlayerHit(Coordinates targetCoords);
 		void PlacePlayerShip(string input, void* data);
 		void FireAtCoordinates(string input, void* data);
+		
+		//GameOver Helper
+		void createGameOverWindow();
 };

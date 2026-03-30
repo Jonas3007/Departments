@@ -92,8 +92,9 @@ void Player::checkIfAllShipsPlaced()
 		if(config.Count > 0)
 		{
 			AllShipsPlaced = false;
+			return;
 		}
-		else 
+		else if (config.Count == 0	)
 		{
 			AllShipsPlaced = true;
 		}

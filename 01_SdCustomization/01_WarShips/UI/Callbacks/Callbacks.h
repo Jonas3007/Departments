@@ -15,3 +15,5 @@ void shipSelect_cb(Fl_Widget *widget, void *data);
 void fireInput_cb(Fl_Widget *widget, void *data);
 void createNameWindow_cb(Fl_Widget *widget, void *data);
 void getPlayerNames_cb(Fl_Widget *widget, void *data);	
+void finishTurn_cb(Fl_Widget *widget, void *data);
+void continue_cb(Fl_Widget *widget, void *data);
