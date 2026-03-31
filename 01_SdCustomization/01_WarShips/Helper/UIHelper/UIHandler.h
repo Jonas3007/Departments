@@ -20,7 +20,9 @@ class UIHandler
 		void setNameInput(Fl_Input *input);	
 		void setPlayerTurnBox(Fl_Box *box);
 		void setPhaseBox(Fl_Box *box);
+		//Player Grid
 		void setGridCells(Fl_Box *cells);
+		void setPlayerShipGridCells(Fl_Box *cells);
 		void setFinishTurnBtn(Fl_Button *btn);
 		void setEnterNamesBtn(Fl_Button *btn);	
 		void setFireBtn(Fl_Button *btn);
@@ -29,6 +31,7 @@ class UIHandler
 		
 		//UI Update single Elements
 		void reColorGridCell(string cellPos, Fl_Color color);
+		void reColorPlayerShipGridCell(string cellPos, Fl_Color color);	
 		void updatePlayerTurnBox(GameMaster *gameMaster);
 		void updatePhaseBox(GameMaster *gameMaster);
 		void updatePlayer1Grid(GameMaster *gameMaster);
@@ -45,6 +48,8 @@ class UIHandler
 		
 		
 		Fl_Input *nameInput;
+		vector<Fl_Box *> PlayerShipGridCells;
+		vector<Fl_Box *> gridCells;
 
 	private:
 		Fl_Button *firebtn;
@@ -53,7 +58,7 @@ class UIHandler
 		//Game State Elements
 		Fl_Box *playerTurnBox;
 		Fl_Box *phaseBox;
-		vector<Fl_Box *> gridCells;
+		
 		
 		// shipplacement elements
 		Fl_Button *placeShipBtn;

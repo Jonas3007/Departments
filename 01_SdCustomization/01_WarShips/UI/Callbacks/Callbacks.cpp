@@ -84,6 +84,7 @@ void getPlayerNames_cb(Fl_Widget *widget, void *data)
 		gameMaster->uiHandler->updatePhaseBox(gameMaster);
 		gameMaster->uiHandler->updatePlayerTurnBox(gameMaster);
 		gameMaster->uiHandler->toggleShipPlacementElements(gameMaster);
+		gameMaster->uiHandler->toggleFireBtn(gameMaster);
 	}
 	gameMaster->checkNamesEntered();
 }

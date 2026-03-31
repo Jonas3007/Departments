@@ -13,9 +13,9 @@ class Player
 		bool AllShipsDestroyed;
 		bool AllShipsPlaced;
 		vector<Ship> ShipInventory;
-		vector<Coordinates> Flag;
 		vector<Coordinates> hits;
 		vector<Coordinates> hitsReceived;
+		vector<Coordinates> misses;
 		// ShipsToPlace = {{ShipSize, Count}}
 		vector<ShipConfig> ShipsToPlace = { {5, 0}, {4, 0}, {3, 0}, {2, 1} }; // Default ship configuration, can be modified as needed
 		
@@ -24,7 +24,7 @@ class Player
 		void setName(string name);
 		bool checkIfShipSizeAvailable(int shipSize);
 		void placeShip(vector<Coordinates> coords, int shipSize);
-		void placeFlag(Coordinates coords);
+		void miss(Coordinates coords);
 		bool checkForHit(Coordinates coords);
 		void checkIfAllShipsPlaced();
 		void checkAllShipsDestroyed();

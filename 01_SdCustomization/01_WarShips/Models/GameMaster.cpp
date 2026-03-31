@@ -15,7 +15,7 @@
 #include "Callbacks.h"
 #include "ShipPlacementData.h"
 #include "UIHandler.h"
-#include "GameOver_Window.h"	
+#include "GameOver_Window.h"
 //---------------------
 // Getter and Setter
 //---------------------
@@ -70,10 +70,11 @@ void GameMaster::switchTurn()
 	}
 	else if (CurrentPhase == PlaceShipsP2)
 	{
-		if(Player1.AllShipsPlaced && Player2.AllShipsPlaced)
+		if (Player1.AllShipsPlaced && Player2.AllShipsPlaced)
 		{
 			CurrentPhase = Player1Turn; // Default to Player 1 starting, can be randomized if desired
 			uiHandler->toggleFinishTurnBtn(this);
+			uiHandler->toggleFireBtn(this); // Enable the fire button for the first player's turn
 		}
 		else
 		{
@@ -82,7 +83,7 @@ void GameMaster::switchTurn()
 	}
 	else if (CurrentPhase == Player1Turn)
 	{
-		
+
 		CurrentPhase = Player2Turn;
 		firedThisTurn = false; // Reset the flag for the next player's turn
 		uiHandler->toggleFinishTurnBtn(this);
@@ -227,9 +228,12 @@ void GameMaster::checkPlayerHit(Coordinates targetCoords)
 		if (Player2.checkForHit(targetCoords))
 		{
 			Player1.hits.push_back(targetCoords);
-			cout << "Hit at " << targetCoords.Letter << targetCoords.Number << endl;	
+			cout << "Hit at " << targetCoords.Letter << targetCoords.Number << endl;
 		}
-		Player1.placeFlag(targetCoords);
+		else
+		{
+			Player1.miss(targetCoords);
+		}
 		Player2.checkAllShipsDestroyed();
 		uiHandler->updatePlayerWindows(this);
 	}
@@ -240,11 +244,14 @@ void GameMaster::checkPlayerHit(Coordinates targetCoords)
 			Player2.hits.push_back(targetCoords);
 			cout << "Hit at " << targetCoords.Letter << targetCoords.Number << endl;
 		}
-		Player2.placeFlag(targetCoords);
+		else
+		{
+			Player2.miss(targetCoords);
+		}
 		Player1.checkAllShipsDestroyed();
 		uiHandler->updatePlayerWindows(this);
 	}
-	if(Player1.AllShipsDestroyed || Player2.AllShipsDestroyed)
+	if (Player1.AllShipsDestroyed || Player2.AllShipsDestroyed)
 	{
 		CurrentPhase = GameOver;
 		createGameOverWindow();
@@ -253,7 +260,6 @@ void GameMaster::checkPlayerHit(Coordinates targetCoords)
 	}
 	firedThisTurn = true;
 	uiHandler->toggleFireBtn(this);
-	
 }
 void GameMaster::PlacePlayerShip(string input, void *data)
 {
@@ -280,7 +286,7 @@ void GameMaster::PlacePlayerShip(string input, void *data)
 		cout << "Ship of size " << spd->selectedShipSize << " not available for placement." << endl;
 		return;
 	}
-	//ActivePlayer places Ship
+	// ActivePlayer places Ship
 	ActivePlayer.placeShip(fullShipCoords, spd->selectedShipSize);
 	updatePlayer(ActivePlayer);
 	uiHandler->updatePlayerWindows(this);
@@ -294,7 +300,6 @@ void GameMaster::FireAtCoordinates(string input, void *data)
 	checkPlayerHit(targetCoords);
 	uiHandler->toggleFinishTurnBtn(this); // Enable the finish turn button after firing
 	uiHandler->updatePlayerWindows(this);
-	
 }
 void GameMaster::checkShipsPlacedToUpdatePhase()
 {
@@ -327,7 +332,7 @@ void GameMaster::InitializeGame()
 
 void GameMaster::checkNamesEntered()
 {
-	if(!Player1.Name.empty() && !Player2.Name.empty())
+	if (!Player1.Name.empty() && !Player2.Name.empty())
 	{
 		uiHandler->toggleEnterNamesBtn(this);
 	}
@@ -338,8 +343,7 @@ void GameMaster::finishTurn()
 	uiHandler->updatePlayerWindows(this);
 }
 
-void GameMaster::createGameOverWindow( )
+void GameMaster::createGameOverWindow()
 {
 	(new GameOverWindow(this))->show();
 }
-

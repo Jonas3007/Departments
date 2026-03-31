@@ -57,9 +57,9 @@ void Player::placeShip(vector<Coordinates> coords, int ShipSize)
 	}
 }
 
-void Player::placeFlag(Coordinates coords)
+void Player::miss(Coordinates coords)
 {
-	Flag.push_back(coords);
+	misses.push_back(coords);
 }
 
 void Player::checkAllShipsDestroyed()
