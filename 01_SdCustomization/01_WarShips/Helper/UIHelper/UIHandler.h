@@ -9,17 +9,21 @@
 #include "Fl/Fl_Button.H"
 #include "Fl/Fl_Output.H"
 #include "Fl/Fl_Multiline_Output.H"
+#include "Name_Window.h"
 
+class NameWindow;
 //---------------------
 // Update UI
 //---------------------
 class UIHandler
 {
 	public:
+		
 		//Setter for UI elements
 		void setNameInput(Fl_Input *input);	
 		void setPlayerTurnBox(Fl_Box *box);
 		void setPhaseBox(Fl_Box *box);
+		void setNameWindow(NameWindow *window);	
 		//Player Grid
 		void setGridCells(Fl_Box *cells);
 		void setPlayerShipGridCells(Fl_Box *cells);
@@ -30,6 +34,7 @@ class UIHandler
 		string getPlayerName();	
 		
 		//UI Update single Elements
+		void resetPlayerInputs();
 		void reColorGridCell(string cellPos, Fl_Color color);
 		void reColorPlayerShipGridCell(string cellPos, Fl_Color color);	
 		void updatePlayerTurnBox(GameMaster *gameMaster);
@@ -50,6 +55,7 @@ class UIHandler
 		Fl_Input *nameInput;
 		vector<Fl_Box *> PlayerShipGridCells;
 		vector<Fl_Box *> gridCells;
+		NameWindow *nameWindow;
 
 	private:
 		Fl_Button *firebtn;

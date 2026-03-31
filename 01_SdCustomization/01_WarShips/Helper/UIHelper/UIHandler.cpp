@@ -47,6 +47,10 @@ void UIHandler::setShipPlacementElements(Fl_Button *placeShipbtn, Fl_Button *bat
 	this->coordsInput = coordsInput;
 	this->shipSizeOutput = shipSizeOutput;
 }
+void UIHandler::setNameWindow(NameWindow *window)
+{
+	this->nameWindow = window;
+}
 string UIHandler::getPlayerName()
 {
 	return nameInput->value();
@@ -55,7 +59,11 @@ string UIHandler::getPlayerName()
 //---------------------
 // Update UI
 //---------------------
-
+void UIHandler::resetPlayerInputs()
+{
+	coordsInput->value("");
+	selectedShipOutput->value("");
+}
 void UIHandler::reColorGridCell(string cellPos, Fl_Color color)
 {
 

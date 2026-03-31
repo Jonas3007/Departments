@@ -308,12 +308,14 @@ void GameMaster::checkShipsPlacedToUpdatePhase()
 	if (Player1.AllShipsPlaced && !Player2.AllShipsPlaced)
 	{
 		updatePlayer(ActivePlayer);
+		uiHandler->resetPlayerInputs();
 		switchTurn();
 		uiHandler->updatePlayerWindows(this);
 	}
 	else if (Player1.AllShipsPlaced && Player2.AllShipsPlaced)
-	{
-		selectRandomPlayer();
+	{	
+		uiHandler->resetPlayerInputs();
+		switchTurn(); 
 		uiHandler->toggleShipPlacementElements(this);
 		uiHandler->toggleFinishTurnBtn(this);
 		uiHandler->updatePlayerTurnBox(this);

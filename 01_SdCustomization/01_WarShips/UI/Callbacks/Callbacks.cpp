@@ -58,7 +58,9 @@ void fireInput_cb(Fl_Widget *widget, void *data)
 void createNameWindow_cb(Fl_Widget *widget, void *data)
 {
 	auto spd = static_cast<ShipPlacementData *>(data);
-	(new NameWindow(spd->gameMaster))->show();
+	NameWindow *nameWindow = new NameWindow(spd->gameMaster);
+	spd->gameMaster->uiHandler->setNameWindow(nameWindow);
+	nameWindow->show();
 }
 void getPlayerNames_cb(Fl_Widget *widget, void *data)
 {
@@ -85,6 +87,7 @@ void getPlayerNames_cb(Fl_Widget *widget, void *data)
 		gameMaster->uiHandler->updatePlayerTurnBox(gameMaster);
 		gameMaster->uiHandler->toggleShipPlacementElements(gameMaster);
 		gameMaster->uiHandler->toggleFireBtn(gameMaster);
+		gameMaster->uiHandler->nameWindow->hide();	
 	}
 	gameMaster->checkNamesEntered();
 }
@@ -92,6 +95,7 @@ void finishTurn_cb(Fl_Widget *widget, void *data)
 {
 	cout << "Finish Turn Callback triggered" << endl;
 	auto gameMaster = static_cast<GameMaster *>(data);
+	gameMaster->uiHandler->resetPlayerInputs(); 
 	gameMaster->finishTurn();
 }
 void continue_cb(Fl_Widget *widget, void *data)
