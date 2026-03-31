@@ -17,9 +17,9 @@ class Player
 		vector<Coordinates> hits;
 		vector<Coordinates> hitsReceived;
 		// ShipsToPlace = {{ShipSize, Count}}
-		vector<ShipConfig> ShipsToPlace = { {5, 1}, {4, 1}, {3, 1}, {2, 1} }; // Default ship configuration, can be modified as needed
+		vector<ShipConfig> ShipsToPlace = { {5, 0}, {4, 0}, {3, 0}, {2, 1} }; // Default ship configuration, can be modified as needed
 		
-	
+		
 	//Methods
 		void setName(string name);
 		bool checkIfShipSizeAvailable(int shipSize);
@@ -29,5 +29,7 @@ class Player
 		void checkIfAllShipsPlaced();
 		void checkAllShipsDestroyed();
 		void updateShipStatus();
+		void takeHit(Coordinates coords);
+		void removeShipFromInventory(Coordinates coords);	
 		
 };

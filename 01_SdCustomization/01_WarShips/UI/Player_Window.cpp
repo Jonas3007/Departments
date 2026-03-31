@@ -6,7 +6,7 @@
 #include "GameOver_Window.h"
 #include "GameMaster.h"
 #include "ShipPlacementData.h"
-#include "UIHandler.h"	
+#include "UIHandler.h"
 
 #include <Fl/Fl_Window.H>
 #include <Fl/Fl_Button.H>
@@ -82,13 +82,13 @@ void createOceanGrid(Fl_Group *group, int gridSize, int cellSize, ShipPlacementD
 
 void shipPlacementElements(Fl_Input *coordsInput, ShipPlacementData *spd, GameMaster *gameMaster)
 {
-	
+
 	// Output to Display Selected Ship
 	Fl_Output *selectedShipOutput = new Fl_Output(620, 305, 120, 40, "Selected Ship:");
 	selectedShipOutput->box(FL_PLASTIC_UP_BOX);
 	// Output for ship size and the amount of ships of this size left to place
 	Fl_Multiline_Output *shipSizeOutput = new Fl_Multiline_Output(480, 400, 130, 90);
-	shipSizeOutput->box(FL_PLASTIC_UP_BOX);	
+	shipSizeOutput->box(FL_PLASTIC_UP_BOX);
 
 	spd->selectedShipOutput = selectedShipOutput;
 
@@ -110,7 +110,7 @@ void shipPlacementElements(Fl_Input *coordsInput, ShipPlacementData *spd, GameMa
 	ship4_btn->callback(shipSelect_cb, spd);
 	ship3_btn->callback(shipSelect_cb, spd);
 	ship2_btn->callback(shipSelect_cb, spd);
-	gameMaster->uiHandler->setShipPlacementElements(placeShip_btn,ship5_btn, ship4_btn, ship3_btn, ship2_btn, selectedShipOutput, coordsInput, shipSizeOutput);
+	gameMaster->uiHandler->setShipPlacementElements(placeShip_btn, ship5_btn, ship4_btn, ship3_btn, ship2_btn, selectedShipOutput, coordsInput, shipSizeOutput);
 	if (gameMaster->CurrentPhase != PlaceShipsP1 && gameMaster->CurrentPhase != PlaceShipsP2)
 	{
 		ship5_btn->hide();
@@ -122,12 +122,10 @@ void shipPlacementElements(Fl_Input *coordsInput, ShipPlacementData *spd, GameMa
 	}
 }
 
-
-Fl_Window *CreatePlayerWindow( GameMaster *gameMaster, ShipPlacementData *spd)
+Fl_Window *CreatePlayerWindow(GameMaster *gameMaster, ShipPlacementData *spd)
 {
 	// Initialize DataStructs
 	spd->gameMaster = gameMaster;
-	
 
 	// Create Main Window
 	Fl_Window *window = new Fl_Window(1000, 800);
@@ -136,39 +134,38 @@ Fl_Window *CreatePlayerWindow( GameMaster *gameMaster, ShipPlacementData *spd)
 	Fl_Box *title = new Fl_Box(-25, -1, 1050, 50, "WarShips");
 	title->labelfont(FL_BOLD + FL_ITALIC);
 	title->labelsize(24);
-	
+
 	// Player Turn Box
 	Fl_Box *playerTurnBox = new Fl_Box(50, 50, 250, 35);
 	playerTurnBox->labelfont(FL_BOLD);
-	playerTurnBox->labelsize(16);																		
+	playerTurnBox->labelsize(16);
 	playerTurnBox->copy_label("Player: ");
 	spd->gameMaster->uiHandler->setPlayerTurnBox(playerTurnBox);
-	
+
 	// Phase Box
 	Fl_Box *phaseBox = new Fl_Box(00, 85, 350, 35);
 	phaseBox->labelfont(FL_BOLD);
 	phaseBox->labelsize(16);
 	phaseBox->copy_label("Phase: ");
-	spd->gameMaster->uiHandler->setPhaseBox(phaseBox);	
-	
-	//Enter names Button
+	spd->gameMaster->uiHandler->setPhaseBox(phaseBox);
+
+	// Enter names Button
 	Fl_Button *enterNamesBtn = new Fl_Button(650, 50, 150, 35, "Enter Player Names");
 	enterNamesBtn->box(FL_PLASTIC_UP_BOX);
 	enterNamesBtn->callback(createNameWindow_cb, spd);
 	gameMaster->uiHandler->setEnterNamesBtn(enterNamesBtn);
-	
-	
-	//Finish Turn Button
+
+	// Finish Turn Button
 	Fl_Button *finishTurnBtn = new Fl_Button(650, 100, 150, 35, "Finish Turn");
 	finishTurnBtn->box(FL_PLASTIC_UP_BOX);
 	finishTurnBtn->callback(finishTurn_cb, gameMaster);
 	gameMaster->uiHandler->setFinishTurnBtn(finishTurnBtn);
 	finishTurnBtn->hide();
 
-	
 	// Input for Coordinates and Button to confirm input
 	Fl_Input *coordsInput = new Fl_Input(620, 350, 120, 40, "Enter Coordinates:");
 	Fl_Button *takeInput_btn = new Fl_Button(745, 350, 90, 40, "Fire!");
+	gameMaster->uiHandler->setFireBtn(takeInput_btn);
 	spd->coordsInput = coordsInput;
 	// Styling Input and Button
 	coordsInput->box(FL_PLASTIC_UP_BOX);
@@ -182,14 +179,11 @@ Fl_Window *CreatePlayerWindow( GameMaster *gameMaster, ShipPlacementData *spd)
 	createOceanGrid(oceanGrid, 10, 35, spd);
 	oceanGrid->end();
 	// Buttons and ui elements for ship placement
-	
+
 	shipPlacementElements(coordsInput, spd, gameMaster);
-	
-	
-	
 
 	window->end();
 	window->show();
-	
+
 	return window;
 }

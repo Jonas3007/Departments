@@ -6,4 +6,5 @@ class ShipFactory
 {
 	public:
 		Ship CreateShip(vector<Coordinates> coords, int shipSize);
+		Ship ExistingShip(vector<Coordinates> coords, int shipSize, vector<Coordinates> hitsReceived);
 };

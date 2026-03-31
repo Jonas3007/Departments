@@ -82,11 +82,18 @@ void GameMaster::switchTurn()
 	}
 	else if (CurrentPhase == Player1Turn)
 	{
+		
 		CurrentPhase = Player2Turn;
+		firedThisTurn = false; // Reset the flag for the next player's turn
+		uiHandler->toggleFinishTurnBtn(this);
+		uiHandler->toggleFireBtn(this); // Enable the fire button for the next player's turn
 	}
 	else if (CurrentPhase == Player2Turn)
 	{
 		CurrentPhase = Player1Turn;
+		firedThisTurn = false;
+		uiHandler->toggleFinishTurnBtn(this);
+		uiHandler->toggleFireBtn(this); // Enable the fire button for the next player's turn
 	}
 	setActivePlayer();
 }
@@ -220,10 +227,10 @@ void GameMaster::checkPlayerHit(Coordinates targetCoords)
 		if (Player2.checkForHit(targetCoords))
 		{
 			Player1.hits.push_back(targetCoords);
+			// Player2.takeHit(targetCoords);
 			cout << "Hit at " << targetCoords.Letter << targetCoords.Number << endl;	
 		}
 		Player1.placeFlag(targetCoords);
-		Player2.updateShipStatus();
 		Player2.checkAllShipsDestroyed();
 		uiHandler->updatePlayerWindows(this);
 	}
@@ -232,17 +239,23 @@ void GameMaster::checkPlayerHit(Coordinates targetCoords)
 		if (Player1.checkForHit(targetCoords))
 		{
 			Player2.hits.push_back(targetCoords);
+			// Player1.takeHit(targetCoords);
+			cout << "Hit at " << targetCoords.Letter << targetCoords.Number << endl;
 		}
 		Player2.placeFlag(targetCoords);
-		Player1.updateShipStatus();
 		Player1.checkAllShipsDestroyed();
 		uiHandler->updatePlayerWindows(this);
 	}
 	if(Player1.AllShipsDestroyed || Player2.AllShipsDestroyed)
 	{
 		CurrentPhase = GameOver;
+		createGameOverWindow();
 		uiHandler->updatePhaseBox(this);
+		return;
 	}
+	firedThisTurn = true;
+	uiHandler->toggleFireBtn(this);
+	
 }
 void GameMaster::PlacePlayerShip(string input, void *data)
 {
@@ -278,10 +291,10 @@ void GameMaster::PlacePlayerShip(string input, void *data)
 void GameMaster::FireAtCoordinates(string input, void *data)
 {
 	auto spd = static_cast<ShipPlacementData *>(data);
-
 	InputParser coordsParser;
 	Coordinates targetCoords = coordsParser.fireInputTokenizer(input);
 	checkPlayerHit(targetCoords);
+	uiHandler->toggleFinishTurnBtn(this); // Enable the finish turn button after firing
 	uiHandler->updatePlayerWindows(this);
 	
 }
@@ -330,6 +343,5 @@ void GameMaster::finishTurn()
 void GameMaster::createGameOverWindow( )
 {
 	(new GameOverWindow(this))->show();
-	
 }
 

@@ -13,6 +13,13 @@ class Ship
 		Size = size;
 		Destroyed = false;
 	}
+	Ship(vector<Coordinates> coords, int size, vector<Coordinates> hitsReceived)
+	{
+		GridLocation = coords;
+		Size = size;
+		HitsReceived = hitsReceived;
+		CheckDestroyed();
+	}
 	//Attributes
 		int Size;
 		vector<Coordinates> GridLocation;

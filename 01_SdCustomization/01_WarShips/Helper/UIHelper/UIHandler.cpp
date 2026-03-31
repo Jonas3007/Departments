@@ -117,6 +117,10 @@ void UIHandler::setEnterNamesBtn(Fl_Button *btn)
 {
 	this->enterNamesBtn = btn;
 }	
+void UIHandler::setFireBtn(Fl_Button *btn)
+{
+	this->firebtn = btn;
+}	
 
 void UIHandler::updatePlayer1Grid(GameMaster *gameMaster)
 {
@@ -268,6 +272,14 @@ void UIHandler::toggleFinishTurnBtn(GameMaster *gameMaster)
 	{
 		finishTurnBtn->hide();
 	}
+	if(gameMaster->firedThisTurn == true)
+	{
+		finishTurnBtn->activate();
+	}
+	else
+	{
+		finishTurnBtn->deactivate();
+	}	
 }
 void UIHandler::toggleEnterNamesBtn(GameMaster *gameMaster)
 {
@@ -278,5 +290,16 @@ void UIHandler::toggleEnterNamesBtn(GameMaster *gameMaster)
 	else
 	{
 		enterNamesBtn->show();
+	}
+}
+void UIHandler::toggleFireBtn(GameMaster *gameMaster)
+{
+	if(gameMaster->firedThisTurn == true)
+	{
+		firebtn->deactivate();
+	}
+	else
+	{
+		firebtn->activate();
 	}
 }

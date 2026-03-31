@@ -22,6 +22,7 @@ class GameMaster
 		Player Player2;
 		Player ActivePlayer;
 		UIHandler *uiHandler;
+		bool firedThisTurn; // Flag to track if the active player has fired during their turn
 		
 		
 		//Getter and Setter

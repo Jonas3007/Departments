@@ -23,6 +23,7 @@ class UIHandler
 		void setGridCells(Fl_Box *cells);
 		void setFinishTurnBtn(Fl_Button *btn);
 		void setEnterNamesBtn(Fl_Button *btn);	
+		void setFireBtn(Fl_Button *btn);
 		void setShipPlacementElements(Fl_Button *placeShipbtn,Fl_Button *battleshipBtn, Fl_Button *cruiserBtn, Fl_Button *destroyerBtn, Fl_Button *submarineBtn, Fl_Output *selectedShipOutput, Fl_Input *coordsInput, Fl_Multiline_Output *shipSizeOutput);
 		string getPlayerName();	
 		
@@ -39,12 +40,14 @@ class UIHandler
 		void updatePlayerWindows(GameMaster *gameMaster);
 		void toggleEnterNamesBtn(GameMaster *gameMaster);	
 		void toggleFinishTurnBtn(GameMaster *gameMaster);
+		void toggleFireBtn(GameMaster *gameMaster);	
 		void toggleShipPlacementElements(GameMaster *gameMaster);
 		
 		
 		Fl_Input *nameInput;
 
 	private:
+		Fl_Button *firebtn;
 		Fl_Button *enterNamesBtn;	
 		Fl_Button *finishTurnBtn;
 		//Game State Elements

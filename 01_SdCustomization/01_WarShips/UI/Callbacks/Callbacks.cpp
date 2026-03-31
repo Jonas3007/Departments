@@ -97,4 +97,5 @@ void continue_cb(Fl_Widget *widget, void *data)
 {
 	auto gameMaster = static_cast<GameMaster *>(data);
 	gameMaster->InitializeGame();
+	gameMaster->uiHandler->updatePlayerWindows(gameMaster);
 }

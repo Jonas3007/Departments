@@ -10,21 +10,25 @@ void Ship::TakeHit(Coordinates coords)
 
 void Ship::CheckDestroyed()
 {
-	for(Coordinates gCoords : GridLocation)
+	for (Coordinates gCoords : GridLocation)
 	{
-		for(Coordinates hCoords : HitsReceived)
+		bool hitAtThisCoord = false;
+		for (Coordinates hCoords : HitsReceived)
 		{
 			if (gCoords.Letter == hCoords.Letter && gCoords.Number == hCoords.Number)
 			{
-				Destroyed = true;
-			}
-			else
-			{
-				Destroyed = false;
-				return;
+				hitAtThisCoord = true;
+				break;
 			}
 		}
+		if (!hitAtThisCoord)
+		{
+			Destroyed = false;
+			return; // If any coordinate of the ship has not been hit, the ship is not destroyed
+		}
 	}
+
+	Destroyed = true; // If all coordinates of the ship have been hit, the ship is destroyed
 }
 
 void Ship::setGridLocation(vector<Coordinates> coords)
@@ -36,3 +40,5 @@ vector<Coordinates> Ship::getGridLocation()
 {
 	return GridLocation;
 }
+
+
