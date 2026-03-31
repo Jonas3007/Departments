@@ -227,7 +227,6 @@ void GameMaster::checkPlayerHit(Coordinates targetCoords)
 		if (Player2.checkForHit(targetCoords))
 		{
 			Player1.hits.push_back(targetCoords);
-			// Player2.takeHit(targetCoords);
 			cout << "Hit at " << targetCoords.Letter << targetCoords.Number << endl;	
 		}
 		Player1.placeFlag(targetCoords);
@@ -239,7 +238,6 @@ void GameMaster::checkPlayerHit(Coordinates targetCoords)
 		if (Player1.checkForHit(targetCoords))
 		{
 			Player2.hits.push_back(targetCoords);
-			// Player1.takeHit(targetCoords);
 			cout << "Hit at " << targetCoords.Letter << targetCoords.Number << endl;
 		}
 		Player2.placeFlag(targetCoords);

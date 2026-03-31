@@ -17,6 +17,7 @@ bool Player::checkForHit(Coordinates coords)
 			if (shipcoords.Letter == coords.Letter && shipcoords.Number == coords.Number)
 			{
 				ship.TakeHit(coords);
+				hitsReceived.push_back(coords);
 				return true;
 			}
 		}
@@ -115,24 +116,4 @@ void Player::removeShipFromInventory(Coordinates coords)
 	}
 	
 }
-void Player::takeHit(Coordinates coords)
-{
-	
-	ShipFactory factory;
-	for (Ship ship : ShipInventory)
-	{
-		for (Coordinates shipcoords : ship.GridLocation)
-		{
 
-			if (shipcoords.Letter == coords.Letter && shipcoords.Number == coords.Number)
-			{
-				Ship shipObject = factory.ExistingShip(ship.GridLocation, ship.Size, ship.HitsReceived);
-				removeShipFromInventory(coords);
-				shipObject.TakeHit(coords);
-				ShipInventory.push_back(shipObject);
-				return;
-			}
-		}
-	}
-	
-}
