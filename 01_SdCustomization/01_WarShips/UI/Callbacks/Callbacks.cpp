@@ -104,3 +104,9 @@ void continue_cb(Fl_Widget *widget, void *data)
 	gameMaster->InitializeGame();
 	gameMaster->uiHandler->updatePlayerWindows(gameMaster);
 }
+void playTurn_cb(Fl_Widget *widget, void *data)
+{
+	auto gameMaster = static_cast<GameMaster *>(data);
+	gameMaster->uiHandler->resetPlayerInputs(); 
+	gameMaster->uiHandler->toggleTransitionScreen(gameMaster, false);
+}

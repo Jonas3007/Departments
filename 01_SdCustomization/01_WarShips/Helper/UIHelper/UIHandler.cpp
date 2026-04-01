@@ -16,6 +16,15 @@ string coordsToCellPos(Coordinates coords)
 //---------------------
 // Setter for UI elements
 //---------------------
+void UIHandler::setPlayTurnBtn(Fl_Button *btn)
+{
+	this->playTur_btn = btn;
+}	
+void UIHandler::setGridGroups(Fl_Group *playerShipGrid, Fl_Group *oceanGrid)
+{
+	this->PlayerShipGrid = playerShipGrid;
+	this->oceanGrid = oceanGrid;
+}
 void UIHandler::setNameInput(Fl_Input *input)
 {
 	nameInput = input;
@@ -278,6 +287,9 @@ void UIHandler::updateShipSizeOutput(GameMaster *gameMaster)
 		shipSizeOutput->value(outputText.c_str());
 	}
 }
+//------------------------
+// Toggleable UI Elements
+//------------------------
 void UIHandler::toggleShipPlacementElements(GameMaster *gameMaster)
 {
 	bool visible = gameMaster->CurrentPhase == PlaceShipsP1 || gameMaster->CurrentPhase == PlaceShipsP2;
@@ -352,4 +364,22 @@ void UIHandler::toggleFireBtn(GameMaster *gameMaster)
 	{
 		firebtn->activate();
 	}
+}
+
+void UIHandler::toggleTransitionScreen(GameMaster *gameMaster, bool showUI)
+{
+
+	if (showUI)
+	{
+		gameMaster->uiHandler->playTur_btn->show();
+		gameMaster->uiHandler->PlayerShipGrid->hide();
+		gameMaster->uiHandler->oceanGrid->hide();
+	}
+	else
+	{
+		gameMaster->uiHandler->playTur_btn->hide();
+		gameMaster->uiHandler->PlayerShipGrid->show();
+		gameMaster->uiHandler->oceanGrid->show();	
+	}
+	
 }

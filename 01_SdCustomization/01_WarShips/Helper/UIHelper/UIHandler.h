@@ -18,13 +18,20 @@ class NameWindow;
 class UIHandler
 {
 	public:
+		//public attributes
+		Fl_Input *nameInput;
+		vector<Fl_Box *> PlayerShipGridCells;
+		vector<Fl_Box *> gridCells;
+		NameWindow *nameWindow;
 		
 		//Setter for UI elements
 		void setNameInput(Fl_Input *input);	
 		void setPlayerTurnBox(Fl_Box *box);
 		void setPhaseBox(Fl_Box *box);
 		void setNameWindow(NameWindow *window);	
+		void setPlayTurnBtn(Fl_Button *btn);	
 		//Player Grid
+		void setGridGroups(Fl_Group *playerShipGrid, Fl_Group *oceanGrid);
 		void setGridCells(Fl_Box *cells);
 		void setPlayerShipGridCells(Fl_Box *cells);
 		void setFinishTurnBtn(Fl_Button *btn);
@@ -50,14 +57,18 @@ class UIHandler
 		void toggleFinishTurnBtn(GameMaster *gameMaster);
 		void toggleFireBtn(GameMaster *gameMaster);	
 		void toggleShipPlacementElements(GameMaster *gameMaster);
+		void toggleTransitionScreen(GameMaster *gameMaster, bool show);
 		
 		
-		Fl_Input *nameInput;
-		vector<Fl_Box *> PlayerShipGridCells;
-		vector<Fl_Box *> gridCells;
-		NameWindow *nameWindow;
+		
 
 	private:
+		//Grid groups
+		Fl_Group *PlayerShipGrid;
+		Fl_Group *oceanGrid;
+		
+		Fl_Button *playTur_btn;
+
 		Fl_Button *firebtn;
 		Fl_Button *enterNamesBtn;	
 		Fl_Button *finishTurnBtn;

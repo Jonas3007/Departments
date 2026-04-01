@@ -311,6 +311,8 @@ void GameMaster::checkShipsPlacedToUpdatePhase()
 		uiHandler->resetPlayerInputs();
 		switchTurn();
 		uiHandler->updatePlayerWindows(this);
+		uiHandler->toggleTransitionScreen(this, true);
+		
 	}
 	else if (Player1.AllShipsPlaced && Player2.AllShipsPlaced)
 	{	
@@ -321,6 +323,7 @@ void GameMaster::checkShipsPlacedToUpdatePhase()
 		uiHandler->updatePlayerTurnBox(this);
 		uiHandler->updatePhaseBox(this);
 		uiHandler->updatePlayerWindows(this);
+		uiHandler->toggleTransitionScreen(this, true);
 	}
 }
 
@@ -341,6 +344,7 @@ void GameMaster::checkNamesEntered()
 }
 void GameMaster::finishTurn()
 {
+	uiHandler->toggleTransitionScreen(this, true);
 	switchTurn();
 	uiHandler->updatePlayerWindows(this);
 }

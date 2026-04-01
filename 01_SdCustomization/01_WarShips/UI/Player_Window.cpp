@@ -182,20 +182,20 @@ Fl_Window *CreatePlayerWindow(GameMaster *gameMaster, ShipPlacementData *spd)
 	finishTurnBtn->callback(finishTurn_cb, gameMaster);
 	gameMaster->uiHandler->setFinishTurnBtn(finishTurnBtn);
 	finishTurnBtn->hide();
-	
+
 	// Input for Coordinates and Button to confirm input
 	Fl_Input *coordsInput = new Fl_Input(600, 600, 120, 40, "Coordinates:");
 	Fl_Button *takeInput_btn = new Fl_Button(730, 600, 90, 40, "Fire!");
 	gameMaster->uiHandler->setFireBtn(takeInput_btn);
 	gameMaster->uiHandler->toggleFireBtn(gameMaster);
 	spd->coordsInput = coordsInput;
-	
+
 	// Styling Input and Button
 	coordsInput->box(FL_PLASTIC_UP_BOX);
 	takeInput_btn->box(FL_PLASTIC_UP_BOX);
 	// Callbacks for Input and Button
 	takeInput_btn->callback(fireInput_cb, spd);
-
+	// Buttons and ui elements for ship placement
 	shipPlacementElements(coordsInput, spd, gameMaster);
 
 	// ocean grid creation
@@ -208,8 +208,15 @@ Fl_Window *CreatePlayerWindow(GameMaster *gameMaster, ShipPlacementData *spd)
 	shipGrid->begin();
 	createOceanGrid(shipGrid, 10, 35, spd);
 	shipGrid->end();
-
-	// Buttons and ui elements for ship placement
+	gameMaster->uiHandler->setGridGroups(shipGrid, oceanGrid);
+	
+	//Playturn button that toggles the transition screen for the next player
+	Fl_Button *playTurn_btn = new Fl_Button(450, 350, 150, 50, "Play Turn");
+	playTurn_btn->box(FL_PLASTIC_UP_BOX);
+	playTurn_btn->callback(playTurn_cb, gameMaster);
+	gameMaster->uiHandler->setPlayTurnBtn(playTurn_btn);
+	playTurn_btn->hide();
+	
 
 	window->end();
 	window->show();
