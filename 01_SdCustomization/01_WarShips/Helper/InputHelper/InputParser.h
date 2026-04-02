@@ -12,5 +12,6 @@ public:
 	
 	vector<Coordinates> placeShipInputTokenizer(string input);
 	Coordinates fireInputTokenizer(string input);
+	bool inputIsValid(string input);
 };
 

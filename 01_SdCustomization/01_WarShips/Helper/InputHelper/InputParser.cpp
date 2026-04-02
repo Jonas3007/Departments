@@ -6,7 +6,7 @@
 
 using namespace std;	
 
-bool inputIsValid(string input)
+bool InputParser::inputIsValid(string input)
 {	
 
 	if(input.find("-.!§$%&/()=?`´+*~#'\"|\\") != string::npos)
@@ -22,6 +22,10 @@ bool inputIsValid(string input)
 		return false;
 	}
 	else if (input.size() > 3 || input.size() < 2)
+	{
+		return false;
+	}
+	else if (input.empty())
 	{
 		return false;
 	}

@@ -36,6 +36,11 @@ int setSelectedShipSize(Fl_Widget *widget)
 void takeInput_cb(Fl_Widget *widget, void *data)
 {
 	auto spd = static_cast<ShipPlacementData *>(data);
+	if (spd->selectedShipSize == 0 || spd->selectedShipOutput->value() == nullptr || spd->coordsInput->value() == nullptr)
+	{
+		std::cout << "Error: Ship size or coordinates input is empty." << std::endl;
+		return;
+	}
 	std::cout << "Placing ship of size " << spd->selectedShipSize << " at coordinates: " << spd->coordsInput->value() << std::endl;
 	spd->gameMaster->PlacePlayerShip(spd->coordsInput->value(), spd);
 	spd->gameMaster->checkShipsPlacedToUpdatePhase();
@@ -50,7 +55,6 @@ void shipSelect_cb(Fl_Widget *widget, void *data)
 void fireInput_cb(Fl_Widget *widget, void *data)
 {
 	auto spd = static_cast<ShipPlacementData *>(data);
-	
 	cout << "Fire Input Callback triggered" << endl;
 	spd->gameMaster->FireAtCoordinates(spd->coordsInput->value(), spd);
 }
@@ -87,6 +91,7 @@ void getPlayerNames_cb(Fl_Widget *widget, void *data)
 		gameMaster->uiHandler->updatePlayerTurnBox(gameMaster);
 		gameMaster->uiHandler->toggleShipPlacementElements(gameMaster);
 		gameMaster->uiHandler->toggleFireBtn(gameMaster);
+		gameMaster->uiHandler->toggleFinishTurnBtn(gameMaster);
 		gameMaster->uiHandler->nameWindow->hide();	
 	}
 	gameMaster->checkNamesEntered();
@@ -103,6 +108,9 @@ void continue_cb(Fl_Widget *widget, void *data)
 	auto gameMaster = static_cast<GameMaster *>(data);
 	gameMaster->InitializeGame();
 	gameMaster->uiHandler->updatePlayerWindows(gameMaster);
+	gameMaster->uiHandler->updatePhaseBox(gameMaster);
+	gameMaster->uiHandler->toggleEnterNamesBtn(gameMaster);
+	gameMaster->uiHandler->resetGridColors();
 }
 void playTurn_cb(Fl_Widget *widget, void *data)
 {

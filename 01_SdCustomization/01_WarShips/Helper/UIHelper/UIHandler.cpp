@@ -317,7 +317,8 @@ void UIHandler::toggleShipPlacementElements(GameMaster *gameMaster)
 }
 void UIHandler::toggleFinishTurnBtn(GameMaster *gameMaster)
 {
-	bool visible = gameMaster->CurrentPhase == Player1Turn || gameMaster->CurrentPhase == Player2Turn;
+	bool visible = gameMaster->CurrentPhase == Player1Turn || gameMaster->CurrentPhase == Player2Turn 
+	|| gameMaster->CurrentPhase == PlaceShipsP1 || gameMaster->CurrentPhase == PlaceShipsP2;
 	if (visible)
 	{
 		finishTurnBtn->show();
@@ -371,15 +372,17 @@ void UIHandler::toggleTransitionScreen(GameMaster *gameMaster, bool showUI)
 
 	if (showUI)
 	{
-		gameMaster->uiHandler->playTur_btn->show();
-		gameMaster->uiHandler->PlayerShipGrid->hide();
-		gameMaster->uiHandler->oceanGrid->hide();
+		playTur_btn->show();
+		PlayerShipGrid->hide();
+		oceanGrid->hide();
+		toggleFireBtn(gameMaster);
 	}
 	else
 	{
-		gameMaster->uiHandler->playTur_btn->hide();
-		gameMaster->uiHandler->PlayerShipGrid->show();
-		gameMaster->uiHandler->oceanGrid->show();	
+		playTur_btn->hide();
+		PlayerShipGrid->show();
+		oceanGrid->show();	
+		toggleFireBtn(gameMaster);
 	}
 	
 }

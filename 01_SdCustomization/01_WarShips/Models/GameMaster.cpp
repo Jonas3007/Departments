@@ -74,7 +74,6 @@ void GameMaster::switchTurn()
 		{
 			CurrentPhase = Player1Turn; // Default to Player 1 starting, can be randomized if desired
 			uiHandler->toggleFinishTurnBtn(this);
-			uiHandler->toggleFireBtn(this); // Enable the fire button for the first player's turn
 		}
 		else
 		{
@@ -296,35 +295,41 @@ void GameMaster::FireAtCoordinates(string input, void *data)
 {
 	auto spd = static_cast<ShipPlacementData *>(data);
 	InputParser coordsParser;
+	if (!coordsParser.inputIsValid(input))
+	{
+		cout << "Invalid input for firing: " << input << endl;
+		return;
+	}
 	Coordinates targetCoords = coordsParser.fireInputTokenizer(input);
 	checkPlayerHit(targetCoords);
 	uiHandler->toggleFinishTurnBtn(this); // Enable the finish turn button after firing
 	uiHandler->updatePlayerWindows(this);
 }
+
 void GameMaster::checkShipsPlacedToUpdatePhase()
 {
+	ActivePlayer.checkIfAllShipsPlaced();
+	ActivePlayer.AllShipsPlaced ? firedThisTurn = true : firedThisTurn = false; 
 	Player1.checkIfAllShipsPlaced();
 	Player2.checkIfAllShipsPlaced();
+	uiHandler->toggleFinishTurnBtn(this); 
 	if (Player1.AllShipsPlaced && !Player2.AllShipsPlaced)
 	{
+		
 		updatePlayer(ActivePlayer);
 		uiHandler->resetPlayerInputs();
-		switchTurn();
 		uiHandler->updatePlayerWindows(this);
-		uiHandler->toggleTransitionScreen(this, true);
 		
 	}
 	else if (Player1.AllShipsPlaced && Player2.AllShipsPlaced)
 	{	
 		uiHandler->resetPlayerInputs();
-		switchTurn(); 
 		uiHandler->toggleShipPlacementElements(this);
-		uiHandler->toggleFinishTurnBtn(this);
 		uiHandler->updatePlayerTurnBox(this);
 		uiHandler->updatePhaseBox(this);
 		uiHandler->updatePlayerWindows(this);
-		uiHandler->toggleTransitionScreen(this, true);
 	}
+	
 }
 
 void GameMaster::InitializeGame()
@@ -346,6 +351,10 @@ void GameMaster::finishTurn()
 {
 	uiHandler->toggleTransitionScreen(this, true);
 	switchTurn();
+	firedThisTurn = false;
+	uiHandler->toggleFireBtn(this);
+	uiHandler->toggleFinishTurnBtn(this);
+	uiHandler->toggleShipPlacementElements(this);
 	uiHandler->updatePlayerWindows(this);
 }
 
