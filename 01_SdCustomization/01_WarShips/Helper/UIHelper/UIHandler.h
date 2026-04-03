@@ -10,6 +10,7 @@
 #include "Fl/Fl_Output.H"
 #include "Fl/Fl_Multiline_Output.H"
 #include "Name_Window.h"
+#include "GameOver_Window.h"
 
 class NameWindow;
 //---------------------
@@ -23,6 +24,7 @@ class UIHandler
 		vector<Fl_Box *> PlayerShipGridCells;
 		vector<Fl_Box *> gridCells;
 		NameWindow *nameWindow;
+		GameOverWindow *gameOverWindow;
 		
 		//Setter for UI elements
 		void setNameInput(Fl_Input *input);	

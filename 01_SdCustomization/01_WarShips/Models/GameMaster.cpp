@@ -360,5 +360,6 @@ void GameMaster::finishTurn()
 
 void GameMaster::createGameOverWindow()
 {
-	(new GameOverWindow(this))->show();
+	GameOverWindow *gameOverWindow = new GameOverWindow(this);
+	uiHandler->gameOverWindow = gameOverWindow;
 }

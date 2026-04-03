@@ -111,6 +111,7 @@ void continue_cb(Fl_Widget *widget, void *data)
 	gameMaster->uiHandler->updatePhaseBox(gameMaster);
 	gameMaster->uiHandler->toggleEnterNamesBtn(gameMaster);
 	gameMaster->uiHandler->resetGridColors();
+	gameMaster->uiHandler->gameOverWindow->hide();
 }
 void playTurn_cb(Fl_Widget *widget, void *data)
 {
