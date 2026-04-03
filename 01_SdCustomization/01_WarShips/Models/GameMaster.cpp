@@ -362,4 +362,5 @@ void GameMaster::createGameOverWindow()
 {
 	GameOverWindow *gameOverWindow = new GameOverWindow(this);
 	uiHandler->gameOverWindow = gameOverWindow;
+	uiHandler->gameOverWindow->show();
 }
