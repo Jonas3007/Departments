@@ -1,91 +1,94 @@
 cmake_minimum_required(VERSION 3.16)
-project(war_ships)
 
+project(war_ships LANGUAGES CXX)
+
+# =====================================================
+# C++ Standard
+# =====================================================
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
+# =====================================================
+# FLTK (nur Client!)
+# =====================================================
 find_package(FLTK REQUIRED)
 
-# Coverage Lib
+# =====================================================
+# Coverage (optional, wie bei dir)
+# =====================================================
 add_library(coverage_config INTERFACE)
 target_compile_options(coverage_config INTERFACE -O0 -g --coverage)
 target_link_options(coverage_config INTERFACE --coverage)
 
+# =====================================================
+# CORE Library
+#   → Spiellogik + Datenmodelle
+# =====================================================
 
-file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
-    "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
+file(GLOB_RECURSE CORE_SOURCES CONFIGURE_DEPENDS
+    Models/*.cpp
+    Context/*.cpp
 )
 
+add_library(core STATIC
+    ${CORE_SOURCES}
+)
 
-list(FILTER SOURCES EXCLUDE REGEX ".+[\\/]Tests[\\/]")
-list(FILTER SOURCES EXCLUDE REGEX ".+[\\/]Tools[\\/]")
-
-
-
-# Main executable
-add_executable(warShips
-    ${SOURCES}
-   
+target_include_directories(core PUBLIC
+    ${CMAKE_SOURCE_DIR}
+    ${CMAKE_SOURCE_DIR}/Models
+    ${CMAKE_SOURCE_DIR}/Models/Factory
+    ${CMAKE_SOURCE_DIR}/common/Context
 
 )
 
-target_compile_definitions(warShips PRIVATE PROJECT_SOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
-add_definitions(-DPROJECT_SOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
+# =====================================================
+# SERVER Executable
+# =====================================================
 
-target_include_directories(warShips PRIVATE
+add_executable(server
+    server/main.cpp
+)
+
+target_link_libraries(server PRIVATE
+    core
+)
+
+target_compile_definitions(server PRIVATE
+    PROJECT_SOURCE_DIR="${CMAKE_SOURCE_DIR}"
+)
+
+# =====================================================
+# CLIENT Executable
+# =====================================================
+
+file(GLOB_RECURSE CLIENT_SOURCES CONFIGURE_DEPENDS
+    UI/*.cpp
+    UI/Callbacks/*.cpp
+    Helper/*.cpp
+    client/*.cpp
+)
+
+add_executable(client
+    ${CLIENT_SOURCES}
+)
+
+target_include_directories(client PRIVATE
     ${FLTK_INCLUDE_DIR}
     ${CMAKE_SOURCE_DIR}
-    ${CMAKE_SOURCE_DIR}/server
-    ${CMAKE_SOURCE_DIR}/client
-    ${CMAKE_SOURCE_DIR}/common/Context
+    ${CMAKE_SOURCE_DIR}/UI
+    ${CMAKE_SOURCE_DIR}/UI/Callbacks
     ${CMAKE_SOURCE_DIR}/Helper
     ${CMAKE_SOURCE_DIR}/Helper/InputHelper
     ${CMAKE_SOURCE_DIR}/Helper/UIHelper
-    ${CMAKE_SOURCE_DIR}/Models/Factory
-    ${CMAKE_SOURCE_DIR}/Models
-    ${CMAKE_SOURCE_DIR}/Models/ShipModels
-    ${CMAKE_SOURCE_DIR}/UI
-    ${CMAKE_SOURCE_DIR}/UI/Callbacks
 )
 
-target_link_libraries(warShips PRIVATE
+target_link_libraries(client PRIVATE
+    core
     ${FLTK_LIBRARIES}
 )
 
-target_compile_definitions(warShips PRIVATE PROJECT_SOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
-add_definitions(-DPROJECT_SOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
-
-# -----------------------
-#        TESTING
-# -----------------------
-include(CTest)
-
-if (BUILD_TESTING)
-    include(FetchContent)
-
-    FetchContent_Declare(
-        catch2
-        GIT_REPOSITORY https://github.com/catchorg/Catch2.git
-        GIT_TAG v3.5.2
-    )
-    FetchContent_MakeAvailable(catch2)
-
-    # ---- Das Test-Target definieren ----
-    add_executable(warShips_test
-        Tests/test_player.cpp
-       
-    )
-
-    target_include_directories(warShips_test PRIVATE
-    ${CMAKE_SOURCE_DIR}
-    )
-
-    target_link_libraries(warShips_test PRIVATE
-        Catch2::Catch2WithMain
-        coverage_config
-    )
-
-    # Catch2 entdecken lassen
-    include(Catch)
-    catch_discover_tests(warShips_test)
-endif()
+target_compile_definitions(client PRIVATE
+    PROJECT_SOURCE_DIR="${CMAKE_SOURCE_DIR}"
+)

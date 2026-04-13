@@ -8,10 +8,10 @@
 #include "GamePhase.h"
 #include "Player.h"
 #include "PlayerNames.h"
-#include "UIHandler.h"
+
 #include "ShipPlacementData.h"
 
-class UIHandler;
+
 struct ShipPlacementData;
 
 class GameMaster
@@ -21,7 +21,7 @@ class GameMaster
 		Player Player1;
 		Player Player2;
 		Player ActivePlayer;
-		UIHandler *uiHandler;
+	
 		bool firedThisTurn; // Flag to track if the active player has fired during their turn
 		
 		

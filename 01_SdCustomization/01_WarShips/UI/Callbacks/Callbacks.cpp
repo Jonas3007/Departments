@@ -63,59 +63,22 @@ void createNameWindow_cb(Fl_Widget *widget, void *data)
 {
 	auto spd = static_cast<ShipPlacementData *>(data);
 	NameWindow *nameWindow = new NameWindow(spd->gameMaster);
-	spd->gameMaster->uiHandler->setNameWindow(nameWindow);
 	nameWindow->show();
 }
 void getPlayerNames_cb(Fl_Widget *widget, void *data)
 {
-	auto gameMaster = static_cast<GameMaster *>(data);	
-	string playerName = gameMaster->uiHandler->getPlayerName();
-	if (gameMaster->Player1.Name.empty())
-	{
-		gameMaster->Player1.setName(playerName);
-		gameMaster->uiHandler->nameInput->value(""); // Clear input field after setting name
-	}
-	else if (gameMaster->Player2.Name.empty())
-	{
-		gameMaster->Player2.setName(playerName);
-		gameMaster->uiHandler->nameInput->value(""); // Clear input field after setting name	
-		
-		cout << "Player 1 Name: " << gameMaster->Player1.Name << endl;
-		cout << "Player 2 Name: " << gameMaster->Player2.Name << endl;
-	}
-	if (!gameMaster->Player1.Name.empty() && !gameMaster->Player2.Name.empty())
-	{
-		gameMaster->CurrentPhase = PlaceShipsP1;
-		gameMaster->ActivePlayer = gameMaster->Player1;
-		gameMaster->uiHandler->updatePhaseBox(gameMaster);
-		gameMaster->uiHandler->updatePlayerTurnBox(gameMaster);
-		gameMaster->uiHandler->toggleShipPlacementElements(gameMaster);
-		gameMaster->uiHandler->toggleFireBtn(gameMaster);
-		gameMaster->uiHandler->toggleFinishTurnBtn(gameMaster);
-		gameMaster->uiHandler->nameWindow->hide();	
-	}
-	gameMaster->checkNamesEntered();
+	
 }
 void finishTurn_cb(Fl_Widget *widget, void *data)
 {
 	cout << "Finish Turn Callback triggered" << endl;
-	auto gameMaster = static_cast<GameMaster *>(data);
-	gameMaster->uiHandler->resetPlayerInputs(); 
-	gameMaster->finishTurn();
+	
 }
 void continue_cb(Fl_Widget *widget, void *data)
 {
-	auto gameMaster = static_cast<GameMaster *>(data);
-	gameMaster->InitializeGame();
-	gameMaster->uiHandler->updatePlayerWindows(gameMaster);
-	gameMaster->uiHandler->updatePhaseBox(gameMaster);
-	gameMaster->uiHandler->toggleEnterNamesBtn(gameMaster);
-	gameMaster->uiHandler->resetGridColors();
-	gameMaster->uiHandler->gameOverWindow->hide();
+	
 }
 void playTurn_cb(Fl_Widget *widget, void *data)
 {
-	auto gameMaster = static_cast<GameMaster *>(data);
-	gameMaster->uiHandler->resetPlayerInputs(); 
-	gameMaster->uiHandler->toggleTransitionScreen(gameMaster, false);
+
 }

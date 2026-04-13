@@ -8,7 +8,7 @@ class GameMaster;
 class GameOverWindow : public Fl_Window
 {
 	public:
-		GameOverWindow(GameMaster *gameMaster);
+		GameOverWindow();
 		
 	private:
 		static void closewindow_cb(Fl_Widget *widget, void *data);	

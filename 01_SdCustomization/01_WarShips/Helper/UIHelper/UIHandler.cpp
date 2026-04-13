@@ -114,9 +114,7 @@ void UIHandler::resetGridColors()
 }
 void UIHandler::updatePlayerTurnBox(GameMaster *gameMaster)
 {
-	string playerName = gameMaster->ActivePlayer.Name;
-	gameMaster->uiHandler->playerTurnBox->copy_label(("Player: " + playerName).c_str());
-	gameMaster->uiHandler->playerTurnBox->redraw();
+
 }
 void UIHandler::updatePhaseBox(GameMaster *gameMaster)
 {
@@ -145,8 +143,6 @@ void UIHandler::updatePhaseBox(GameMaster *gameMaster)
 		phaseName = "Unknown Phase";
 		break;
 	}
-	gameMaster->uiHandler->phaseBox->copy_label(("Phase: " + phaseName).c_str());
-	gameMaster->uiHandler->phaseBox->redraw();
 }
 void UIHandler::setFinishTurnBtn(Fl_Button *btn)
 {
