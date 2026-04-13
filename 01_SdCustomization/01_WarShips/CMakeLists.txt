@@ -35,11 +35,13 @@ add_definitions(-DPROJECT_SOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
 target_include_directories(warShips PRIVATE
     ${FLTK_INCLUDE_DIR}
     ${CMAKE_SOURCE_DIR}
+    ${CMAKE_SOURCE_DIR}/server
+    ${CMAKE_SOURCE_DIR}/client
+    ${CMAKE_SOURCE_DIR}/common/Context
     ${CMAKE_SOURCE_DIR}/Helper
     ${CMAKE_SOURCE_DIR}/Helper/InputHelper
     ${CMAKE_SOURCE_DIR}/Helper/UIHelper
     ${CMAKE_SOURCE_DIR}/Models/Factory
-    ${CMAKE_SOURCE_DIR}/Context
     ${CMAKE_SOURCE_DIR}/Models
     ${CMAKE_SOURCE_DIR}/Models/ShipModels
     ${CMAKE_SOURCE_DIR}/UI
