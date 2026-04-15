@@ -3,6 +3,7 @@
 #include <string>
 #include "Coordinates.h"
 #include <iostream>
+#include "ShipPlacementData.h"
 using namespace std;
 
 
@@ -10,7 +11,7 @@ class InputParser
 {
 public:
 	
-	vector<Coordinates> placeShipInputTokenizer(string input);
+	ShipPlacementData placeShipInputTokenizer(string input);
 	Coordinates fireInputTokenizer(string input);
 	bool inputIsValid(string input);
 };

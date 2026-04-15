@@ -106,7 +106,6 @@ void shipPlacementElements(Fl_Input *coordsInput, ShipPlacementData *spd, GameMa
 	Fl_Multiline_Output *shipSizeOutput = new Fl_Multiline_Output(325, 650, 130, 90);
 	shipSizeOutput->box(FL_PLASTIC_UP_BOX);
 
-	spd->selectedShipOutput = selectedShipOutput;
 
 	Fl_Button *placeShip_btn = new Fl_Button(730, 600, 90, 40, "Place Ship");
 	placeShip_btn->box(FL_PLASTIC_UP_BOX);
@@ -143,7 +142,7 @@ void shipPlacementElements(Fl_Input *coordsInput, ShipPlacementData *spd, GameMa
 Fl_Window *CreatePlayerWindow(GameMaster *gameMaster, ShipPlacementData *spd)
 {
 	// Initialize DataStructs
-	spd->gameMaster = gameMaster;
+	
 
 	// Create Main Window
 	Fl_Window *window = new Fl_Window(1050, 850);
@@ -186,7 +185,7 @@ Fl_Window *CreatePlayerWindow(GameMaster *gameMaster, ShipPlacementData *spd)
 	Fl_Input *coordsInput = new Fl_Input(600, 600, 120, 40, "Coordinates:");
 	Fl_Button *takeInput_btn = new Fl_Button(730, 600, 90, 40, "Fire!");
 
-	spd->coordsInput = coordsInput;
+	
 
 	// Styling Input and Button
 	coordsInput->box(FL_PLASTIC_UP_BOX);

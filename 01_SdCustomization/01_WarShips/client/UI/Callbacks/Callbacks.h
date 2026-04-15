@@ -1,6 +1,5 @@
 #pragma once 
 #include "GameMaster.h"
-#include "Player_Window.h"
 #include <Fl/Fl_Button.H>
 #include <Fl/Fl_Input.H>
 #include <Fl/Fl_Box.H>

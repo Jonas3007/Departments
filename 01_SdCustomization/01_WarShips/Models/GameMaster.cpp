@@ -10,6 +10,7 @@
 #include "xyCoordinates.h"
 #include <FL/Fl.H>
 #include "ShipPlacementData.h"
+#include "InputParser.h"
 //---------------------
 // Getter and Setter
 //---------------------
@@ -33,10 +34,10 @@ void GameMaster::SetPlayer2(Player *player)
 {
 	Player2 = *player;
 }
-void GameMaster::setPlayerNames(PlayerNames names)
+void GameMaster::setPlayerNames(string player1, string player2)
 {
-	Player1.setName(names.Player1Name);
-	Player2.setName(names.Player2Name);
+	Player1.setName(player1);
+	Player2.setName(player2);
 }
 
 // Update Player -> ActivePlayer to either update Player1 or Player2 depending on the current phase
@@ -67,7 +68,6 @@ void GameMaster::switchTurn()
 		if (Player1.AllShipsPlaced && Player2.AllShipsPlaced)
 		{
 			CurrentPhase = Player1Turn; // Default to Player 1 starting, can be randomized if desired
-	
 		}
 		else
 		{
@@ -79,13 +79,11 @@ void GameMaster::switchTurn()
 
 		CurrentPhase = Player2Turn;
 		firedThisTurn = false; // Reset the flag for the next player's turn
-	
 	}
 	else if (CurrentPhase == Player2Turn)
 	{
 		CurrentPhase = Player1Turn;
 		firedThisTurn = false;
-	
 	}
 	setActivePlayer();
 }
@@ -226,7 +224,6 @@ void GameMaster::checkPlayerHit(Coordinates targetCoords)
 			Player1.miss(targetCoords);
 		}
 		Player2.checkAllShipsDestroyed();
-
 	}
 	else
 	{
@@ -240,7 +237,6 @@ void GameMaster::checkPlayerHit(Coordinates targetCoords)
 			Player2.miss(targetCoords);
 		}
 		Player1.checkAllShipsDestroyed();
-	
 	}
 	if (Player1.AllShipsDestroyed || Player2.AllShipsDestroyed)
 	{
@@ -250,12 +246,13 @@ void GameMaster::checkPlayerHit(Coordinates targetCoords)
 		return;
 	}
 	firedThisTurn = true;
-
 }
-void GameMaster::PlacePlayerShip(string input, void *data)
+void GameMaster::PlacePlayerShip(string data)
 {
+	InputParser parser;
+	ShipPlacementData spd;
+	spd = parser.placeShipInputTokenizer(data);
 	cout << "Current Player: " << ActivePlayer.Name << endl;
-	auto spd = static_cast<ShipPlacementData *>(data);
 	vector<Coordinates> initShipCoords;
 	vector<Coordinates> fullShipCoords;
 	vector<Ship> currentPlayerShips = ActivePlayer.ShipInventory;
@@ -265,21 +262,18 @@ void GameMaster::PlacePlayerShip(string input, void *data)
 		return;
 	}
 
-	if (!ActivePlayer.checkIfShipSizeAvailable(spd->selectedShipSize))
+	if (!ActivePlayer.checkIfShipSizeAvailable(spd.selectedShipSize))
 	{
-		cout << "Ship of size " << spd->selectedShipSize << " not available for placement." << endl;
+		cout << "Ship of size " << spd.selectedShipSize << " not available for placement." << endl;
 		return;
 	}
 	// ActivePlayer places Ship
-	ActivePlayer.placeShip(fullShipCoords, spd->selectedShipSize);
+	ActivePlayer.placeShip(fullShipCoords, spd.selectedShipSize);
 	updatePlayer(ActivePlayer);
-	
 }
 
-void GameMaster::FireAtCoordinates(string input, void *data)
+void GameMaster::FireAtCoordinates(string input)
 {
-	auto spd = static_cast<ShipPlacementData *>(data);
-	
 	Coordinates targetCoords;
 	checkPlayerHit(targetCoords);
 }
@@ -287,36 +281,35 @@ void GameMaster::FireAtCoordinates(string input, void *data)
 void GameMaster::checkShipsPlacedToUpdatePhase()
 {
 	ActivePlayer.checkIfAllShipsPlaced();
-	ActivePlayer.AllShipsPlaced ? firedThisTurn = true : firedThisTurn = false; 
+	ActivePlayer.AllShipsPlaced ? firedThisTurn = true : firedThisTurn = false;
 	Player1.checkIfAllShipsPlaced();
 	Player2.checkIfAllShipsPlaced();
 
 	if (Player1.AllShipsPlaced && !Player2.AllShipsPlaced)
 	{
-		
+
 		updatePlayer(ActivePlayer);
-	
 	}
 	else if (Player1.AllShipsPlaced && Player2.AllShipsPlaced)
-	{	
-
+	{
 	}
-	
 }
 
-void GameMaster::InitializeGame()
+void GameMaster::InitializeGame(string player1Name, string player2Name)
 {
 	SetPlayer1(new Player());
 	SetPlayer2(new Player());
 
-	CurrentPhase = PickNamePhase;
+	Player1.setName(player1Name);
+	Player2.setName(player2Name);
+
+	CurrentPhase = PlaceShipsP1;
 }
 
 void GameMaster::checkNamesEntered()
 {
 	if (!Player1.Name.empty() && !Player2.Name.empty())
 	{
-	
 	}
 }
 void GameMaster::finishTurn()

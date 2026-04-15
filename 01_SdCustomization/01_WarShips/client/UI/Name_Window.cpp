@@ -8,14 +8,14 @@
 #include "PlayerNames.h"
 
 
-NameWindow::NameWindow(GameMaster* gameMaster)
+NameWindow::NameWindow()
 	: Fl_Window(200, 100, "PlayerNames")
 {
 	Fl_Input *nameInput = new Fl_Input(10, 10, 180, 30);
 	Fl_Button *submitBtn = new Fl_Button(10, 50, 180, 30, "Submit");
 
 	submitBtn->box(FL_PLASTIC_UP_BOX);
-	submitBtn->callback(getPlayerNames_cb, gameMaster);
+	submitBtn->callback(getPlayerNames_cb, nullptr);
 	
 
 	end();

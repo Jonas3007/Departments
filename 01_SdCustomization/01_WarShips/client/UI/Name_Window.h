@@ -8,7 +8,7 @@
 class NameWindow : public Fl_Window
 {
 public:
-	NameWindow(GameMaster *gameMaster);
+	NameWindow();
 
 private:
 	Fl_Input* nameInput;

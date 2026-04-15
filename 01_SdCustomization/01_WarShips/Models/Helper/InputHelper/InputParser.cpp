@@ -3,6 +3,7 @@
 #include <string>
 #include "Coordinates.h"
 #include <iostream>
+#include "ShipPlacementData.h"
 
 using namespace std;	
 
@@ -35,13 +36,16 @@ bool InputParser::inputIsValid(string input)
 	}
 }
  
-vector<Coordinates> InputParser::placeShipInputTokenizer(string input)
+ShipPlacementData InputParser::placeShipInputTokenizer(string input)
 {
-	vector<Coordinates> shipPlacementCoords;
+	ShipPlacementData spd;
 	while(true)
 	{
-		
 		int colPos = input.find(',');
+		int lastColPos = input.rfind(',');
+		// get ship size from input
+		int shipSize = stoi(input.substr(lastColPos + 1));
+		spd.selectedShipSize = shipSize;
 		if(colPos == string::npos)
 		{
 			break;
@@ -61,8 +65,8 @@ vector<Coordinates> InputParser::placeShipInputTokenizer(string input)
 			}
 			Coordinates coords1 = {letter1, number1};
 			Coordinates coords2 = {letter2, number2};
-			shipPlacementCoords.push_back(coords1);
-			shipPlacementCoords.push_back(coords2);
+			spd.placementCoordinates.push_back(coords1);
+			spd.placementCoordinates.push_back(coords2);
 			break;
 		}
 		else
@@ -73,7 +77,7 @@ vector<Coordinates> InputParser::placeShipInputTokenizer(string input)
 		
 	
 	}
-	return shipPlacementCoords;
+	return spd;
 }
 
 Coordinates InputParser::fireInputTokenizer(string input)

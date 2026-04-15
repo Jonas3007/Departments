@@ -29,11 +29,11 @@ class GameMaster
 		void setActivePlayer();
 		void SetPlayer1(Player* player);
 		void SetPlayer2(Player* player);
-		void setPlayerNames(PlayerNames names);
+		void setPlayerNames(string player1, string player2);
 		
 		
 		//Initialize Game
-		void InitializeGame();
+		void InitializeGame(string player1Name, string player2Name);
 		//check if Names have been entered 
 		void checkNamesEntered();
 
@@ -51,8 +51,8 @@ class GameMaster
 		void checkShipsPlacedToUpdatePhase();
 		//Attack Helpers
 		void checkPlayerHit(Coordinates targetCoords);
-		void PlacePlayerShip(string input, void* data);
-		void FireAtCoordinates(string input, void* data);
+		void PlacePlayerShip(string data);
+		void FireAtCoordinates(string input);
 		
 		//GameOver Helper
 		void createGameOverWindow();

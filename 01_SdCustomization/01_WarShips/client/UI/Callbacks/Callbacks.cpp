@@ -35,34 +35,27 @@ int setSelectedShipSize(Fl_Widget *widget)
 // Callbacks
 void takeInput_cb(Fl_Widget *widget, void *data)
 {
-	auto spd = static_cast<ShipPlacementData *>(data);
-	if (spd->selectedShipSize == 0 || spd->selectedShipOutput->value() == nullptr || spd->coordsInput->value() == nullptr)
-	{
-		std::cout << "Error: Ship size or coordinates input is empty." << std::endl;
-		return;
-	}
-	std::cout << "Placing ship of size " << spd->selectedShipSize << " at coordinates: " << spd->coordsInput->value() << std::endl;
-	spd->gameMaster->PlacePlayerShip(spd->coordsInput->value(), spd);
-	spd->gameMaster->checkShipsPlacedToUpdatePhase();
+	
+	
 }
 
 void shipSelect_cb(Fl_Widget *widget, void *data)
 {
 	auto *spd = static_cast<ShipPlacementData *>(data);
 	spd->selectedShipSize = setSelectedShipSize(widget);
-	spd->selectedShipOutput->value(widget->label());
+	
 }
 void fireInput_cb(Fl_Widget *widget, void *data)
 {
 	auto spd = static_cast<ShipPlacementData *>(data);
 	cout << "Fire Input Callback triggered" << endl;
-	spd->gameMaster->FireAtCoordinates(spd->coordsInput->value(), spd);
+	
 }
 
 void createNameWindow_cb(Fl_Widget *widget, void *data)
 {
-	auto spd = static_cast<ShipPlacementData *>(data);
-	NameWindow *nameWindow = new NameWindow(spd->gameMaster);
+	
+	NameWindow *nameWindow = new NameWindow();
 	nameWindow->show();
 }
 void getPlayerNames_cb(Fl_Widget *widget, void *data)

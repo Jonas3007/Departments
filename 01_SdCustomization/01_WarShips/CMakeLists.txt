@@ -37,9 +37,11 @@ add_library(core STATIC
 
 target_include_directories(core PUBLIC
     ${CMAKE_SOURCE_DIR}
+    ${CMAKE_SOURCE_DIR}/Models/Helper/InputHelper
     ${CMAKE_SOURCE_DIR}/Models
     ${CMAKE_SOURCE_DIR}/Models/Factory
     ${CMAKE_SOURCE_DIR}/common/Context
+
 
 )
 
@@ -49,6 +51,10 @@ target_include_directories(core PUBLIC
 
 add_executable(server
     server/main.cpp
+    server/LobbyManager.cpp
+    server/server.cpp
+    server/ServerMsgHandler.cpp  
+    
 )
 
 target_link_libraries(server PRIVATE
@@ -66,7 +72,7 @@ target_compile_definitions(server PRIVATE
 file(GLOB_RECURSE CLIENT_SOURCES CONFIGURE_DEPENDS
     UI/*.cpp
     UI/Callbacks/*.cpp
-    Helper/*.cpp
+    client/Helper/UIHelper/*.cpp
     client/*.cpp
 )
 
@@ -77,11 +83,11 @@ add_executable(client
 target_include_directories(client PRIVATE
     ${FLTK_INCLUDE_DIR}
     ${CMAKE_SOURCE_DIR}
-    ${CMAKE_SOURCE_DIR}/UI
-    ${CMAKE_SOURCE_DIR}/UI/Callbacks
-    ${CMAKE_SOURCE_DIR}/Helper
-    ${CMAKE_SOURCE_DIR}/Helper/InputHelper
-    ${CMAKE_SOURCE_DIR}/Helper/UIHelper
+    ${CMAKE_SOURCE_DIR}/client
+    ${CMAKE_SOURCE_DIR}/client/UI
+    ${CMAKE_SOURCE_DIR}/client/UI/Callbacks
+    ${CMAKE_SOURCE_DIR}/client/Helper/UIHelper
+
 )
 
 target_link_libraries(client PRIVATE

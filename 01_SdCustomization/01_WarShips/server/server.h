@@ -24,6 +24,7 @@ class Server
 		void initializeServer();
 		void handleclient(int clientSocket);
 		void handleMessage(int clientSocket, const std::string& message);
+		int getClientLobbybySocket(int clientSocket);
 	private: 
 	
 };
