@@ -2,16 +2,18 @@
 
 #include <string>
 #include <vector>
-#include "GameMaster.h"
 #include "LobbyData.h"
 #include <unordered_map>
+#include "MessageHandler.h"
+#include <mutex>
+#include "GameMaster.h"
 
-class GameMaster;
 
 class LobbyManager
 {
 	public: 
 		std::unordered_map<int, LobbyData> lobbies; // Map of lobby ID to lobby data
+		std::mutex lobbyMutex; // Mutex to protect access to the lobbies map
 
 	
 		int createLobby(std::string playerNames);
@@ -19,7 +21,7 @@ class LobbyManager
 		void joinLobby(const int &lobbyID,const std::string &playerName);
 		void removeLobby(const int &lobbyID);	
 		void startGameForLobby(const int &lobbyID);
-		void clientToGameMsgHandler(const int &lobbyID, const std::string &data, const std::string &command);
+		GameMaster getGameMasterInstance(const int &lobbyId);
 	private: 
 	
 };

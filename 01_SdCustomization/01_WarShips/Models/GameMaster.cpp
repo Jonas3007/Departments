@@ -11,6 +11,7 @@
 #include <FL/Fl.H>
 #include "ShipPlacementData.h"
 #include "InputParser.h"
+#include "GameStateDTO.h"
 //---------------------
 // Getter and Setter
 //---------------------
@@ -322,4 +323,23 @@ void GameMaster::finishTurn()
 void GameMaster::createGameOverWindow()
 {
 	
+}
+
+GameStateDTO GameMaster::buildGameStateDTO()
+{
+	GameStateDTO dto;
+	
+	dto.player1Name = Player1.Name;
+	dto.player1Ships = Player1.ShipInventory;
+	dto.player1Hits = Player1.hits;
+	dto.player1Misses = Player1.misses;
+	dto.player1Hitsreceived = Player1.hitsReceived;
+	
+	dto.player2Name = Player2.Name;
+	dto.player2Ships = Player2.ShipInventory;
+	dto.player2Hits = Player2.hits;
+	dto.player2Misses = Player2.misses;
+	dto.player2Hitsreceived = Player2.hitsReceived;
+	
+	return dto;
 }

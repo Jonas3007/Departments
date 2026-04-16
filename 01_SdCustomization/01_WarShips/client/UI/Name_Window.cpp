@@ -5,7 +5,7 @@
 #include <Fl/Fl_Input.H>
 #include <Fl/Fl_Button.H>
 #include <string>
-#include "PlayerNames.h"
+
 
 
 NameWindow::NameWindow()

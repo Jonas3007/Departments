@@ -53,7 +53,7 @@ add_executable(server
     server/main.cpp
     server/LobbyManager.cpp
     server/server.cpp
-    server/ServerMsgHandler.cpp  
+    server/MessageHandler.cpp
     
 )
 

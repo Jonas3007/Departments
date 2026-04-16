@@ -7,6 +7,7 @@
 #include <netinet/in.h>
 #include <cstring>
 #include "server.h"
+#include "MessageHandler.h"
 // String Data structure that has to be implemented
 // HIT -> after hit are the coordinates of the attack
 // MISS -> after miss are the coordinates of the attack
@@ -16,7 +17,8 @@
 // Example: HIT:B4 -> this means that the attack on coordinates 3,4 was a hit
 
 void Server::handleMessage(int clientSocket, const std::string &message)
-{
+{ 
+	MessageHandler messageHandler; // Create an instance of MessageHandler to handle the message
 	int delimiterPos = message.find(':');
 	if (message.empty() || delimiterPos == std::string::npos)
 	{
@@ -37,10 +39,14 @@ void Server::handleMessage(int clientSocket, const std::string &message)
 			// Optionally, send a response back to the client confirming the lobby join
 		}
 	}
+	else if (command == "START")
+	{
+		lobbyManager.startGameForLobby(getClientLobbybySocket(clientSocket)); // Start the game for the lobby that the client is in
+	}
 	else
 	{
-		getClientLobbybySocket(clientSocket); // Get the lobby ID for the client
-		
+		int lobby = getClientLobbybySocket(clientSocket); // Get the lobby ID for the client
+		messageHandler.serverToGame(lobby,data, command);
 	}
 }
 

@@ -7,8 +7,7 @@
 #include <string>
 #include "GamePhase.h"
 #include "Player.h"
-#include "PlayerNames.h"
-
+#include "GameStateDTO.h"
 #include "ShipPlacementData.h"
 
 
@@ -31,6 +30,8 @@ class GameMaster
 		void SetPlayer2(Player* player);
 		void setPlayerNames(string player1, string player2);
 		
+		// builds DTO that later can be sent to the client to update the game state on the client side / update ui
+		GameStateDTO buildGameStateDTO();		
 		
 		//Initialize Game
 		void InitializeGame(string player1Name, string player2Name);
