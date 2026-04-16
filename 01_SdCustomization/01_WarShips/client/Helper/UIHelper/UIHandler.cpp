@@ -313,24 +313,7 @@ void UIHandler::toggleShipPlacementElements(GameMaster *gameMaster)
 }
 void UIHandler::toggleFinishTurnBtn(GameMaster *gameMaster)
 {
-	bool visible = gameMaster->CurrentPhase == Player1Turn || gameMaster->CurrentPhase == Player2Turn 
-	|| gameMaster->CurrentPhase == PlaceShipsP1 || gameMaster->CurrentPhase == PlaceShipsP2;
-	if (visible)
-	{
-		finishTurnBtn->show();
-	}
-	else
-	{
-		finishTurnBtn->hide();
-	}
-	if (gameMaster->firedThisTurn == true)
-	{
-		finishTurnBtn->activate();
-	}
-	else
-	{
-		finishTurnBtn->deactivate();
-	}
+	
 }
 void UIHandler::toggleEnterNamesBtn(GameMaster *gameMaster)
 {
@@ -345,22 +328,7 @@ void UIHandler::toggleEnterNamesBtn(GameMaster *gameMaster)
 }
 void UIHandler::toggleFireBtn(GameMaster *gameMaster)
 {
-	if (!gameMaster->CurrentPhase == PickNamePhase)
-	{
-		firebtn->show();
-	}
-	else
-	{
-		firebtn->hide();
-	}
-	if (gameMaster->firedThisTurn == true)
-	{
-		firebtn->deactivate();
-	}
-	else
-	{
-		firebtn->activate();
-	}
+	
 }
 
 void UIHandler::toggleTransitionScreen(GameMaster *gameMaster, bool showUI)

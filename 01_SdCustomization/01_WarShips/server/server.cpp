@@ -16,8 +16,24 @@
 // ATTACK -> after attack are the coordinates of the attack
 // Example: HIT:B4 -> this means that the attack on coordinates 3,4 was a hit
 
+void Server::broadcastMessageToLobby(int lobbyId, const std::string &message)
+{
+	std::unordered_map<int, Session> lobbySessions;
+	{
+		std::lock_guard<std::mutex> lock(session_mutex);
+		lobbySessions = sessions; // Create a copy of the sessions map to avoid holding the lock while sending messages
+	}
+	for (const auto &[key, value] : lobbySessions)
+	{
+		if (value.lobbyID == lobbyId)
+		{
+			send(value.socket, message.c_str(), message.size(), 0);
+		}
+	}
+}
+
 void Server::handleMessage(int clientSocket, const std::string &message)
-{ 
+{
 	MessageHandler messageHandler; // Create an instance of MessageHandler to handle the message
 	int delimiterPos = message.find(':');
 	if (message.empty() || delimiterPos == std::string::npos)
@@ -45,8 +61,18 @@ void Server::handleMessage(int clientSocket, const std::string &message)
 	}
 	else
 	{
-		int lobby = getClientLobbybySocket(clientSocket); // Get the lobby ID for the client
-		messageHandler.serverToGame(lobby,data, command);
+		int lobbyId;
+		lobbyId = getClientLobbybySocket(clientSocket); // Get the lobby ID for the client
+		
+		messageHandler.serverToGame(lobbyId, data, command);
+		{
+			std::lock_guard<std::mutex> lock(lobby_mutex);
+			GameStateDTO dto =  lobbyManager.getGameMasterInstance(lobbyId).buildGameStateDTO(); // Build the game state DTO with the gameMaster instance of the lobby
+			std::string message = messageHandler.GameStateDTOtoString(dto); // Convert the game state DTO to a string message
+			std::cout << "Broadcasting message to lobby " << lobbyId << ": \n" << message << "\n";
+			broadcastMessageToLobby(lobbyId, message); // Broadcast the updated game state to all clients in the lobby
+		}
+		
 	}
 }
 
@@ -102,7 +128,7 @@ void Server::initializeServer()
 			std::lock_guard<std::mutex> lock(session_mutex);
 			sessions[clientSocket].socket = clientSocket;
 		}
-		std::thread(&Server::handleclient,this, clientSocket).detach();
+		std::thread(&Server::handleclient, this, clientSocket).detach();
 	}
 	return;
 }

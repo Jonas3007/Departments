@@ -77,30 +77,15 @@ void GameMaster::switchTurn()
 	}
 	else if (CurrentPhase == Player1Turn)
 	{
-
 		CurrentPhase = Player2Turn;
-		firedThisTurn = false; // Reset the flag for the next player's turn
 	}
 	else if (CurrentPhase == Player2Turn)
 	{
 		CurrentPhase = Player1Turn;
-		firedThisTurn = false;
 	}
 	setActivePlayer();
 }
-void GameMaster::selectRandomPlayer()
-{
-	int randomNum = rand() % 2; // Generates a random number, either 0 or 1
-	if (randomNum == 0)
-	{
-		CurrentPhase = Player1Turn;
-	}
-	else
-	{
-		CurrentPhase = Player2Turn;
-	}
-	setActivePlayer();
-}
+
 // Coordinate Helper
 xyCoordinates coordsConverter(char letter, int number)
 {
@@ -242,11 +227,8 @@ void GameMaster::checkPlayerHit(Coordinates targetCoords)
 	if (Player1.AllShipsDestroyed || Player2.AllShipsDestroyed)
 	{
 		CurrentPhase = GameOver;
-		createGameOverWindow();
-
 		return;
 	}
-	firedThisTurn = true;
 }
 void GameMaster::PlacePlayerShip(string data)
 {
@@ -271,30 +253,23 @@ void GameMaster::PlacePlayerShip(string data)
 	// ActivePlayer places Ship
 	ActivePlayer.placeShip(fullShipCoords, spd.selectedShipSize);
 	updatePlayer(ActivePlayer);
+	switchTurn();
 }
 
 void GameMaster::FireAtCoordinates(string input)
 {
 	Coordinates targetCoords;
+	InputParser parser;
+	if(!parser.inputIsValid(input))
+	{
+		cout << "Invalid input for firing: " << input << endl;
+		return;	
+	}
+	targetCoords = parser.fireInputTokenizer(input);
 	checkPlayerHit(targetCoords);
+	switchTurn();
 }
 
-void GameMaster::checkShipsPlacedToUpdatePhase()
-{
-	ActivePlayer.checkIfAllShipsPlaced();
-	ActivePlayer.AllShipsPlaced ? firedThisTurn = true : firedThisTurn = false;
-	Player1.checkIfAllShipsPlaced();
-	Player2.checkIfAllShipsPlaced();
-
-	if (Player1.AllShipsPlaced && !Player2.AllShipsPlaced)
-	{
-
-		updatePlayer(ActivePlayer);
-	}
-	else if (Player1.AllShipsPlaced && Player2.AllShipsPlaced)
-	{
-	}
-}
 
 void GameMaster::InitializeGame(string player1Name, string player2Name)
 {
@@ -307,36 +282,20 @@ void GameMaster::InitializeGame(string player1Name, string player2Name)
 	CurrentPhase = PlaceShipsP1;
 }
 
-void GameMaster::checkNamesEntered()
-{
-	if (!Player1.Name.empty() && !Player2.Name.empty())
-	{
-	}
-}
-void GameMaster::finishTurn()
-{
-
-	switchTurn();
-	firedThisTurn = false;
-}
-
-void GameMaster::createGameOverWindow()
-{
-	
-}
-
 GameStateDTO GameMaster::buildGameStateDTO()
 {
 	GameStateDTO dto;
 	
 	dto.player1Name = Player1.Name;
-	dto.player1Ships = Player1.ShipInventory;
+	dto.player1AllShipsDestroyed = Player1.AllShipsDestroyed;
+	dto.player1ShipsToPlace = Player1.ShipsToPlace;
 	dto.player1Hits = Player1.hits;
 	dto.player1Misses = Player1.misses;
 	dto.player1Hitsreceived = Player1.hitsReceived;
 	
 	dto.player2Name = Player2.Name;
-	dto.player2Ships = Player2.ShipInventory;
+	dto.player2AllShipsDestroyed = Player2.AllShipsDestroyed;
+	dto.player2ShipsToPlace = Player2.ShipsToPlace;
 	dto.player2Hits = Player2.hits;
 	dto.player2Misses = Player2.misses;
 	dto.player2Hitsreceived = Player2.hitsReceived;
