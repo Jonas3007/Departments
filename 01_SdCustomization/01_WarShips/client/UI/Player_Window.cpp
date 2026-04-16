@@ -61,15 +61,6 @@ void createOceanGrid(Fl_Group *group, int gridSize, int cellSize, ShipPlacementD
 			cell->copy_label(cellLabel.c_str());
 			cell->labeltype(FL_NO_LABEL);
 
-			// Zelle wird in einem vektor gespeichert
-			if (isShipGrid)
-			{
-				
-			}
-			else
-			{
-				
-			}
 		}
 
 		int axisY = gridStartY + row * cellSize;
@@ -109,7 +100,7 @@ void shipPlacementElements(Fl_Input *coordsInput, ShipPlacementData *spd, GameMa
 
 	Fl_Button *placeShip_btn = new Fl_Button(730, 600, 90, 40, "Place Ship");
 	placeShip_btn->box(FL_PLASTIC_UP_BOX);
-	placeShip_btn->callback(takeInput_cb, spd);
+	placeShip_btn->callback(takeInput_cb, nullptr);
 	// Buttons for selecting ships to place
 	Fl_Button *ship5_btn = new Fl_Button(600, 650, 90, 40, "Battleship");
 	Fl_Button *ship4_btn = new Fl_Button(700, 650, 90, 40, "Cruiser");
@@ -121,25 +112,14 @@ void shipPlacementElements(Fl_Input *coordsInput, ShipPlacementData *spd, GameMa
 	ship3_btn->box(FL_PLASTIC_UP_BOX);
 	ship2_btn->box(FL_PLASTIC_UP_BOX);
 	// Callbacks for ship selection
-	ship5_btn->callback(shipSelect_cb, spd);
-	ship4_btn->callback(shipSelect_cb, spd);
-	ship3_btn->callback(shipSelect_cb, spd);
-	ship2_btn->callback(shipSelect_cb, spd);
-	
-	if (gameMaster->CurrentPhase != PlaceShipsP1 && gameMaster->CurrentPhase != PlaceShipsP2)
-	{
-		coordsInput->hide();
-		placeShip_btn->hide();
-		ship5_btn->hide();
-		ship4_btn->hide();
-		ship3_btn->hide();
-		ship2_btn->hide();
-		selectedShipOutput->hide();
-		shipSizeOutput->hide();
-	}
+	ship5_btn->callback(shipSelect_cb, nullptr);
+	ship4_btn->callback(shipSelect_cb, nullptr);
+	ship3_btn->callback(shipSelect_cb, nullptr);
+	ship2_btn->callback(shipSelect_cb, nullptr);
+
 }
 
-Fl_Window *CreatePlayerWindow(GameMaster *gameMaster, ShipPlacementData *spd)
+Fl_Window *CreatePlayerWindow()
 {
 	// Initialize DataStructs
 	
@@ -171,13 +151,13 @@ Fl_Window *CreatePlayerWindow(GameMaster *gameMaster, ShipPlacementData *spd)
 	// Enter names Button
 	Fl_Button *enterNamesBtn = new Fl_Button(80, 80, 150, 40, "Enter Player Names");
 	enterNamesBtn->box(FL_PLASTIC_UP_BOX);
-	enterNamesBtn->callback(createNameWindow_cb, spd);
+	enterNamesBtn->callback(createNameWindow_cb, nullptr);
 
 
 	// Finish Turn Button
 	Fl_Button *finishTurnBtn = new Fl_Button(825, 600, 120, 40, "Finish Turn");
 	finishTurnBtn->box(FL_PLASTIC_UP_BOX);
-	finishTurnBtn->callback(finishTurn_cb, gameMaster);
+	finishTurnBtn->callback(finishTurn_cb, nullptr);
 
 	finishTurnBtn->hide();
 
@@ -191,26 +171,26 @@ Fl_Window *CreatePlayerWindow(GameMaster *gameMaster, ShipPlacementData *spd)
 	coordsInput->box(FL_PLASTIC_UP_BOX);
 	takeInput_btn->box(FL_PLASTIC_UP_BOX);
 	// Callbacks for Input and Button
-	takeInput_btn->callback(fireInput_cb, spd);
+	takeInput_btn->callback(fireInput_cb, nullptr);
 	// Buttons and ui elements for ship placement
-	shipPlacementElements(coordsInput, spd, gameMaster);
+	shipPlacementElements(coordsInput, nullptr,nullptr);
 
 	// ocean grid creation
 	Fl_Group *oceanGrid = new Fl_Group(75, 200, 450, 450);
 	oceanGrid->begin();
-	createOceanGrid(oceanGrid, 10, 35, spd);
+	createOceanGrid(oceanGrid, 10, 35, nullptr);
 	oceanGrid->end();
 
 	Fl_Group *shipGrid = new Fl_Group(575, 200, 450, 450);
 	shipGrid->begin();
-	createOceanGrid(shipGrid, 10, 35, spd);
+	createOceanGrid(shipGrid, 10, 35, nullptr);
 	shipGrid->end();
 	
 	
 	//Playturn button that toggles the transition screen for the next player
 	Fl_Button *playTurn_btn = new Fl_Button(450, 350, 150, 50, "Play Turn");
 	playTurn_btn->box(FL_PLASTIC_UP_BOX);
-	playTurn_btn->callback(playTurn_cb, gameMaster);
+	playTurn_btn->callback(playTurn_cb, nullptr);
 
 	playTurn_btn->hide();
 	

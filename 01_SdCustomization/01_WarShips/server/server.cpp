@@ -64,7 +64,7 @@ void Server::handleMessage(int clientSocket, const std::string &message)
 		int lobbyId;
 		lobbyId = getClientLobbybySocket(clientSocket); // Get the lobby ID for the client
 		
-		messageHandler.serverToGame(lobbyId, data, command);
+		messageHandler.serverToGame(lobbyId, data, command, this->lobbyManager);
 		{
 			std::lock_guard<std::mutex> lock(lobby_mutex);
 			GameStateDTO dto =  lobbyManager.getGameMasterInstance(lobbyId).buildGameStateDTO(); // Build the game state DTO with the gameMaster instance of the lobby
@@ -86,9 +86,10 @@ void Server::handleclient(int clientSocket)
 {
 	char buffer[1024];
 
-	memset(buffer, 0, sizeof(buffer));
+	
 	while (true)
 	{
+		memset(buffer, 0, sizeof(buffer));
 		int bytes = recv(clientSocket, buffer, sizeof(buffer), 0);
 
 		if (bytes <= 0)
@@ -100,8 +101,10 @@ void Server::handleclient(int clientSocket)
 			}
 			return;
 		}
-		std::string msg = buffer;
-		handleMessage(clientSocket, msg);
+		std::cout << "Client connected: " << clientSocket << "\n";
+		std::string msg (buffer,bytes);
+		cout << "Incoming:"<< clientSocket << ":" << msg << endl;
+		//handleMessage(clientSocket, msg);
 	}
 }
 

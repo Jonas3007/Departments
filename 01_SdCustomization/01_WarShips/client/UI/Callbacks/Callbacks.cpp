@@ -35,7 +35,7 @@ int setSelectedShipSize(Fl_Widget *widget)
 // Callbacks
 void takeInput_cb(Fl_Widget *widget, void *data)
 {
-	
+	cout << "Take Input Callback triggered" << endl;
 	
 }
 

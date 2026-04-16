@@ -5,4 +5,4 @@
 #include "ShipPlacementData.h"
 class GameMaster;
 
-Fl_Window* CreatePlayerWindow( GameMaster *gameMaster, ShipPlacementData *spd);
+Fl_Window* CreatePlayerWindow();

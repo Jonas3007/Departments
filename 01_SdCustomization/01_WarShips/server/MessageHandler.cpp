@@ -8,17 +8,15 @@
 #include <iostream>
 
 
-void MessageHandler::serverToGame(const int &lobbyId,const std::string &data, const std::string &command)
-{
-	LobbyManager LobbyManager;
-	auto gameMaster = LobbyManager.getGameMasterInstance(lobbyId);
+void MessageHandler::serverToGame(const int &lobbyId,const std::string &data, const std::string &command, LobbyManager &lobbyManager)
+{	
 	if (command == "PLACE")
 	{
-		gameMaster.PlacePlayerShip(data);
+		lobbyManager.getGameMasterInstance(lobbyId).PlacePlayerShip(data);
 	}
 	else if (command == "ATTACK")
 	{
-		gameMaster.FireAtCoordinates(data);
+		lobbyManager.getGameMasterInstance(lobbyId).FireAtCoordinates(data);
 	}
 	else
 	{

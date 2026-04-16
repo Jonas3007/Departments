@@ -6,6 +6,7 @@
 #include <vector>
 #include <string>
 
+using namespace std;
 struct GameStateDTO
 {
 	string player1Name;

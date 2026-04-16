@@ -11,8 +11,11 @@
 #include "Fl/Fl_Multiline_Output.H"
 #include "Name_Window.h"
 #include "GameOver_Window.h"
+#include <memory>
+#include "ClientMessageHandler.h"
 
 class NameWindow;
+class ClientMessageHandler;	
 //---------------------
 // Update UI
 //---------------------
@@ -25,6 +28,7 @@ class UIHandler
 		vector<Fl_Box *> gridCells;
 		NameWindow *nameWindow;
 		GameOverWindow *gameOverWindow;
+		unique_ptr<ClientMessageHandler> msgHandler;
 		
 		//Setter for UI elements
 		void setNameInput(Fl_Input *input);	

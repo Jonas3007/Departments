@@ -21,7 +21,7 @@ class Server
 		std::mutex session_mutex;
 		LobbyManager lobbyManager;
 		std::mutex lobby_mutex; // Mutex to protect access to the lobbyManager
-		int PORT = 3007;
+		int PORT = 12345;
 		
 		void initializeServer();
 		void handleclient(int clientSocket);
