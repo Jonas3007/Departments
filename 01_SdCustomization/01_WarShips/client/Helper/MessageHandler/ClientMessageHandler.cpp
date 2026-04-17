@@ -104,7 +104,19 @@ vector<ShipConfig> ClientMessageHandler::stringToShipConfig(const std::string &d
 	std::string scData = data;
 	while (true)
 	{
-		
+		int colonPos =scData.find(':');
+		int commaPos = scData.find(',');
+		if (colonPos == std::string::npos || commaPos == std::string::npos)
+		{
+			break;
+		}
+		int shipSize = stoi(scData.substr(0, colonPos));
+		int count = stoi(scData.substr(colonPos + 1, commaPos - colonPos));
+		ShipConfig config;
+		config.ShipSize = shipSize;
+		config.Count = count;
+		shipConfigVector.push_back(config);
+		scData.erase(0, commaPos + 1);	
 	}
 	return shipConfigVector;
 }
