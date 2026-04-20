@@ -117,3 +117,16 @@ void Player::removeShipFromInventory(Coordinates coords)
 	
 }
 
+vector<Coordinates> Player::getAllShipCoordinates()
+{
+	vector<Coordinates> allCoords;
+	for (Ship ship : ShipInventory)
+	{
+		for (Coordinates coords : ship.GridLocation)
+		{
+			allCoords.push_back(coords);
+		}
+	}
+	return allCoords;
+}
+

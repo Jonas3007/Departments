@@ -9,18 +9,14 @@
 using namespace std;
 struct GameStateDTO
 {
-	string player1Name;
-	bool player1AllShipsDestroyed;
-	vector<ShipConfig> player1ShipsToPlace;
-	vector<Coordinates> player1Hits;
-	vector<Coordinates> player1Misses;
-	vector<Coordinates> player1Hitsreceived;
-
-	string player2Name;
-	bool player2AllShipsDestroyed;
-	vector<ShipConfig> player2ShipsToPlace;
-	vector<Coordinates> player2Hits;
-	vector<Coordinates> player2Misses;
-	vector<Coordinates> player2Hitsreceived;
 	GamePhase currentPhase;
+	int playerIndex;
+	string playerName;
+	string opponentName;
+	bool playerAllShipsDestroyed;
+	vector<ShipConfig> playerShipsToPlace;
+	vector<Coordinates> playerHits;
+	vector<Coordinates> playerMisses;
+	vector<Coordinates> playerHitsreceived;
+	vector<Coordinates> shipsPlaced;
 };

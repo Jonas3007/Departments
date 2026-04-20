@@ -282,23 +282,37 @@ void GameMaster::InitializeGame(string player1Name, string player2Name)
 	CurrentPhase = PlaceShipsP1;
 }
 
-GameStateDTO GameMaster::buildGameStateDTO()
+GameStateDTO GameMaster::buildGameStateDTO(const std::string &playerName)
 {
 	GameStateDTO dto;
-	
-	dto.player1Name = Player1.Name;
-	dto.player1AllShipsDestroyed = Player1.AllShipsDestroyed;
-	dto.player1ShipsToPlace = Player1.ShipsToPlace;
-	dto.player1Hits = Player1.hits;
-	dto.player1Misses = Player1.misses;
-	dto.player1Hitsreceived = Player1.hitsReceived;
-	
-	dto.player2Name = Player2.Name;
-	dto.player2AllShipsDestroyed = Player2.AllShipsDestroyed;
-	dto.player2ShipsToPlace = Player2.ShipsToPlace;
-	dto.player2Hits = Player2.hits;
-	dto.player2Misses = Player2.misses;
-	dto.player2Hitsreceived = Player2.hitsReceived;
-	
+	if(playerName == Player1.Name)
+	{
+		dto.playerIndex = 1;
+		dto.playerName = Player1.Name;
+		dto.opponentName = Player2.Name;
+		dto.playerAllShipsDestroyed = Player1.AllShipsDestroyed;
+		dto.playerShipsToPlace = Player1.ShipsToPlace;
+		dto.playerHits = Player1.hits;
+		dto.playerMisses = Player1.misses;
+		dto.playerHitsreceived = Player1.hitsReceived;	
+		dto.shipsPlaced = Player1.getAllShipCoordinates();
+	}
+	else if(playerName == Player2.Name)
+	{
+		dto.playerIndex = 2;
+		dto.playerName = Player2.Name;
+		dto.opponentName = Player1.Name;
+		dto.playerAllShipsDestroyed = Player2.AllShipsDestroyed;
+		dto.playerShipsToPlace = Player2.ShipsToPlace;
+		dto.playerHits = Player2.hits;
+		dto.playerMisses = Player2.misses;
+		dto.playerHitsreceived = Player2.hitsReceived;
+		dto.shipsPlaced = Player2.getAllShipCoordinates();	
+	}
+	else
+	{
+		cout << "Error: Player name " << playerName << " does not match any player in the game." << endl;
+	}
+	dto.currentPhase = CurrentPhase;
 	return dto;
 }

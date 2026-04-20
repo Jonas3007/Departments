@@ -7,7 +7,6 @@
 #include "Ship.h"
 void updateUIAccordingToGameState()
 {
-	
 }
 //---------------------
 // Helper
@@ -16,7 +15,6 @@ void UIHandler::onGameStateUpdate(const GameStateDTO &newState)
 {
 	this->currentGameState = newState;
 	void updateUIAccordingToGameState();
-	
 }
 string coordsToCellPos(Coordinates coords)
 {
@@ -28,7 +26,7 @@ string coordsToCellPos(Coordinates coords)
 void UIHandler::setPlayTurnBtn(Fl_Button *btn)
 {
 	this->playTur_btn = btn;
-}	
+}
 void UIHandler::setGridGroups(Fl_Group *playerShipGrid, Fl_Group *oceanGrid)
 {
 	this->PlayerShipGrid = playerShipGrid;
@@ -68,6 +66,18 @@ void UIHandler::setShipPlacementElements(Fl_Button *placeShipbtn, Fl_Button *bat
 void UIHandler::setNameWindow(NameWindow *window)
 {
 	this->nameWindow = window;
+}
+void UIHandler::setFinishTurnBtn(Fl_Button *btn)
+{
+	this->finishTurnBtn = btn;
+}
+void UIHandler::setEnterNamesBtn(Fl_Button *btn)
+{
+	this->enterNamesBtn = btn;
+}
+void UIHandler::setFireBtn(Fl_Button *btn)
+{
+	this->firebtn = btn;
 }
 string UIHandler::getPlayerName()
 {
@@ -123,7 +133,18 @@ void UIHandler::resetGridColors()
 }
 void UIHandler::updatePlayerTurnBox()
 {
-
+	if (currentGameState.playerIndex == 1 && currentGameState.currentPhase == GamePhase::Player1Turn || currentGameState.currentPhase == GamePhase::PlaceShipsP1)
+	{
+		playerTurnBox->label(currentGameState.playerName.c_str());
+	}
+	else if (currentGameState.playerIndex == 2 && currentGameState.currentPhase == GamePhase::Player2Turn || currentGameState.currentPhase == GamePhase::PlaceShipsP2)
+	{
+		playerTurnBox->label(currentGameState.playerName.c_str());
+	}
+	else
+	{
+		playerTurnBox->label(currentGameState.opponentName.c_str());
+	}
 }
 void UIHandler::updatePhaseBox()
 {
@@ -132,56 +153,47 @@ void UIHandler::updatePhaseBox()
 	{
 	case GamePhase::PlaceShipsP1:
 		phaseName = "Place Ships - Player 1";
+		phaseBox->label(phaseName.c_str());
 		break;
 	case GamePhase::PlaceShipsP2:
 		phaseName = "Place Ships - Player 2";
+		phaseBox->label(phaseName.c_str());
 		break;
 	case GamePhase::Player1Turn:
 		phaseName = "Player 1's Turn";
+		phaseBox->label(phaseName.c_str());
 		break;
 	case GamePhase::Player2Turn:
 		phaseName = "Player 2's Turn";
+		phaseBox->label(phaseName.c_str());
 		break;
 	case GamePhase::GameOver:
 		phaseName = "Game Over";
+		phaseBox->label(phaseName.c_str());
 		break;
 	case GamePhase::PickNamePhase:
 		phaseName = "Pick Name Phase";
+		phaseBox->label(phaseName.c_str());
 		break;
 	default:
 		phaseName = "Unknown Phase";
+		phaseBox->label(phaseName.c_str());
 		break;
 	}
 }
-void UIHandler::setFinishTurnBtn(Fl_Button *btn)
-{
-	this->finishTurnBtn = btn;
-}
-void UIHandler::setEnterNamesBtn(Fl_Button *btn)
-{
-	this->enterNamesBtn = btn;
-}
-void UIHandler::setFireBtn(Fl_Button *btn)
-{
-	this->firebtn = btn;
-}
-
 void UIHandler::updatePlayerGrid()
 {
 	Fl_Color color;
-	vector<Ship> P1Inventory;
-	// Show ships in grid
-	for (Ship ship : P1Inventory)
+	vector<Coordinates> shipCoords = currentGameState.shipsPlaced;
+	for (Coordinates coord : shipCoords)
 	{
-		for (Coordinates coord : ship.GridLocation)
-		{
-			color = FL_BLACK;
-			string cellPos = coordsToCellPos(coord);
-			reColorPlayerShipGridCell(cellPos, color);
-		}
+		color = FL_BLACK;
+		string cellPos = coordsToCellPos(coord);
+		reColorPlayerShipGridCell(cellPos, color);
 	}
+
 	// Show hits received
-	vector<Coordinates> hitsReceived = currentGameState.player1Hitsreceived;
+	vector<Coordinates> hitsReceived = currentGameState.playerHitsreceived;
 	for (Coordinates hit : hitsReceived)
 	{
 		color = FL_RED;
@@ -189,7 +201,7 @@ void UIHandler::updatePlayerGrid()
 		reColorPlayerShipGridCell(cellPos, color);
 	}
 	// show hits on opponent
-	vector<Coordinates> hits = currentGameState.player1Hits;
+	vector<Coordinates> hits = currentGameState.playerHits;
 	for (Coordinates hit : hits)
 	{
 		color = FL_GREEN;
@@ -197,7 +209,7 @@ void UIHandler::updatePlayerGrid()
 		reColorGridCell(cellPos, color);
 	}
 	// show misses on opponent
-	vector<Coordinates> misses = currentGameState.player1Misses;	
+	vector<Coordinates> misses = currentGameState.playerMisses;
 	for (Coordinates miss : misses)
 	{
 		color = FL_WHITE;
@@ -208,9 +220,8 @@ void UIHandler::updatePlayerGrid()
 
 void UIHandler::updateShipSizeOutput()
 {
-	Player activePlayer;
 	string outputText;
-	for (ShipConfig config : activePlayer.ShipsToPlace)
+	for (ShipConfig config : currentGameState.playerShipsToPlace)
 	{
 		switch (config.ShipSize)
 		{
@@ -260,14 +271,10 @@ void UIHandler::toggleShipPlacementElements()
 }
 void UIHandler::toggleFinishTurnBtn()
 {
-	
 }
 void UIHandler::toggleEnterNamesBtn()
 {
-	
 }
 void UIHandler::toggleFireBtn()
 {
-	
 }
-

@@ -30,6 +30,7 @@ class Player
 		void checkAllShipsDestroyed();
 		void updateShipStatus();
 		void takeHit(Coordinates coords);
-		void removeShipFromInventory(Coordinates coords);	
+		void removeShipFromInventory(Coordinates coords);
+		vector<Coordinates> getAllShipCoordinates();
 		
 };

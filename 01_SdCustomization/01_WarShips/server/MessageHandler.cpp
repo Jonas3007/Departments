@@ -27,20 +27,16 @@ void MessageHandler::serverToGame(const int &lobbyId,const std::string &data, co
 string MessageHandler::GameStateDTOtoString(GameStateDTO dto)
 {
 	string message;
-	//write Player1 data to message string and GamePhase
+	//write Player data to message string and GamePhase
 	message += "GAMEPHASE=" + to_string(dto.currentPhase) + ";";
-	message += "P1NAME=" + dto.player1Name + ";";
-	message += "P1SHIPSTOPLACE=" + ShipConfigVectorToString(dto.player1ShipsToPlace) + ";";
-	message += "P1HITS=" + CoordsVectorToString(dto.player1Hits) + ";";
-	message += "P1MISSES=" + CoordsVectorToString(dto.player1Misses) + ";";
-	message += "P1HITSRECEIVED=" + CoordsVectorToString(dto.player1Hitsreceived) + ";";
-	
-	// write Player1 data to message string
-	message += "P2NAME=" + dto.player2Name + ";";
-	message += "P2SHIPSTOPLACE=" + ShipConfigVectorToString(dto.player2ShipsToPlace) + ";";
-	message += "P2HITS=" + CoordsVectorToString(dto.player2Hits) + ";";
-	message += "P2MISSES=" + CoordsVectorToString(dto.player2Misses) + ";";
-	message += "P2HITSRECEIVED=" + CoordsVectorToString(dto.player2Hitsreceived) + ";";
+	message += "PLAYERINDEX=" + to_string(dto.playerIndex) + ";";
+	message += "NAME=" + dto.playerName + ";";
+	message += "OPPONENTNAME=" + dto.opponentName + ";";	
+	message += "SHIPSTOPLACE=" + ShipConfigVectorToString(dto.playerShipsToPlace) + ";";
+	message += "HITS=" + CoordsVectorToString(dto.playerHits) + ";";
+	message += "MISSES=" + CoordsVectorToString(dto.playerMisses) + ";";
+	message += "HITSRECEIVED=" + CoordsVectorToString(dto.playerHitsreceived) + ";";
+	message += "SHIPSPLACED=" + CoordsVectorToString(dto.shipsPlaced) + ";";
 	return message;
 }
 

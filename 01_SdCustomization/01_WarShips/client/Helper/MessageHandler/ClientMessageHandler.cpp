@@ -45,47 +45,38 @@ void ClientMessageHandler::buildGameStateDTO(const std::string &type, const std:
 	{
 		dto.currentPhase == parseGamePhase(data);
 	}
-	// Player1
-	else if (type == "P1NAME")
+	// Player
+	else if (type == "NAME")
 	{
-		dto.player1Name = data;
+		dto.playerName = data;
 	}
-	else if (type == "P1SHIPSTOPLACE")
+	else if (type == "SHIPSTOPLACE")
 	{
-		dto.player1ShipsToPlace = stringToShipConfig(data);
+		dto.playerShipsToPlace = stringToShipConfig(data);
 	}
-	else if (type == "P1HITS")
+	else if (type == "HITS")
 	{
-		dto.player1Hits = stringToCoords(data);
+		dto.playerHits = stringToCoords(data);
 	}
-	else if (type == "P1MISSES")
+	else if (type == "MISSES")
 	{
-		dto.player1Misses = stringToCoords(data);
+		dto.playerMisses = stringToCoords(data);
 	}
-	else if (type == "P1HITSRECEIVED")
+	else if (type == "HITSRECEIVED")
 	{
-		dto.player1Hitsreceived = stringToCoords(data);
+		dto.playerHitsreceived = stringToCoords(data);
 	}
-	// Player2
-	else if (type == "P2NAME")
+	else if (type == "SHIPSPLACED")
 	{
-		dto.player2Name = data;
+		dto.shipsPlaced = stringToCoords(data);
 	}
-	else if (type == "P2SHIPSTOPLACE")
+	else if (type == "OPPONENTNAME")
 	{
-		dto.player2ShipsToPlace = stringToShipConfig(data);
+		dto.opponentName = data;
 	}
-	else if (type == "P2HITS")
+	else if (type == "PLAYERINDEX")
 	{
-		dto.player2Hits = stringToCoords(data);
-	}
-	else if (type == "P2MISSES")
-	{
-		dto.player2Misses = stringToCoords(data);
-	}
-	else if (type == "P2HITSRECEIVED")
-	{
-		dto.player2Hitsreceived = stringToCoords(data);
+		dto.playerIndex = stoi(data);
 	}
 	else
 	{

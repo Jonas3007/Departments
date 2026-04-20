@@ -41,9 +41,8 @@ void takeInput_cb(Fl_Widget *widget, void *data)
 
 void shipSelect_cb(Fl_Widget *widget, void *data)
 {
-	auto *spd = static_cast<ShipPlacementData *>(data);
-	spd->selectedShipSize = setSelectedShipSize(widget);
-	
+	auto spd = static_cast<ShipPlacementData *>(data);
+	spd->selectedShipSize = setSelectedShipSize(widget);	
 }
 void fireInput_cb(Fl_Widget *widget, void *data)
 {

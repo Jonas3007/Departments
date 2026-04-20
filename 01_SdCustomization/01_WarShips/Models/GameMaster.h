@@ -29,7 +29,7 @@ class GameMaster
 		void setPlayerNames(string player1, string player2);
 		
 		// builds DTO that later can be sent to the client to update the game state on the client side / update ui
-		GameStateDTO buildGameStateDTO();		
+		GameStateDTO buildGameStateDTO(const string &playerName);		
 		
 		//Initialize Game
 		void InitializeGame(string player1Name, string player2Name);

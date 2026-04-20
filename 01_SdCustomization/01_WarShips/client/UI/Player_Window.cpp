@@ -87,7 +87,7 @@ void createOceanGrid(Fl_Group *group, int gridSize, int cellSize, ShipPlacementD
 	}
 }
 
-void shipPlacementElements(Fl_Input *coordsInput, ShipPlacementData *spd, GameMaster *gameMaster)
+void shipPlacementElements(Fl_Input *coordsInput, ShipPlacementData *spd)
 {
 
 	// Output to Display Selected Ship
@@ -112,17 +112,17 @@ void shipPlacementElements(Fl_Input *coordsInput, ShipPlacementData *spd, GameMa
 	ship3_btn->box(FL_PLASTIC_UP_BOX);
 	ship2_btn->box(FL_PLASTIC_UP_BOX);
 	// Callbacks for ship selection
-	ship5_btn->callback(shipSelect_cb, nullptr);
-	ship4_btn->callback(shipSelect_cb, nullptr);
-	ship3_btn->callback(shipSelect_cb, nullptr);
-	ship2_btn->callback(shipSelect_cb, nullptr);
+	ship5_btn->callback(shipSelect_cb, spd);
+	ship4_btn->callback(shipSelect_cb, spd);
+	ship3_btn->callback(shipSelect_cb, spd);
+	ship2_btn->callback(shipSelect_cb, spd);
 
 }
 
 Fl_Window *CreatePlayerWindow()
 {
 	// Initialize DataStructs
-	
+	ShipPlacementData spd;
 
 	// Create Main Window
 	Fl_Window *window = new Fl_Window(1050, 850);
@@ -173,7 +173,7 @@ Fl_Window *CreatePlayerWindow()
 	// Callbacks for Input and Button
 	takeInput_btn->callback(fireInput_cb, nullptr);
 	// Buttons and ui elements for ship placement
-	shipPlacementElements(coordsInput, nullptr,nullptr);
+	shipPlacementElements(coordsInput, &spd);
 
 	// ocean grid creation
 	Fl_Group *oceanGrid = new Fl_Group(75, 200, 450, 450);
