@@ -3,6 +3,24 @@
 #include <string>
 #include "GamePhase.h"
 
+void ClientMessageHandler::addListener(IGameStateListener *listener)
+{
+	listeners.push_back(listener);
+}
+void ClientMessageHandler::notifyListeners(const GameStateDTO &newState)
+{
+	for (IGameStateListener *listener : listeners)
+	{
+		listener->onGameStateUpdate(newState);
+	}
+}
+GameStateDTO ClientMessageHandler::handleMessage(const std::string &msg)
+{
+	
+	this->stringTokenizer(msg);
+	notifyListeners(dto);
+	return dto;
+}
 void ClientMessageHandler::stringTokenizer(const std::string &msg)
 {
 	std::string message = msg;
@@ -34,7 +52,7 @@ void ClientMessageHandler::buildGameStateDTO(const std::string &type, const std:
 	}
 	else if (type == "P1SHIPSTOPLACE")
 	{
-		
+		dto.player1ShipsToPlace = stringToShipConfig(data);
 	}
 	else if (type == "P1HITS")
 	{
@@ -55,7 +73,7 @@ void ClientMessageHandler::buildGameStateDTO(const std::string &type, const std:
 	}
 	else if (type == "P2SHIPSTOPLACE")
 	{
-		
+		dto.player2ShipsToPlace = stringToShipConfig(data);
 	}
 	else if (type == "P2HITS")
 	{

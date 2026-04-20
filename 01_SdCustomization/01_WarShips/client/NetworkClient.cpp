@@ -1,8 +1,15 @@
 #include "NetworkClient.h"
 #include "UIHandler.h"
+#include "ClientMessageHandler.h"
+#include "GameStateDTO.h"
 
-void NetworkClient::receive_messages(int sock)
+void NetworkClient::setMsgHandler(unique_ptr<ClientMessageHandler> handler)
 {
+	this->msgHandler = std::move(handler);
+}
+void NetworkClient::receiveMessages(int sock)
+{
+
 	char buffer[1024];
 	while (true)
 	{
@@ -14,7 +21,7 @@ void NetworkClient::receive_messages(int sock)
 			break;
 		}
 		std::string message(buffer, bytes);
-		std::cout << "Received: " << message << std::endl;
+		msgHandler->handleMessage(message);
 	}
 	close(sock); // Close the socket when done
 }
@@ -43,8 +50,8 @@ int NetworkClient::startClient()
 		std::cout << "Connection Failed" << std::endl;
 		return -1;
 	}
-	
-	std::thread(&NetworkClient::receive_messages,this, sock).detach(); // Start a thread to receive messages from the server
+
+	std::thread(&NetworkClient::receiveMessages, this, sock).detach(); // Start a thread to receive messages from the server
 
 	exit(0);
 	return 0;

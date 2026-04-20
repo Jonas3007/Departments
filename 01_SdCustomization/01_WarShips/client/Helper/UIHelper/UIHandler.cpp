@@ -5,10 +5,19 @@
 #include "Fl/Fl.H"
 #include <vector>
 #include "Ship.h"
-
+void updateUIAccordingToGameState()
+{
+	
+}
 //---------------------
 // Helper
 //---------------------
+void UIHandler::onGameStateUpdate(const GameStateDTO &newState)
+{
+	this->currentGameState = newState;
+	void updateUIAccordingToGameState();
+	
+}
 string coordsToCellPos(Coordinates coords)
 {
 	return coords.Letter + to_string(coords.Number);
@@ -112,14 +121,14 @@ void UIHandler::resetGridColors()
 		cell->redraw();
 	}
 }
-void UIHandler::updatePlayerTurnBox(GameMaster *gameMaster)
+void UIHandler::updatePlayerTurnBox()
 {
 
 }
-void UIHandler::updatePhaseBox(GameMaster *gameMaster)
+void UIHandler::updatePhaseBox()
 {
 	string phaseName;
-	switch (gameMaster->CurrentPhase)
+	switch (currentGameState.currentPhase)
 	{
 	case GamePhase::PlaceShipsP1:
 		phaseName = "Place Ships - Player 1";
@@ -157,10 +166,10 @@ void UIHandler::setFireBtn(Fl_Button *btn)
 	this->firebtn = btn;
 }
 
-void UIHandler::updatePlayer1Grid(GameMaster *gameMaster)
+void UIHandler::updatePlayerGrid()
 {
 	Fl_Color color;
-	vector<Ship> P1Inventory = gameMaster->Player1.ShipInventory;
+	vector<Ship> P1Inventory;
 	// Show ships in grid
 	for (Ship ship : P1Inventory)
 	{
@@ -172,7 +181,7 @@ void UIHandler::updatePlayer1Grid(GameMaster *gameMaster)
 		}
 	}
 	// Show hits received
-	vector<Coordinates> hitsReceived = gameMaster->Player1.hitsReceived;
+	vector<Coordinates> hitsReceived = currentGameState.player1Hitsreceived;
 	for (Coordinates hit : hitsReceived)
 	{
 		color = FL_RED;
@@ -180,7 +189,7 @@ void UIHandler::updatePlayer1Grid(GameMaster *gameMaster)
 		reColorPlayerShipGridCell(cellPos, color);
 	}
 	// show hits on opponent
-	vector<Coordinates> hits = gameMaster->Player1.hits;
+	vector<Coordinates> hits = currentGameState.player1Hits;
 	for (Coordinates hit : hits)
 	{
 		color = FL_GREEN;
@@ -188,7 +197,7 @@ void UIHandler::updatePlayer1Grid(GameMaster *gameMaster)
 		reColorGridCell(cellPos, color);
 	}
 	// show misses on opponent
-	vector<Coordinates> misses = gameMaster->Player1.misses;
+	vector<Coordinates> misses = currentGameState.player1Misses;	
 	for (Coordinates miss : misses)
 	{
 		color = FL_WHITE;
@@ -196,72 +205,10 @@ void UIHandler::updatePlayer1Grid(GameMaster *gameMaster)
 		reColorGridCell(cellPos, color);
 	}
 }
-void UIHandler::updatePlayer2Grid(GameMaster *gameMaster)
+
+void UIHandler::updateShipSizeOutput()
 {
-
-	vector<Ship> P2Inventory = gameMaster->Player2.ShipInventory;
-	// Show ships in grid
-	for (Ship ship : P2Inventory)
-	{
-		for (Coordinates coord : ship.GridLocation)
-		{
-			Fl_Color color = FL_BLACK;
-			string cellPos = coordsToCellPos(coord);
-			reColorPlayerShipGridCell(cellPos, color);
-		}
-	}
-	// Show hits received
-	vector<Coordinates> hitsReceived = gameMaster->Player2.hitsReceived;
-	for (Coordinates hit : hitsReceived)
-	{
-		Fl_Color color = FL_RED;
-		string cellPos = coordsToCellPos(hit);
-		reColorPlayerShipGridCell(cellPos, color);
-	}
-	// show hits on opponent
-	vector<Coordinates> hits = gameMaster->Player2.hits;
-	for (Coordinates hit : hits)
-	{
-		Fl_Color color = FL_GREEN;
-		string cellPos = coordsToCellPos(hit);
-		reColorGridCell(cellPos, color);
-	}
-	// show misses on opponent
-	vector<Coordinates> misses = gameMaster->Player2.misses;
-	for (Coordinates miss : misses)
-	{
-		Fl_Color color = FL_WHITE;
-		string cellPos = coordsToCellPos(miss);
-		reColorGridCell(cellPos, color);
-	}
-}
-
-void UIHandler::updatePlayerWindows(GameMaster *gameMaster)
-{
-	// Update Player Turn Box
-
-	// Place Ships in Grid
-	if (gameMaster->CurrentPhase == PlaceShipsP1 || gameMaster->CurrentPhase == Player1Turn)
-	{
-		resetGridColors();
-		updatePlayer1Grid(gameMaster);
-		updatePlayerTurnBox(gameMaster);
-		updatePhaseBox(gameMaster);
-		updateShipSizeOutput(gameMaster);
-	}
-	else if (gameMaster->CurrentPhase == PlaceShipsP2 || gameMaster->CurrentPhase == Player2Turn)
-	{
-		resetGridColors();
-		updatePlayer2Grid(gameMaster);
-		updatePlayerTurnBox(gameMaster);
-		updatePhaseBox(gameMaster);
-		updateShipSizeOutput(gameMaster);
-	}
-}
-
-void UIHandler::updateShipSizeOutput(GameMaster *gameMaster)
-{
-	Player activePlayer = gameMaster->ActivePlayer;
+	Player activePlayer;
 	string outputText;
 	for (ShipConfig config : activePlayer.ShipsToPlace)
 	{
@@ -286,9 +233,9 @@ void UIHandler::updateShipSizeOutput(GameMaster *gameMaster)
 //------------------------
 // Toggleable UI Elements
 //------------------------
-void UIHandler::toggleShipPlacementElements(GameMaster *gameMaster)
+void UIHandler::toggleShipPlacementElements()
 {
-	bool visible = gameMaster->CurrentPhase == PlaceShipsP1 || gameMaster->CurrentPhase == PlaceShipsP2;
+	bool visible;
 	if (visible)
 	{
 		placeShipBtn->show();
@@ -311,42 +258,16 @@ void UIHandler::toggleShipPlacementElements(GameMaster *gameMaster)
 		shipSizeOutput->hide();
 	}
 }
-void UIHandler::toggleFinishTurnBtn(GameMaster *gameMaster)
+void UIHandler::toggleFinishTurnBtn()
 {
 	
 }
-void UIHandler::toggleEnterNamesBtn(GameMaster *gameMaster)
+void UIHandler::toggleEnterNamesBtn()
 {
-	if (!gameMaster->Player1.Name.empty() && !gameMaster->Player2.Name.empty())
-	{
-		enterNamesBtn->hide();
-	}
-	else
-	{
-		enterNamesBtn->show();
-	}
+	
 }
-void UIHandler::toggleFireBtn(GameMaster *gameMaster)
+void UIHandler::toggleFireBtn()
 {
 	
 }
 
-void UIHandler::toggleTransitionScreen(GameMaster *gameMaster, bool showUI)
-{
-
-	if (showUI)
-	{
-		playTur_btn->show();
-		PlayerShipGrid->hide();
-		oceanGrid->hide();
-		toggleFireBtn(gameMaster);
-	}
-	else
-	{
-		playTur_btn->hide();
-		PlayerShipGrid->show();
-		oceanGrid->show();	
-		toggleFireBtn(gameMaster);
-	}
-	
-}

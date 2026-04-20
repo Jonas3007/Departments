@@ -87,6 +87,7 @@ target_include_directories(client PRIVATE
     ${CMAKE_SOURCE_DIR}/client/UI
     ${CMAKE_SOURCE_DIR}/client/UI/Callbacks
     ${CMAKE_SOURCE_DIR}/client/Helper/UIHelper
+    ${CMAKE_SOURCE_DIR}/client/Helper/GameStateListener
     ${CMAKE_SOURCE_DIR}/client/Helper/MessageHandler
 
 

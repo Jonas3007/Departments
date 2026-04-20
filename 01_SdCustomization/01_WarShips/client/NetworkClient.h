@@ -10,6 +10,8 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <thread>
+#include "ClientMessageHandler.h"
+#include "GameStateDTO.h"
 
 
 class NetworkClient
@@ -17,9 +19,11 @@ class NetworkClient
 	public: 
 		int PORT = 12345;
 		int BUFFER_SIZE = 1024;
-	
+
+		void setMsgHandler(unique_ptr<ClientMessageHandler> handler);
 		int startClient();
-		void receive_messages(int sock);
+		void receiveMessages(int sock);
 	
 	private: 
+		unique_ptr<ClientMessageHandler> msgHandler;
 };
