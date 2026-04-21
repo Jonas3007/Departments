@@ -23,35 +23,8 @@ string coordsToCellPos(Coordinates coords)
 //---------------------
 // Setter for UI elements
 //---------------------
-void UIHandler::setPlayTurnBtn(Fl_Button *btn)
-{
-	this->playTur_btn = btn;
-}
-void UIHandler::setGridGroups(Fl_Group *playerShipGrid, Fl_Group *oceanGrid)
-{
-	this->PlayerShipGrid = playerShipGrid;
-	this->oceanGrid = oceanGrid;
-}
-void UIHandler::setNameInput(Fl_Input *input)
-{
-	nameInput = input;
-}
-void UIHandler::setPlayerTurnBox(Fl_Box *box)
-{
-	playerTurnBox = box;
-}
-void UIHandler::setPhaseBox(Fl_Box *box)
-{
-	phaseBox = box;
-}
-void UIHandler::setPlayerShipGridCells(Fl_Box *cell)
-{
-	PlayerShipGridCells.push_back(cell);
-}
-void UIHandler::setGridCells(Fl_Box *cell)
-{
-	gridCells.push_back(cell);
-}
+
+
 void UIHandler::setShipPlacementElements(Fl_Button *placeShipbtn, Fl_Button *battleshipBtn, Fl_Button *cruiserBtn, Fl_Button *destroyerBtn, Fl_Button *submarineBtn, Fl_Output *selectedShipOutput, Fl_Input *coordsInput, Fl_Multiline_Output *shipSizeOutput)
 {
 	this->placeShipBtn = placeShipbtn;
@@ -63,22 +36,7 @@ void UIHandler::setShipPlacementElements(Fl_Button *placeShipbtn, Fl_Button *bat
 	this->coordsInput = coordsInput;
 	this->shipSizeOutput = shipSizeOutput;
 }
-void UIHandler::setNameWindow(NameWindow *window)
-{
-	this->nameWindow = window;
-}
-void UIHandler::setFinishTurnBtn(Fl_Button *btn)
-{
-	this->finishTurnBtn = btn;
-}
-void UIHandler::setEnterNamesBtn(Fl_Button *btn)
-{
-	this->enterNamesBtn = btn;
-}
-void UIHandler::setFireBtn(Fl_Button *btn)
-{
-	this->firebtn = btn;
-}
+
 string UIHandler::getPlayerName()
 {
 	return nameInput->value();
@@ -269,12 +227,4 @@ void UIHandler::toggleShipPlacementElements()
 		shipSizeOutput->hide();
 	}
 }
-void UIHandler::toggleFinishTurnBtn()
-{
-}
-void UIHandler::toggleEnterNamesBtn()
-{
-}
-void UIHandler::toggleFireBtn()
-{
-}
+

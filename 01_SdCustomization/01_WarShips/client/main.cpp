@@ -16,7 +16,7 @@ int main(int argc, char ** argv)
 	handler->addListener(&uiHandler);
 	netClient.startClient();
 	
-	Fl_Window* playerWindow = CreatePlayerWindow();
+	Fl_Window* playerWindow = CreatePlayerWindow(uiHandler);
 	
 	return Fl::run();
 }

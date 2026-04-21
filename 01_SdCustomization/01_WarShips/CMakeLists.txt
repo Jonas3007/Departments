@@ -85,6 +85,9 @@ target_include_directories(client PRIVATE
     ${CMAKE_SOURCE_DIR}
     ${CMAKE_SOURCE_DIR}/client
     ${CMAKE_SOURCE_DIR}/client/UI
+    ${CMAKE_SOURCE_DIR}/client/UI/PlayerWindow
+    ${CMAKE_SOURCE_DIR}/client/UI/LobbyWindow
+    ${CMAKE_SOURCE_DIR}/client/UI/GameOverWindow
     ${CMAKE_SOURCE_DIR}/client/UI/Callbacks
     ${CMAKE_SOURCE_DIR}/client/Helper/UIHelper
     ${CMAKE_SOURCE_DIR}/client/Helper/GameStateListener

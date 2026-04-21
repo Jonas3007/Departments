@@ -2,7 +2,7 @@
 #include "Coordinates.h"
 #include <iostream>
 #include "Callbacks.h"
-#include "Name_Window.h"
+#include "Lobby_Window.h"
 #include "GameOver_Window.h"
 #include "GameMaster.h"
 #include "ShipPlacementData.h"
@@ -101,7 +101,7 @@ void shipPlacementElements(Fl_Input *coordsInput, inputData *iData)
 
 	Fl_Button *placeShip_btn = new Fl_Button(730, 600, 90, 40, "Place Ship");
 	placeShip_btn->box(FL_PLASTIC_UP_BOX);
-	placeShip_btn->callback(takeInput_cb, iData);
+	placeShip_btn->callback(placeShip_cb, iData);
 	// Buttons for selecting ships to place
 	Fl_Button *ship5_btn = new Fl_Button(600, 650, 90, 40, "Battleship");
 	Fl_Button *ship4_btn = new Fl_Button(700, 650, 90, 40, "Cruiser");
@@ -120,7 +120,7 @@ void shipPlacementElements(Fl_Input *coordsInput, inputData *iData)
 
 }
 
-Fl_Window *CreatePlayerWindow()
+Fl_Window *CreatePlayerWindow(const UIHandler &UIHandler)
 {
 	// Initialize DataStructs
 	inputData iData;
@@ -154,13 +154,6 @@ Fl_Window *CreatePlayerWindow()
 	enterNamesBtn->box(FL_PLASTIC_UP_BOX);
 	enterNamesBtn->callback(createNameWindow_cb, nullptr);
 
-
-	// Finish Turn Button
-	Fl_Button *finishTurnBtn = new Fl_Button(825, 600, 120, 40, "Finish Turn");
-	finishTurnBtn->box(FL_PLASTIC_UP_BOX);
-	finishTurnBtn->callback(finishTurn_cb, nullptr);
-
-	finishTurnBtn->hide();
 
 	// Input for Coordinates and Button to confirm input
 	Fl_Input *coordsInput = new Fl_Input(600, 600, 120, 40, "Coordinates:");

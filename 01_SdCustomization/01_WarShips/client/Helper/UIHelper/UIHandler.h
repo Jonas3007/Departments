@@ -9,13 +9,13 @@
 #include "Fl/Fl_Button.H"
 #include "Fl/Fl_Output.H"
 #include "Fl/Fl_Multiline_Output.H"
-#include "Name_Window.h"
+#include "Lobby_Window.h"
 #include "GameOver_Window.h"
 #include <memory>
 #include "ClientMessageHandler.h"
 #include "IGameStateListener.h"	
 
-class NameWindow;
+class LobbyWindow;
 class ClientMessageHandler;	
 //---------------------
 // Update UI
@@ -23,31 +23,51 @@ class ClientMessageHandler;
 class UIHandler: public IGameStateListener
 {
 	public:
-		//public attributes
+		//LobbyWindow Elements
+		//made the all public to avoid setter and getter for each element, since they are needed in callbacks and onGameStateUpdate
 		Fl_Input *nameInput;
+		Fl_Output *nameOutput;
+		Fl_Button *joinGame_btn;
+		Fl_Input *lobbyInput;
+		Fl_Button *hostGame_btn;
+		Fl_Button *check_btn;
+		Fl_Output *lobbyOutput;
+		Fl_Multiline_Output *infoOutput;
+		LobbyWindow *lobbyWindow;
+		
+		//PlayerWindow Elements
+		//Grids
 		vector<Fl_Box *> PlayerShipGridCells;
 		vector<Fl_Box *> gridCells;
-		NameWindow *nameWindow;
+		//Groups
+		Fl_Group *PlayerShipGrid;
+		Fl_Group *oceanGrid;
+		//Buttons
+		Fl_Button *placeShipBtn;
+		Fl_Button *battleshipBtn;
+		Fl_Button *cruiserBtn;
+		Fl_Button *destroyerBtn;
+		Fl_Button *submarineBtn;
+		Fl_Button *firebtn;
+		Fl_Button *enterNamesBtn;	
+		Fl_Button *finishTurnBtn;
+		//Game State Elements
+		Fl_Box *playerTurnBox;
+		Fl_Box *phaseBox;
+		//Inputs and Outputs
+		Fl_Output *selectedShipOutput;
+		Fl_Input *coordsInput;
+		Fl_Multiline_Output *shipSizeOutput;
+		
+		
+		//GameOverWindow Elements
 		GameOverWindow *gameOverWindow;
 		GameStateDTO currentGameState;
 		
 		virtual void onGameStateUpdate(const GameStateDTO &newState) override; 
-		
 		void updateUIAccordingToGameState();	
-		
-		//Setter for UI elements
-		void setNameInput(Fl_Input *input);	
-		void setPlayerTurnBox(Fl_Box *box);
-		void setPhaseBox(Fl_Box *box);
-		void setNameWindow(NameWindow *window);	
-		void setPlayTurnBtn(Fl_Button *btn);	
+			
 		//setter for grid groups and cells	
-		void setGridGroups(Fl_Group *playerShipGrid, Fl_Group *oceanGrid);
-		void setGridCells(Fl_Box *cells);
-		void setPlayerShipGridCells(Fl_Box *cells);
-		void setFinishTurnBtn(Fl_Button *btn);
-		void setEnterNamesBtn(Fl_Button *btn);	
-		void setFireBtn(Fl_Button *btn);
 		void setShipPlacementElements(Fl_Button *placeShipbtn,Fl_Button *battleshipBtn, Fl_Button *cruiserBtn, Fl_Button *destroyerBtn, Fl_Button *submarineBtn, Fl_Output *selectedShipOutput, Fl_Input *coordsInput, Fl_Multiline_Output *shipSizeOutput);
 		
 		string getPlayerName();	
@@ -63,39 +83,9 @@ class UIHandler: public IGameStateListener
 		void resetGridColors();	
 		
 		//UI Update according to GameState
-		void toggleEnterNamesBtn();	
-		void toggleFinishTurnBtn();
-		void toggleFireBtn();	
+	
 		void toggleShipPlacementElements();
 		
-		
-		
-		
-
 	private:
-		//Grid groups
-		Fl_Group *PlayerShipGrid;
-		Fl_Group *oceanGrid;
-		
-		Fl_Button *playTur_btn;
-
-		Fl_Button *firebtn;
-		Fl_Button *enterNamesBtn;	
-		Fl_Button *finishTurnBtn;
-		//Game State Elements
-		Fl_Box *playerTurnBox;
-		Fl_Box *phaseBox;
-		
-		
-		// shipplacement elements
-		Fl_Button *placeShipBtn;
-		Fl_Button *battleshipBtn;
-		Fl_Button *cruiserBtn;
-		Fl_Button *destroyerBtn;
-		Fl_Button *submarineBtn;
-		Fl_Output *selectedShipOutput;
-		Fl_Input *coordsInput;
-		Fl_Multiline_Output *shipSizeOutput;
-		
 };
 

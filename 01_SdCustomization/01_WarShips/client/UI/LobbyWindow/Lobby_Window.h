@@ -2,12 +2,12 @@
 #include <Fl/Fl_Window.H>
 #include <Fl/Fl_Input.H>
 #include <Fl/Fl_Button.H>
-#include "GameMaster.h"	
-
-class NameWindow : public Fl_Window
+#include "UIHandler.h"
+class UIHandler;
+class LobbyWindow : public Fl_Window
 {
 public:
-	NameWindow();
+	LobbyWindow(const UIHandler &uiHandler);
 
 private:
 	Fl_Input* nameInput;

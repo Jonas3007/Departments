@@ -11,7 +11,7 @@
 static shared_ptr<ClientMessageHandler> messageHandler = nullptr;
 
 void setClientMessageHandler(shared_ptr<ClientMessageHandler> handler);
-void takeInput_cb(Fl_Widget *widget, void *data);
+void placeShip_cb(Fl_Widget *widget, void *data);
 void shipSelect_cb(Fl_Widget *widget, void *data);
 void fireInput_cb(Fl_Widget *widget, void *data);
 void createNameWindow_cb(Fl_Widget *widget, void *data);

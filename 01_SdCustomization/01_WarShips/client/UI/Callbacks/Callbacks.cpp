@@ -9,8 +9,9 @@
 #include "Coordinates.h"
 #include "InputParser.h"
 #include "ShipPlacementData.h"
-#include "Name_Window.h"
+#include "Lobby_Window.h"
 #include "inputData.h"
+#include "UIHandler.h"
 // Helper
 int setSelectedShipSize(Fl_Widget *widget)
 {
@@ -43,8 +44,8 @@ void placeShip_cb(Fl_Widget *widget, void *data)
 	auto iData = static_cast<inputData *>(data);
 	cout << "Take Input Callback triggered" << endl;
 	string input = iData->coordsInput->value();
-	iData->outgoingMessage ="PLACE:"+  input + "," + to_string(iData->ShipSize);
-	messageHandler->setOutgoingMessage(iData->outgoingMessage); 
+	std::string outgoingMessage="PLACE:"+  input + "," + to_string(iData->ShipSize);
+	messageHandler->setOutgoingMessage(outgoingMessage); 
 	
 }
 
@@ -62,19 +63,15 @@ void fireInput_cb(Fl_Widget *widget, void *data)
 
 void createNameWindow_cb(Fl_Widget *widget, void *data)
 {
-	
-	NameWindow *nameWindow = new NameWindow();
-	nameWindow->show();
+	auto uiHandler = static_cast<UIHandler *>(data);
+	LobbyWindow *lobbyWindow = new LobbyWindow(*uiHandler);
+	lobbyWindow->show();
 }
 void getPlayerNames_cb(Fl_Widget *widget, void *data)
 {
 	
 }
-void finishTurn_cb(Fl_Widget *widget, void *data)
-{
-	cout << "Finish Turn Callback triggered" << endl;
-	
-}
+
 void continue_cb(Fl_Widget *widget, void *data)
 {
 	
