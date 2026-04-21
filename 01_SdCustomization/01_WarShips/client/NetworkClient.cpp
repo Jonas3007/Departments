@@ -2,8 +2,18 @@
 #include "UIHandler.h"
 #include "ClientMessageHandler.h"
 #include "GameStateDTO.h"
-
-void NetworkClient::setMsgHandler(unique_ptr<ClientMessageHandler> handler)
+void NetworkClient::sendMessage(int socket)
+{
+	while (true)
+	{
+		std::string msg = msgHandler->readOutgoingMessage();
+		if (!msg.empty())
+		{
+			send(socket, msg.c_str(), msg.size(), 0);
+		}
+	}
+}
+void NetworkClient::setMsgHandler(shared_ptr<ClientMessageHandler> handler)
 {
 	this->msgHandler = std::move(handler);
 }
@@ -52,6 +62,7 @@ int NetworkClient::startClient()
 	}
 
 	std::thread(&NetworkClient::receiveMessages, this, sock).detach(); // Start a thread to receive messages from the server
+	std::thread(&NetworkClient::sendMessage, this, sock).detach();
 
 	exit(0);
 	return 0;

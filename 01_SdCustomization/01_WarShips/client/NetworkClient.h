@@ -20,10 +20,11 @@ class NetworkClient
 		int PORT = 12345;
 		int BUFFER_SIZE = 1024;
 
-		void setMsgHandler(unique_ptr<ClientMessageHandler> handler);
+		void setMsgHandler(shared_ptr<ClientMessageHandler> handler);
 		int startClient();
 		void receiveMessages(int sock);
+		void sendMessage(int socket);
 	
 	private: 
-		unique_ptr<ClientMessageHandler> msgHandler;
+		std::shared_ptr<ClientMessageHandler> msgHandler;
 };

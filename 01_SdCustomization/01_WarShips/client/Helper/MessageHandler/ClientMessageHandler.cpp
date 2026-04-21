@@ -161,3 +161,24 @@ GamePhase ClientMessageHandler::parseGamePhase(const std::string &phaseStr)
 		return GamePhase::GameOver; // Default to GameOver for unknown phases
 	}
 }
+
+void ClientMessageHandler::setOutgoingMessage(const std::string &message)
+{
+	lock_guard<std::mutex> lock(message_mutex);
+	this->outgoingMessage = message;
+	this->isMessageReady = true;
+}
+
+std::string ClientMessageHandler::readOutgoingMessage()
+{
+	if(isMessageReady)
+	{
+		lock_guard<std::mutex> lock(message_mutex);
+		isMessageReady = false;
+		return outgoingMessage;
+	}
+	else
+	{
+		return nullptr;
+	}
+}

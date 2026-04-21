@@ -3,6 +3,8 @@
 
 class IGameStateListener
 {
-	public: 	
+	public:
+	
 	virtual void onGameStateUpdate(const GameStateDTO &newState) = 0; // Pure virtual function to be implemented by derived classes
+	
 }; 

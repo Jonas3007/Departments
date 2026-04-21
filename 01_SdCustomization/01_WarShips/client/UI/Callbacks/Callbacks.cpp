@@ -10,6 +10,7 @@
 #include "InputParser.h"
 #include "ShipPlacementData.h"
 #include "Name_Window.h"
+#include "inputData.h"
 // Helper
 int setSelectedShipSize(Fl_Widget *widget)
 {
@@ -32,17 +33,25 @@ int setSelectedShipSize(Fl_Widget *widget)
 	}
 }
 
-// Callbacks
-void takeInput_cb(Fl_Widget *widget, void *data)
+void setClientMessageHandler(shared_ptr<ClientMessageHandler> handler)
 {
+	messageHandler = std::move(handler);
+}
+// Callbacks
+void placeShip_cb(Fl_Widget *widget, void *data)
+{
+	auto iData = static_cast<inputData *>(data);
 	cout << "Take Input Callback triggered" << endl;
+	string input = iData->coordsInput->value();
+	iData->outgoingMessage ="PLACE:"+  input + "," + to_string(iData->ShipSize);
+	messageHandler->setOutgoingMessage(iData->outgoingMessage); 
 	
 }
 
 void shipSelect_cb(Fl_Widget *widget, void *data)
 {
-	auto spd = static_cast<ShipPlacementData *>(data);
-	spd->selectedShipSize = setSelectedShipSize(widget);	
+	auto iData = static_cast<inputData *>(data);	
+	iData->ShipSize = setSelectedShipSize(widget);
 }
 void fireInput_cb(Fl_Widget *widget, void *data)
 {

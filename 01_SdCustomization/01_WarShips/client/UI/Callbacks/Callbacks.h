@@ -5,10 +5,12 @@
 #include <Fl/Fl_Box.H>
 #include <Fl/Fl_Output.H>	
 #include "ShipPlacementData.h"
+#include "ClientMessageHandler.h"
+#include <memory>
 
+static shared_ptr<ClientMessageHandler> messageHandler = nullptr;
 
-
-
+void setClientMessageHandler(shared_ptr<ClientMessageHandler> handler);
 void takeInput_cb(Fl_Widget *widget, void *data);
 void shipSelect_cb(Fl_Widget *widget, void *data);
 void fireInput_cb(Fl_Widget *widget, void *data);
