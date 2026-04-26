@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": false,
-      "cwd": "/home/korman4/development/Departments/01_SdCustomization/00_Calculator",
-      "program": "/home/korman4/development/Departments/01_SdCustomization/00_Calculator/build/Debug/outDebug",
+      "cwd": "/home/korman4/development/Departments/01_SdCustomization/01_WarShips",
+      "program": "/home/korman4/development/Departments/01_SdCustomization/01_WarShips/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
